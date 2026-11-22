@@ -16,7 +16,7 @@ Son güncelleme: 22 Kasım 2026 (1. hafta yapıldı)
 | 2. hafta — Web sayfası ve WhatsApp denemesi | Tamamlandı; telefonda ve WhatsApp'ta çalıştı |
 | 3. hafta — Kartlar ve koleksiyon | Tamamlandı |
 | 4. hafta — 10-15 kişilik deneme | Hazır; kapıda, ürün sahibinin denemesi bekleniyor |
-| 5-6. hafta — Uygulamaya çevirme ve satış | Başlanmadı |
+| 5-6. hafta — Uygulamaya çevirme ve satış | Uygulama hazır; Apple ve Codemagic kurulumu bekleniyor. Satış, fiyat denemesine kadar bekliyor |
 | 7-8. hafta — Test sürümü ve App Store | Başlanmadı |
 
 Her adımı bitirince bu tabloyu güncelle.
@@ -103,6 +103,31 @@ Her adımı bitirince bu tabloyu güncelle.
   (varsayım). Ödeme alınmaz, dokunana hemen söylenir, iletişim bilgisi
   istenmez.
 - Ürün sahibi için adım adım rehber: `docs/deneme-rehberi.md`.
+
+### 5-6. hafta notları
+
+- Ürün sahibi 4. hafta denemesi sürerken devam etmeyi seçti. Deneme kötü
+  çıkarsa durulur.
+- iPhone uygulaması: Capacitor 8 (Swift Package Manager), proje `ios/`,
+  uygulama kimliği `com.lumoza.randombeat` (ürün sahibine sorulacak).
+  Sayfa `npm run app:native` ile `app/native-dist`'e üretilir; motor ve
+  sayfa sitedekiyle aynı. Uygulamadaki paylaşım bağlantıları web sitesine
+  gider. Köprü: `src/native/bridge.ts` (paylaşım ekranı, dosya, titreşim,
+  M4A zil sesi).
+- Uygulamada sayaç ve fiyat denemesi yok; uygulama veri toplamaz.
+- Sessiz düğmesi: `AppDelegate.swift` ses oturumunu "playback" yapar.
+- Zil sesi: iOS 26 ve sonrası, telefonun AAC kodlayıcısıyla M4A, 28 sn altı.
+  Şimdilik ücretsiz görünüyor; fiyat denemesine göre ücretli olabilir.
+  MP3 kodlayıcı (LGPL lisanslı) lisans yüzünden kullanılmadı.
+- Simge ve açılış ekranı: `node tools/build-icons.ts`.
+- Bulutta derleme: `codemagic.yaml` (TestFlight'a yükler). Kurulum adımları
+  `docs/app-store-rehberi.md`, mağaza metinleri `docs/app-store-metin.md`.
+- Gizlilik sayfası: sitede `/gizlilik.html`; iletişim e-postası
+  `CONTACT_EMAIL` ile eklenecek (ürün sahibine sorulacak).
+- Ses paketlerinin içeriği ve satın alma, fiyat denemesinin sonucuna kadar
+  yapılmadı (planın gelir bölümü: kimse dokunmuyorsa emek harcama).
+- Mac olmadığı için uygulama burada derlenemedi; ilk gerçek derleme
+  Codemagic'te olacak. Swift tarafında yalnızca iki küçük satır değişti.
 
 ---
 

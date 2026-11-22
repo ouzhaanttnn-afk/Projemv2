@@ -171,6 +171,7 @@
     <div class="actions">
       <button class="btn" id="make-send" type="button" disabled>Arkadaşına gönder</button>
       <button class="btn ghost" id="make-video" type="button" disabled>Video olarak gönder (deneme)</button>
+      <button class="btn ghost" id="make-ringtone" type="button" hidden disabled>Zil sesi olarak kaydet</button>
     </div>
     <div class="shop" id="make-shop" hidden>
       <div class="offer">
@@ -220,7 +221,7 @@
     <a class="btn ghost" id="video-save" hidden>Videoyu kaydet</a>
   </section>
 
-  <footer>Sesler telefonunda üretilir. Yazdığın gülüş yalnızca gönderdiğin bağlantının içinde durur; hiçbir yerde saklanmaz. Koleksiyonun bu telefonda kalır. Site yalnızca isimsiz kullanım sayıları tutar (kaç beat yapıldı, kaç kez gönderildi gibi).</footer>
+  <footer id="footer">Sesler telefonunda üretilir. Yazdığın gülüş yalnızca gönderdiğin bağlantının içinde durur; hiçbir yerde saklanmaz. Koleksiyonun bu telefonda kalır. Site yalnızca isimsiz kullanım sayıları tutar (kaç beat yapıldı, kaç kez gönderildi gibi).</footer>
 </main>
 
 <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
@@ -243,13 +244,19 @@ const state = {
   tempo: clampTempo(parseInt(params.get("h") || "0", 10) || 0),
 };
 function clampTempo(n) { return Math.max(RB.TEMPO_MIN, Math.min(RB.TEMPO_MAX, n)); }
+// In the iPhone app the page runs from the phone itself, so links must point
+// to the website, where friends without the app can open them.
+const NATIVE = !!(window.RBNative && window.RBNative.isApp);
+const SITE_BASE = NATIVE ? "https://randombeat.oguzhaanttnn.workers.dev/" : location.origin + location.pathname;
 function linkFor(first, reply, tempo) {
   const p = new URLSearchParams();
   p.set("g", first);
   if (reply) p.set("c", reply);
   if (tempo) p.set("h", String(tempo));
-  return location.origin + location.pathname + "?" + p.toString();
+  return SITE_BASE + "?" + p.toString();
 }
+// play through the silent switch on iPhones that support it (iOS 17+)
+try { if (navigator.audioSession) navigator.audioSession.type = "playback"; } catch (e) {}
 
 // ---------------------------------------------------------------- toast
 let toastTimer;
@@ -322,6 +329,7 @@ function beatCard(box, key, make, opts = {}) {
   btn.addEventListener("click", () => {
     if (current && current.btn === btn) return stop();
     if (opts.onPlay) opts.onPlay();
+    if (NATIVE) RBNative.tap();
     stop();
     // build the audio right after the tap so phones allow playback
     if (!urls.has(key)) {
@@ -375,6 +383,11 @@ const duo = (a, b, tempo) => (full) => (full ? RB.makeDuet(a, b, 1, { tempoStep:
 
 // ---------------------------------------------------------------- sharing
 async function shareLink(url, text) {
+  if (NATIVE) {
+    RBNative.tap();
+    try { await RBNative.shareText(text, url); } catch (e) {}
+    return;
+  }
   try { await navigator.clipboard.writeText(url); } catch (e) {}
   if (navigator.share) {
     try {
@@ -485,7 +498,7 @@ async function makeVideo(make, title, link) {
         : "WhatsApp'ta oynamayabilir";
   status.textContent = `Hazır: ${(blob.size / 1048576).toFixed(1)} MB, ${ext.toUpperCase()} (${codec}). Bağlantı panoya kopyalandı; WhatsApp'ta videonun altına yapıştırabilirsin.`;
   try { await navigator.clipboard.writeText(link); } catch (e) {}
-  const canShareFile = navigator.canShare && navigator.canShare({ files: [videoFile] });
+  const canShareFile = NATIVE || (navigator.canShare && navigator.canShare({ files: [videoFile] }));
   $("video-share").hidden = !canShareFile;
   const save = $("video-save");
   save.href = url;
@@ -506,7 +519,10 @@ function wrapText(ctx, text, x, y, maxW, lineH, maxLines) {
 }
 $("video-share").addEventListener("click", async () => {
   if (!videoFile) return;
-  try { await navigator.share({ files: [videoFile] }); } catch (e) {}
+  try {
+    if (NATIVE) await RBNative.shareFile(videoFile.name, new Uint8Array(await videoFile.arrayBuffer()), "Randombeat");
+    else await navigator.share({ files: [videoFile] });
+  } catch (e) {}
 });
 
 // ---------------------------------------------------------------- anonymous counter
@@ -707,14 +723,35 @@ function showMake() {
     const has = text.trim().length > 0;
     $("make-send").disabled = !has;
     $("make-video").disabled = !has;
-    $("make-shop").hidden = !has;
+    $("make-shop").hidden = !has || NATIVE; // price test only on the website
+    $("make-ringtone").disabled = !has;
     if (!has) { $("make-beat").innerHTML = ""; return; }
     beatCard($("make-beat"), "m:" + text + ":" + state.tempo, single(text, state.tempo), { tempo: render, onPlay: () => track("yap") });
-    track("zil_gor", true);
-    track("paket_gor", true);
+    if (!NATIVE) {
+      track("zil_gor", true);
+      track("paket_gor", true);
+    }
   };
   const buy = (e) => { track(e); $("shop-note").hidden = false; };
   $("buy-zil").addEventListener("click", () => buy("zil_tik"));
+  // ringtone: iPhone ringtones must be M4A and under 30 s; iOS 26 can use them directly
+  if (NATIVE) RBNative.canMakeRingtone().then((ok) => ($("make-ringtone").hidden = !ok));
+  $("make-ringtone").addEventListener("click", async () => {
+    const text = input.value;
+    const score = RB.compose(text, { tempoStep: state.tempo });
+    if (!score) return;
+    const loops = Math.max(1, Math.floor((28 - 1.2) / RB.scoreDuration(score)));
+    const beat = RB.makeBeat(text, loops, { tempoStep: state.tempo });
+    $("make-ringtone").disabled = true;
+    try {
+      const m4a = await RBNative.encodeM4a(beat.pcm, RB.SAMPLE_RATE);
+      toast("Paylaş ekranında zil sesi olarak kullan seçeneğine dokun.");
+      await RBNative.shareFile("randombeat-zil.m4a", m4a, "Randombeat zil sesi");
+    } catch (e) {
+      toast("Zil sesi hazırlanamadı.");
+    }
+    $("make-ringtone").disabled = false;
+  });
   $("buy-paket").addEventListener("click", () => buy("paket_tik"));
   input.addEventListener("input", debounce(() => { stop(); render(); }, 250));
   input.addEventListener("keydown", (e) => { if (e.key === "Enter") input.blur(); });
@@ -853,6 +890,8 @@ function showTest() {
   $("view-test").hidden = false;
   if (!test || test.i >= test.trials.length) startTest();
 }
+
+if (NATIVE) $("footer").textContent = "Sesler telefonunda üretilir. Yazdığın gülüş yalnızca gönderdiğin bağlantının içinde durur. Koleksiyonun bu telefonda kalır. Uygulama hiçbir veri toplamaz.";
 
 // Views are built once; the collection and the test are reached with #koleksiyon and #deneme1.
 let started = false;

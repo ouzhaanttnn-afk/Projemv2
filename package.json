@@ -9,9 +9,19 @@
     "benzersizlik": "node tools/uniqueness.ts",
     "ornekler": "node tools/render-examples.ts",
     "dinle": "node tools/build-listen.ts",
-    "app": "SITE_URL=https://randombeat.oguzhaanttnn.workers.dev/ node tools/build-app.ts"
+    "app": "SITE_URL=https://randombeat.oguzhaanttnn.workers.dev/ node tools/build-app.ts",
+    "app:native": "SITE_URL=https://randombeat.oguzhaanttnn.workers.dev/ node tools/build-app.ts --native && npx cap sync ios"
   },
   "devDependencies": {
+    "@capacitor/cli": "8.6.0",
     "esbuild": "0.25.10"
+  },
+  "dependencies": {
+    "@capacitor/core": "8.6.0",
+    "@capacitor/filesystem": "8.1.5",
+    "@capacitor/haptics": "8.0.2",
+    "@capacitor/ios": "8.6.0",
+    "@capacitor/share": "8.0.3",
+    "mp4-muxer": "5.2.2"
   }
 }

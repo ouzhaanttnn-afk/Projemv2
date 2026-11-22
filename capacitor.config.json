@@ -1,0 +1,10 @@
+{
+  "appId": "com.lumoza.randombeat",
+  "appName": "Randombeat",
+  "webDir": "app/native-dist",
+  "backgroundColor": "#f3f5f9",
+  "ios": {
+    "contentInset": "never",
+    "scheme": "Randombeat"
+  }
+}

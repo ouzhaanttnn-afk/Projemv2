@@ -1,0 +1,38 @@
+# Codemagic builds the iPhone app on a cloud Mac and sends it to TestFlight.
+# Setup steps for the product owner: docs/app-store-rehberi.md
+workflows:
+  ios-testflight:
+    name: Randombeat iOS → TestFlight
+    instance_type: mac_mini_m2
+    max_build_duration: 45
+    integrations:
+      app_store_connect: Randombeat ASC
+    environment:
+      ios_signing:
+        distribution_type: app_store
+        bundle_identifier: com.lumoza.randombeat
+      vars:
+        XCODE_PROJECT: ios/App/App.xcodeproj
+        XCODE_SCHEME: App
+      node: 22
+      xcode: latest
+    scripts:
+      - name: Paketleri kur
+        script: npm ci
+      - name: Uygulama sayfasını oluştur
+        script: npm run app:native
+      - name: İmzalama ayarları
+        script: xcode-project use-profiles
+      - name: Derleme numarası
+        script: |
+          cd ios/App
+          agvtool new-version -all $BUILD_NUMBER
+      - name: Uygulamayı derle
+        script: xcode-project build-ipa --project "$XCODE_PROJECT" --scheme "$XCODE_SCHEME"
+    artifacts:
+      - build/ios/ipa/*.ipa
+      - /tmp/xcodebuild_logs/*.log
+    publishing:
+      app_store_connect:
+        auth: integration
+        submit_to_testflight: true
