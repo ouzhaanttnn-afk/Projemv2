@@ -63,6 +63,9 @@ Her adımı bitirince bu tabloyu güncelle.
 - Video (deneme): sayfa beat'i gerçek zamanlı kaydeder (720x720 MP4). Test
   tarayıcısında H.264 görüntü + Opus ses çıktı; WhatsApp'ın oynatıp
   oynatmadığı gerçek telefonda görülmeli.
+- Yayın: Cloudflare Workers projesi `randombeat`, depoya bağlı. Yayın dalı
+  `claude/friendly-brown-lyp3ex`; bu dala her gönderimde site kendiliğinden
+  güncellenir. Ayar dosyası `wrangler.jsonc` (`app/dist` klasörünü yayınlar).
 - Her beat'e özel önizleme resmi henüz yok (sunucu işlevi gerektirir); şimdilik
   tek bir genel önizleme resmi var.
 
