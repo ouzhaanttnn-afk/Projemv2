@@ -9,7 +9,7 @@
     "benzersizlik": "node tools/uniqueness.ts",
     "ornekler": "node tools/render-examples.ts",
     "dinle": "node tools/build-listen.ts",
-    "app": "node tools/build-app.ts --og"
+    "app": "SITE_URL=https://randombeat.oguzhaanttnn.workers.dev/ node tools/build-app.ts"
   },
   "devDependencies": {
     "esbuild": "0.25.10"
