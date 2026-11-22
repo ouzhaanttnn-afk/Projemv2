@@ -32,6 +32,22 @@ finalistlerin iddiaları internette doğrulandı.
   bakmak; karakterin kısa videolarını paylaşıp ilgiyi ölçmek.
 - Kullanıcı henüz hangi fikirle devam edeceğine karar vermedi.
 
+### Mağaza verili eleme (dördüncü eleme)
+
+Jüriden "yapılmaya değer fikir" ölçütü alındı (`juri/olcut.md`), sonra App Store'un arama servisiyle
+413 arama tarandı (`juri/tarama/`; ortamda yalnızca `itunes.apple.com` erişimine izin verildi).
+
+- Hiçbir arama ölçütün iki pazar şartını (yeni gelen görünebiliyor + peşin para ödeniyor) birlikte
+  sağlamadı. Peşin ücretli uygulama modeli veride fiilen bitmiş: son üç yılda çıkıp 100+ puan
+  toplayan peşin ücretli uygulama bütün taramada bir tane.
+- Yeni gelenler yalnızca el işi ve öğrenme aramalarında yükseliyor; doğrulamada bunların arkasında
+  reklam veren şirketler olduğu görüldü.
+- 50 → 20 → 5 → 1 sonucu: oy sayısıyla **Kopya Çizim Lambası** (24 oydan 10; ortalama 2,8/10),
+  ortalama puanla **Tığ İşi Defteri** (3,3/10; 7 oy). Jüri yine oybirliğiyle "en az kötüsü" dedi.
+- Kopya Çizim Lambası için önerilen 15 dakikalık kontrol: en çok puanlı beş ücretsiz kopya çizim
+  uygulamasını indirip asıl işi kilitsiz ve reklamsız yaptırıp yaptırmadıklarına bakmak. Üçü
+  yaptırıyorsa fikir düşer.
+
 ## Rafa kaldırılan ürün (geçici ad: "Föy")
 
 Elinde fiziksel ürün olan ve bunu mimara, iç mimara, mağazaya ya da müşteriye göstermesi gereken
