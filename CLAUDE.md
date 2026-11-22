@@ -9,20 +9,46 @@
   ne olduğunu anlat.
 - Ücretli reklam önerme; ücretsiz büyüme yolları öner.
 
-## Ürün (geçici ad: "Stüdyodan Paftaya")
+## Ürün (geçici ad: "Föy")
 
-Fiziksel ürün tasarlayan bireysel tasarımcı için App Store uygulaması.
+Elinde fiziksel ürün olan ve bunu mimara, iç mimara, mağazaya ya da müşteriye göstermesi gereken
+kişiler için telefon uygulaması: tasarımcılar, seramik atölyeleri, mobilya ve aydınlatma
+üreticileri. Telefondaki fotoğraflardan birkaç dakikada temiz bir ürün föyü (tek ürün sayfası,
+PDF) çıkarır.
 
-1. **Topla (telefon):** Numune, eskiz, yüzey denemesi fotoğrafı çekilir; uygulama tek soru sorar:
-   "Bunu neden seçtin ya da eledin?" Cevap yazıyla ya da sesle, on saniyede.
-2. **Sakla:** Ölçü, renk, malzeme bilgisi bir kez girilir. Yapay zekâ bilgi uydurmaz; eksik varsa
-   kullanıcıya sorar.
-3. **Çıkar (iPad):** "Kime sunuyorsun?" sorusuna göre düzenlenebilir föy hazırlanır.
+Kullanıcı, kararı Claude'a bıraktı: "mantıklı buluyorsan sormadan araştır ve geliştir."
 
-İlk sürümde tek çıktı: müşteri föyü. Kapsam dışı: zihin haritası, araştırma yönü, hoca kritiği,
-öğrenci akışı, jüri paftası, alıcının cevap verdiği bağlantı.
+### İlk sürüm kararları (sekiz uzman değerlendirmesinden sonra)
 
-Gelir fikri (kesin değil): ilk föy ücretsiz, sonrası aylık 5–8 dolar ya da föy başına ödeme.
+- **Sadece telefon.** iPad ayrı akış değil; aynı uygulama büyük ekranda açılır.
+- **Önce fayda:** İlk föy telefonda zaten duran fotoğraflardan çıkar. "Bunu neden seçtin?" notu
+  isteğe bağlıdır ve föy hazırlanırken sorulur.
+- **Serbest yerleşim yok.** Üç hazır föy kalıbı; kullanıcı metni ve sırayı değiştirir.
+- **Bilgi uydurma yok.** Ölçü, malzeme, renk kullanıcıdan gelir. Eksik alan varsa uygulama sorar
+  ya da o alanı föyde göstermez.
+- **İlk sürümde yapay zekâ yok.** Her şey telefonda kalır; izin ekranı ve masraf gerekmez. Yapay
+  zekâ (metni okuyucuya göre yazma) sonra eklenir ve bir sunucu gerektirir. API anahtarı asla
+  depoya konmaz.
+- Föyün altında küçük "… ile hazırlandı" imzası (ücretsiz tanıtım; ücretli sürümde kapatılabilir).
+- Türkçe ve İngilizce.
+
+Kapsam dışı: zihin haritası, araştırma aşaması, öğrenci akışı, jüri paftası, portfolyo, alıcının
+cevap verdiği bağlantı, bulut eşitleme.
+
+Gelir fikri (kesin değil): ilk föyler ücretsiz, sonra föy başına ödeme ya da küçük abonelik.
+
+### Pazar notları
+
+- Genel "katalog yapıcı" uygulamalar App Store'da kalabalık ve ucuz. Fark: tek ürün föyünün
+  tasarım kalitesi ve doğrulanmış bilgi.
+- İç mimarlar ürün föylerini kendileri hazırlıyor (Houzz Pro, Mydoma gibi araçlarla); üretici
+  tarafında küçük işletmeye uygun araç az görünüyor.
+- Uzman notları ortalama 5/10: sorun gerçek, kitle dar, gelir şimdilik yan gelir düzeyi.
+
+### Teknik not
+
+Uygulama Expo (React Native) ile yazılır; bu bulut ortamında Xcode yok, önizleme web üzerinden
+alınır. Föy kalıpları HTML olarak tutulur ve PDF'e çevrilir.
 
 ## Kurulu ajanlar
 
