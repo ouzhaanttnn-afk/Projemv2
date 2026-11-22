@@ -112,6 +112,12 @@
   .rare[data-found="1"] b { color: var(--accent); }
   .detail { display: flex; flex-direction: column; gap: 10px; }
   .saved { font-size: 0.85rem; color: var(--ok); }
+  .shop { display: flex; flex-direction: column; gap: 8px; border-top: 1px solid var(--line); padding-top: 14px; }
+  .offer { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+  .offer > div { display: flex; flex-direction: column; min-width: 0; }
+  .offer .btn { padding: 10px 14px; flex: none; font-variant-numeric: tabular-nums; }
+  .test-play { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .test-play .btn[aria-pressed="true"] { background: var(--ink); color: var(--bg); }
 </style>
 </head>
 <body>
@@ -120,6 +126,25 @@
     <a class="brand" href="./" id="home-link"><i></i>Randombeat</a>
     <a class="coll-link" href="#koleksiyon" id="coll-link">Koleksiyonum <b id="coll-count">0</b></a>
   </div>
+
+  <!-- 5. deneme 1: ekrana bakmadan fark duyuluyor mu? -->
+  <section class="stack" id="view-test" hidden>
+    <h1>Fark duyuluyor mu?</h1>
+    <p class="muted" id="test-intro">İki kısa beat dinleyeceksin: A ve B. Bazen aynılar, bazen küçük bir fark var. İkisini de dinle, sonra "Aynı" ya da "Farklı" de. 10 soru, yaklaşık 3 dakika.</p>
+    <p class="small muted" id="test-step"></p>
+    <div class="test-play">
+      <button class="btn ghost" type="button" id="test-a">A'yı çal</button>
+      <button class="btn ghost" type="button" id="test-b">B'yi çal</button>
+    </div>
+    <div class="test-play">
+      <button class="btn" type="button" id="test-same" disabled>Aynı</button>
+      <button class="btn" type="button" id="test-diff" disabled>Farklı</button>
+    </div>
+    <div class="stack" id="test-done" hidden>
+      <p id="test-result"></p>
+      <button class="btn" type="button" id="test-again">Sıradaki kişi başlasın</button>
+    </div>
+  </section>
 
   <!-- 4. koleksiyon -->
   <section class="stack" id="view-collection" hidden>
@@ -146,6 +171,17 @@
     <div class="actions">
       <button class="btn" id="make-send" type="button" disabled>Arkadaşına gönder</button>
       <button class="btn ghost" id="make-video" type="button" disabled>Video olarak gönder (deneme)</button>
+    </div>
+    <div class="shop" id="make-shop" hidden>
+      <div class="offer">
+        <div><b>Zil sesi yap</b><span class="small muted">Bu beat'i telefonunun zil sesi olarak kaydet</span></div>
+        <button class="btn ghost" type="button" id="buy-zil">₺24,99</button>
+      </div>
+      <div class="offer">
+        <div><b>Düğün paketi</b><span class="small muted">Davul, zurna ve halay alkışı: beat'lerine yeni sesler</span></div>
+        <button class="btn ghost" type="button" id="buy-paket">₺49,99</button>
+      </div>
+      <p class="small muted" id="shop-note" role="status" hidden>Bunlar henüz hazır değil; senden hiçbir ödeme alınmadı. İlgini saydık, teşekkürler. Hazır olunca burada çıkacak.</p>
     </div>
   </section>
 
@@ -184,7 +220,7 @@
     <a class="btn ghost" id="video-save" hidden>Videoyu kaydet</a>
   </section>
 
-  <footer>Sesler telefonunda üretilir. Yazdığın gülüş yalnızca gönderdiğin bağlantının içinde durur; hiçbir yerde saklanmaz.</footer>
+  <footer>Sesler telefonunda üretilir. Yazdığın gülüş yalnızca gönderdiğin bağlantının içinde durur; hiçbir yerde saklanmaz. Koleksiyonun bu telefonda kalır. Site yalnızca isimsiz kullanım sayıları tutar (kaç beat yapıldı, kaç kez gönderildi gibi).</footer>
 </main>
 
 <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
@@ -285,6 +321,7 @@ function beatCard(box, key, make, opts = {}) {
   requestAnimationFrame(() => drawGrid(canvas, score));
   btn.addEventListener("click", () => {
     if (current && current.btn === btn) return stop();
+    if (opts.onPlay) opts.onPlay();
     stop();
     // build the audio right after the tap so phones allow playback
     if (!urls.has(key)) {
@@ -472,6 +509,29 @@ $("video-share").addEventListener("click", async () => {
   try { await navigator.share({ files: [videoFile] }); } catch (e) {}
 });
 
+// ---------------------------------------------------------------- anonymous counter
+// Only an event name and a random number for this browser are sent; never
+// the typed laugh. See worker/index.ts.
+let deviceId = null;
+let firstVisit = false;
+try {
+  deviceId = localStorage.getItem("rb.cihaz");
+  if (!deviceId) {
+    deviceId = crypto.randomUUID ? crypto.randomUUID() : "c" + Math.random().toString(36).slice(2) + Date.now().toString(36);
+    localStorage.setItem("rb.cihaz", deviceId);
+    firstVisit = true;
+  }
+} catch (e) {}
+const sentOnce = new Set();
+function track(e, once) {
+  if (!deviceId || (location.protocol !== "https:" && location.hostname !== "127.0.0.1")) return;
+  if (once) { if (sentOnce.has(e)) return; sentOnce.add(e); }
+  try {
+    fetch("/api/olay", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ e, d: deviceId }), keepalive: true }).catch(() => {});
+  } catch (err) {}
+}
+if (firstVisit) track(params.get("g") ? "yeni_baglanti" : "yeni_dogrudan");
+
 // ---------------------------------------------------------------- collection
 // Kept only in this phone's browser. Cards: {a, b?, h, src: "ben"|"gelen"|"cift", t}
 const STORE = "rb.koleksiyon.v1";
@@ -568,8 +628,10 @@ function drawCover(canvas, card, score) {
 }
 
 const SRC_LABEL = { ben: ["Gönderdin", ""], gelen: ["Sana geldi", "gelen"], cift: ["Çift kart", "cift"] };
+const BASE_VIEWS = ["view-make", "view-reply", "view-duet", "video-box", "view-collection", "view-test"];
 function showCollection() {
-  for (const id of ["view-make", "view-reply", "view-duet", "video-box"]) $(id).hidden = true;
+  for (const id of BASE_VIEWS) $(id).hidden = true;
+  track("koleksiyon");
   stop();
   const view = $("view-collection");
   view.hidden = false;
@@ -645,17 +707,25 @@ function showMake() {
     const has = text.trim().length > 0;
     $("make-send").disabled = !has;
     $("make-video").disabled = !has;
+    $("make-shop").hidden = !has;
     if (!has) { $("make-beat").innerHTML = ""; return; }
-    beatCard($("make-beat"), "m:" + text + ":" + state.tempo, single(text, state.tempo), { tempo: render });
+    beatCard($("make-beat"), "m:" + text + ":" + state.tempo, single(text, state.tempo), { tempo: render, onPlay: () => track("yap") });
+    track("zil_gor", true);
+    track("paket_gor", true);
   };
+  const buy = (e) => { track(e); $("shop-note").hidden = false; };
+  $("buy-zil").addEventListener("click", () => buy("zil_tik"));
+  $("buy-paket").addEventListener("click", () => buy("paket_tik"));
   input.addEventListener("input", debounce(() => { stop(); render(); }, 250));
   input.addEventListener("keydown", (e) => { if (e.key === "Enter") input.blur(); });
   // sending is what puts a card in your collection
   $("make-send").addEventListener("click", () => {
+    track("gonder");
     addCard({ a: input.value, h: state.tempo, src: "ben" });
     shareLink(linkFor(input.value, "", state.tempo), "Bunu dinle, sen de random'unla cevap ver:");
   });
   $("make-video").addEventListener("click", () => {
+    track("video");
     addCard({ a: input.value, h: state.tempo, src: "ben" });
     makeVideo(single(input.value, state.tempo), input.value, linkFor(input.value, "", state.tempo));
   });
@@ -667,7 +737,8 @@ function showReply() {
   $("view-reply").hidden = false;
   $("reply-saved").hidden = !addCard({ a: state.first, h: state.tempo, src: "gelen" });
   // the friend hears the sender's tempo; no tempo control here
-  beatCard($("reply-first"), "f:" + state.first + ":" + state.tempo, single(state.first, state.tempo));
+  track("acildi");
+  beatCard($("reply-first"), "f:" + state.first + ":" + state.tempo, single(state.first, state.tempo), { onPlay: () => track("dinledi") });
   const keyEl = document.createElement("span");
   keyEl.className = "key";
   keyEl.textContent = state.first;
@@ -684,10 +755,13 @@ function showReply() {
   input.addEventListener("input", debounce(() => { stop(); render(); }, 250));
   input.addEventListener("keydown", (e) => { if (e.key === "Enter") input.blur(); });
   $("reply-send").addEventListener("click", () => {
+    track("cevap");
     addCard({ a: state.first, b: input.value, h: state.tempo, src: "cift" });
     shareLink(linkFor(state.first, input.value, state.tempo), "Cevabım geldi, ikimizin beat'i:");
   });
   $("reply-video").addEventListener("click", () => {
+    track("cevap");
+    track("video");
     addCard({ a: state.first, b: input.value, h: state.tempo, src: "cift" });
     makeVideo(duo(state.first, input.value, state.tempo), state.first + " + " + input.value, linkFor(state.first, input.value, state.tempo));
   });
@@ -696,6 +770,7 @@ function showReply() {
 function showDuet() {
   $("view-duet").hidden = false;
   $("duet-saved").hidden = !addCard({ a: state.first, b: state.reply, h: state.tempo, src: "cift" });
+  track("harman_acildi");
   const box = $("duet-beat");
   const keys = document.createElement("div");
   keys.className = "keys";
@@ -709,12 +784,84 @@ function showDuet() {
   $("duet-send").addEventListener("click", () => shareLink(location.href, "İkimizin beat'i:"));
 }
 
-// Views are built once; the collection is an overlay reached with #koleksiyon.
+// ---------------------------------------------------------------- deneme 1
+// Pairs of beats heard without seeing the text (PLAN.md section 7).
+const TEST_PAIRS = [
+  ["ayni", "kdkdkd", "kdkdkd"],
+  ["ayni", "jsjsjs", "jsjsjs"],
+  ["sonharf", "sjsjsj", "sjsjsjŞ"],
+  ["sonharf", "hahaha", "hahahaÇ"],
+  ["buyuk", "kdkdkd", "KDKDKD"],
+  ["buyuk", "lşlşlş", "LŞLŞLŞ"],
+  ["bosluk", "akdjfsldkfj", "akdjf sldkfj"],
+  ["bosluk", "sldkfjalskd", "sldkf jalskd"],
+  ["uzun", "sjsjsj", "sjsjsjsjsjsj"],
+  ["uzun", "dkdkdk", "dkdkdkdkdkdk"],
+];
+let test = null;
+function shuffle(a) { for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
+function startTest() {
+  test = { i: 0, right: 0, trials: shuffle(TEST_PAIRS.map(([type, x, y]) => (Math.random() < 0.5 ? { type, a: x, b: y } : { type, a: y, b: x }))) };
+  $("test-done").hidden = true;
+  $("test-intro").hidden = false;
+  nextTrial();
+}
+function nextTrial() {
+  const t = test.trials[test.i];
+  test.heard = { a: false, b: false };
+  $("test-step").textContent = `Soru ${test.i + 1} / ${test.trials.length}`;
+  $("test-same").disabled = $("test-diff").disabled = true;
+  ["test-a", "test-b"].forEach((id) => $(id).setAttribute("aria-pressed", "false"));
+  for (const id of ["test-a", "test-b", "test-same", "test-diff"]) $(id).hidden = false;
+}
+function playTest(which) {
+  const t = test.trials[test.i];
+  const text = which === "a" ? t.a : t.b;
+  const key = "t:" + text;
+  if (!urls.has(key)) urls.set(key, URL.createObjectURL(new Blob([RB.encodeWav(RB.makeBeat(text, 1).pcm)], { type: "audio/wav" })));
+  stop();
+  player.src = urls.get(key);
+  player.currentTime = 0;
+  player.play().catch(() => toast("Ses çalınamadı. Telefonun sesini açıp tekrar dene."));
+  $("test-a").setAttribute("aria-pressed", which === "a" ? "true" : "false");
+  $("test-b").setAttribute("aria-pressed", which === "b" ? "true" : "false");
+  test.heard[which] = true;
+  if (test.heard.a && test.heard.b) $("test-same").disabled = $("test-diff").disabled = false;
+}
+function answerTest(saidSame) {
+  const t = test.trials[test.i];
+  const correct = saidSame === (t.a === t.b);
+  if (correct) test.right++;
+  track(`d1_${t.type}_${correct ? "dogru" : "yanlis"}`);
+  player.pause();
+  test.i++;
+  if (test.i < test.trials.length) return nextTrial();
+  for (const id of ["test-a", "test-b", "test-same", "test-diff"]) $(id).hidden = true;
+  $("test-intro").hidden = true;
+  $("test-step").textContent = "";
+  $("test-result").textContent = `Bitti: ${test.trials.length} sorudan ${test.right} doğru. Teşekkürler!`;
+  $("test-done").hidden = false;
+}
+$("test-a").addEventListener("click", () => playTest("a"));
+$("test-b").addEventListener("click", () => playTest("b"));
+$("test-same").addEventListener("click", () => answerTest(true));
+$("test-diff").addEventListener("click", () => answerTest(false));
+$("test-again").addEventListener("click", startTest);
+function showTest() {
+  for (const id of BASE_VIEWS) $(id).hidden = true;
+  stop();
+  $("view-test").hidden = false;
+  if (!test || test.i >= test.trials.length) startTest();
+}
+
+// Views are built once; the collection and the test are reached with #koleksiyon and #deneme1.
 let started = false;
 function route() {
   updateCount();
   if (location.hash === "#koleksiyon") return showCollection();
+  if (location.hash === "#deneme1") return showTest();
   $("view-collection").hidden = true;
+  $("view-test").hidden = true;
   if (started) {
     // back from the collection: show the view this link belongs to again
     $(state.first && state.reply ? "view-duet" : state.first ? "view-reply" : "view-make").hidden = false;

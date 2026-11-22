@@ -15,7 +15,7 @@ Son güncelleme: 22 Kasım 2026 (1. hafta yapıldı)
 | 1. hafta — Ses | Tamamlandı; ürün sahibi beğendi |
 | 2. hafta — Web sayfası ve WhatsApp denemesi | Tamamlandı; telefonda ve WhatsApp'ta çalıştı |
 | 3. hafta — Kartlar ve koleksiyon | Tamamlandı |
-| 4. hafta — 10-15 kişilik deneme | Başlanmadı |
+| 4. hafta — 10-15 kişilik deneme | Hazır; kapıda, ürün sahibinin denemesi bekleniyor |
 | 5-6. hafta — Uygulamaya çevirme ve satış | Başlanmadı |
 | 7-8. hafta — Test sürümü ve App Store | Başlanmadı |
 
@@ -88,6 +88,21 @@ Her adımı bitirince bu tabloyu güncelle.
   (%1,2); yalnızca ş ç ğ ü ö ı → Bendir (%0,2); tersinden aynı okunan →
   Ters zil (neredeyse hiç; koleksiyondaki ipucuyla aranır).
 - Nadir sesler eklendikten sonra benzersizlik testi yine üç şartı geçti.
+
+### 4. hafta notları
+
+- Ürün sahibinin onayıyla isimsiz sayaç eklendi (`worker/index.ts`,
+  Cloudflare Durable Object, ücretsiz). Yalnızca olay adı, gün ve tarayıcıya
+  özel rastgele bir numara tutulur; gülüşler ve kişiler tutulmaz.
+  Sonuçlar ve karar ölçütleri: `/sayac` (isteğe bağlı `?baslangic=YYYY-AA-GG`).
+  Sayfa herkese açık ama yalnızca toplam sayılar var. Olaylar sahte
+  gönderilebilir; 15 kişilik deneme için kabul edildi.
+- Deneme 1 ekranı: `/#deneme1`. 10 çift (2 aynı, 8 küçük fark), sıra ve A/B
+  yeri rastgele.
+- Fiyat denemesi ana ekranda: zil sesi ₺24,99, düğün paketi ₺49,99
+  (varsayım). Ödeme alınmaz, dokunana hemen söylenir, iletişim bilgisi
+  istenmez.
+- Ürün sahibi için adım adım rehber: `docs/deneme-rehberi.md`.
 
 ---
 

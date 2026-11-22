@@ -1,11 +1,17 @@
-// Cloudflare: Randombeat is a static site served from app/dist.
-// A Worker script can be added later for per-beat preview images.
+// Cloudflare: Randombeat serves the static site from app/dist and keeps an
+// anonymous event counter (worker/index.ts) for the week-4 test.
 {
   "name": "randombeat",
+  "main": "worker/index.ts",
   "compatibility_date": "2025-09-01",
   "workers_dev": true,
   "preview_urls": true,
   "assets": {
-    "directory": "./app/dist"
-  }
+    "directory": "./app/dist",
+    "binding": "ASSETS"
+  },
+  "durable_objects": {
+    "bindings": [{ "name": "SAYAC", "class_name": "Sayac" }]
+  },
+  "migrations": [{ "tag": "v1", "new_sqlite_classes": ["Sayac"] }]
 }
