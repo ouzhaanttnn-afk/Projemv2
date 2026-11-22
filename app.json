@@ -1,0 +1,55 @@
+{
+  "expo": {
+    "name": "Föy",
+    "slug": "foy",
+    "scheme": "foy",
+    "version": "0.1.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "backgroundColor": "#F6F3EE",
+    "splash": {
+      "image": "./assets/splash-icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#F6F3EE"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.example.foy",
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
+      }
+    },
+    "android": {
+      "package": "com.example.foy",
+      "adaptiveIcon": {
+        "backgroundColor": "#F6F3EE",
+        "foregroundImage": "./assets/android-icon-foreground.png",
+        "backgroundImage": "./assets/android-icon-background.png",
+        "monochromeImage": "./assets/android-icon-monochrome.png"
+      },
+      "predictiveBackGestureEnabled": false
+    },
+    "web": {
+      "favicon": "./assets/favicon.png",
+      "output": "single",
+      "bundler": "metro"
+    },
+    "plugins": [
+      "expo-router",
+      "expo-sharing",
+      "expo-localization",
+      "expo-font",
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Föy, ürün föyüne koymak istediğin fotoğrafları seçebilmen için fotoğraflarına erişir.",
+          "cameraPermission": "Föy, ürününün fotoğrafını çekebilmen için kamerayı kullanır."
+        }
+      ]
+    ],
+    "experiments": {
+      "typedRoutes": false
+    }
+  }
+}
