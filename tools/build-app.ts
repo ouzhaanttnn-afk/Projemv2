@@ -27,7 +27,15 @@ if (native) {
   });
   bridge = script(r.outputFiles[0].text);
 }
-const html = readFileSync(new URL("app/index.template.html", root), "utf8")
+let template = readFileSync(new URL("app/index.template.html", root), "utf8");
+if (native) {
+  // inside the app the page must never zoom, like any native screen
+  template = template.replace(
+    'content="width=device-width, initial-scale=1, viewport-fit=cover"',
+    'content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover"',
+  );
+}
+const html = template
   .replaceAll("__SITE__", site)
   .replace("<script>/*__ENGINE__*/</script>", () => script(bundleEngine()) + bridge);
 writeFileSync(new URL(`${outDir}/index.html`, root), html);
