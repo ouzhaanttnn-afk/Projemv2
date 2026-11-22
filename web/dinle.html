@@ -1,0 +1,346 @@
+<title>Randombeat Ses Denemesi</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500;700&family=Space+Grotesk:wght@500;700&display=swap">
+<style>
+  /* Layout: one phone-width column; each laugh is a keycap with its own rhythm strip underneath. */
+  :root {
+    --bg: #f3f5f9;
+    --surface: #ffffff;
+    --ink: #161b2e;
+    --muted: #5a6377;
+    --line: #dbe0ea;
+    --accent: #a86c06;
+    --accent-ink: #ffffff;
+    --ok: #1d7a46;
+    --warn: #a3470f;
+    --r0: #3b4ba8; /* kalın vuruş */
+    --r1: #cf4d33; /* tok vuruş */
+    --r2: #7c879b; /* tıkırtı */
+    --r3: #0d8587; /* bas */
+    --r4: #b9850f; /* melodi */
+    --r5: #a8327f; /* baharat */
+    --font-display: "Space Grotesk", "Segoe UI", system-ui, sans-serif;
+    --font-body: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+    --font-key: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #0e1220; --surface: #161b2b; --ink: #e8ecf5; --muted: #9aa3b8; --line: #2a3146;
+      --accent: #e5a93a; --accent-ink: #1b1403; --ok: #4cc27f; --warn: #f08a4b;
+      --r0: #8c9bff; --r1: #ff8466; --r2: #a9b3c6; --r3: #3cc9c9; --r4: #f2c14e; --r5: #f07bcb;
+      color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #0e1220; --surface: #161b2b; --ink: #e8ecf5; --muted: #9aa3b8; --line: #2a3146;
+    --accent: #e5a93a; --accent-ink: #1b1403; --ok: #4cc27f; --warn: #f08a4b;
+    --r0: #8c9bff; --r1: #ff8466; --r2: #a9b3c6; --r3: #3cc9c9; --r4: #f2c14e; --r5: #f07bcb;
+    color-scheme: dark;
+  }
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font: 400 16px/1.55 var(--font-body);
+    padding-left: max(16px, env(safe-area-inset-left, 0px));
+    padding-right: max(16px, env(safe-area-inset-right, 0px));
+  }
+  main { max-width: 680px; margin: 0 auto; padding-block: 28px 64px; display: flex; flex-direction: column; gap: 40px; }
+  h1, h2 { font-family: var(--font-display); text-wrap: balance; margin: 0; letter-spacing: -0.01em; }
+  h1 { font-size: 2rem; line-height: 1.1; }
+  h2 { font-size: 1.3rem; }
+  p { margin: 0; }
+  .lede { color: var(--muted); max-width: 60ch; }
+  header { display: flex; flex-direction: column; gap: 12px; }
+  .eyebrow { font: 600 0.75rem/1 var(--font-body); letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); }
+  section { display: flex; flex-direction: column; gap: 14px; }
+  section > .lede { margin-top: -6px; }
+  .chip { align-self: flex-start; display: inline-flex; gap: 8px; align-items: center; font-size: 0.85rem; padding: 5px 10px; border-radius: 999px; border: 1px solid var(--line); color: var(--muted); background: var(--surface); }
+  .chip[data-state="ok"] { color: var(--ok); border-color: var(--ok); }
+  .chip[data-state="bad"] { color: var(--warn); border-color: var(--warn); }
+  .dot { width: 8px; height: 8px; border-radius: 50%; background: currentColor; }
+
+  .cards { display: flex; flex-direction: column; gap: 12px; }
+  .card { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 14px; display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+  .row { display: flex; gap: 12px; align-items: center; min-width: 0; }
+  .play { flex: none; width: 48px; height: 48px; border-radius: 50%; border: 0; background: var(--accent); color: var(--accent-ink); cursor: pointer; display: grid; place-items: center; }
+  .play:focus-visible, .key-input:focus-visible, .btn:focus-visible { outline: 3px solid var(--r0); outline-offset: 2px; }
+  .play svg { width: 18px; height: 18px; fill: currentColor; }
+  .play[aria-pressed="true"] { background: var(--ink); color: var(--bg); }
+  .meta { min-width: 0; display: flex; flex-direction: column; gap: 4px; }
+  .key { font: 700 1rem/1.3 var(--font-key); padding: 4px 8px; border-radius: 6px; background: var(--bg); border: 1px solid var(--line); border-bottom-width: 3px; overflow-wrap: anywhere; align-self: flex-start; max-width: 100%; }
+  .desc { font-size: 0.85rem; color: var(--muted); }
+  .listen { font-size: 0.95rem; }
+  canvas.grid { width: 100%; height: 66px; display: block; }
+  .legend { display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: 0.78rem; color: var(--muted); }
+  .legend span { display: inline-flex; align-items: center; gap: 6px; }
+  .legend i { width: 10px; height: 10px; border-radius: 2px; display: inline-block; }
+
+  .pair { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .pair .card { padding: 12px; }
+  .pair-title { font-size: 0.9rem; font-weight: 600; }
+  .score { font: 500 0.8rem/1 var(--font-key); color: var(--muted); font-variant-numeric: tabular-nums; }
+
+  .try { display: flex; gap: 10px; flex-wrap: wrap; }
+  .key-input { flex: 1 1 240px; min-width: 0; font: 700 1.05rem/1.3 var(--font-key); padding: 12px 14px; border-radius: 10px; border: 1px solid var(--line); border-bottom-width: 3px; background: var(--surface); color: var(--ink); }
+  .btn { font: 600 1rem/1 var(--font-body); padding: 12px 18px; border-radius: 10px; border: 0; background: var(--accent); color: var(--accent-ink); cursor: pointer; }
+  ol.ask { margin: 0; padding-left: 1.3em; display: flex; flex-direction: column; gap: 8px; }
+  .note { font-size: 0.85rem; color: var(--muted); }
+  @media (max-width: 440px) { .pair { grid-template-columns: 1fr; } h1 { font-size: 1.7rem; } }
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+
+<main>
+  <header>
+    <span class="eyebrow">1. hafta · ses</span>
+    <h1>Gülüşün beat olunca</h1>
+    <p class="lede">Her kart bir gülüş. Çal tuşuna bas, beat iki tur çalar. Telefonun sesini aç; sessiz düğmesi açıkken de çalmalı. Mümkünse kulaklıksız, telefonun kendi hoparlöründen dinle.</p>
+    <div class="chip" id="device" data-state="wait"><span class="dot"></span><span id="device-text">Bu cihaz kontrol ediliyor…</span></div>
+  </header>
+
+  <section aria-labelledby="try-h">
+    <h2 id="try-h">Kendin dene</h2>
+    <form class="try" id="try-form">
+      <label for="try-input" class="note" style="flex-basis:100%">Bir random yaz ya da yapıştır</label>
+      <input id="try-input" class="key-input" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" maxlength="120">
+      <button class="btn" type="submit">Beat yap</button>
+    </form>
+    <div class="cards" id="try-out"></div>
+  </section>
+
+  <section aria-labelledby="main-h">
+    <h2 id="main-h">Üç örnek</h2>
+    <p class="lede">Planda istediğimiz üç şey: tekrar eden bir motif, sona eklenen vurgu ve boşluğun duyulması.</p>
+    <div class="legend" id="legend"></div>
+    <div class="cards" id="main"></div>
+  </section>
+
+  <section aria-labelledby="ten-h">
+    <h2 id="ten-h">On farklı gülüş</h2>
+    <p class="lede">Hepsi gerçekçi random'lar. Birbirine benzememeleri gerekiyor.</p>
+    <div class="cards" id="ten"></div>
+  </section>
+
+  <section aria-labelledby="small-h">
+    <h2 id="small-h">Küçük farklar</h2>
+    <p class="lede">Ekrana bakmadan dinle: fark duyuluyor mu? 4. haftadaki birinci denemenin küçük bir provası.</p>
+    <div class="cards" id="small"></div>
+  </section>
+
+  <section aria-labelledby="near-h">
+    <h2 id="near-h">Birbirine en çok benzeyen çiftler</h2>
+    <p class="lede">10.000 gülüşü karşılaştırdım. Bunlar, birbirine en yakın çıkan bağımsız çiftler. Sana aynı geliyorlarsa ölçümüm yanlış demektir.</p>
+    <div class="cards" id="near"></div>
+  </section>
+
+  <section aria-labelledby="ask-h">
+    <h2 id="ask-h">Dinledikten sonra bana yaz</h2>
+    <ol class="ask">
+      <li>Bunlardan birini arkadaşına atar mıydın? Hangisini?</li>
+      <li>Hangisi kötü ya da ucuz duyuldu?</li>
+      <li>"Küçük farklar"da farkları duyabildin mi?</li>
+      <li>"En çok benzeyen çiftler" sana aynı mı geliyor?</li>
+      <li>Grup sohbetlerinden 20-30 gerçek random yapıştırabilir misin? Kuralları onlarla ayarlayacağım.</li>
+    </ol>
+    <p class="note">Sesler tamamen telefonda üretiliyor; hiçbir yazı bir yere gönderilmiyor.</p>
+  </section>
+</main>
+
+<audio id="player" preload="none"></audio>
+
+<script>"use strict";var RB=(()=>{var Pe=Object.defineProperty;var wt=Object.getOwnPropertyDescriptor;var St=Object.getOwnPropertyNames;var Mt=Object.prototype.hasOwnProperty;var At=(t,e,n)=>e in t?Pe(t,e,{enumerable:!0,configurable:!0,writable:!0,value:n}):t[e]=n;var Pt=(t,e)=>{for(var n in e)Pe(t,n,{get:e[n],enumerable:!0})},Bt=(t,e,n,r)=>{if(e&&typeof e=="object"||typeof e=="function")for(let s of St(e))!Mt.call(t,s)&&s!==n&&Pe(t,s,{get:()=>e[s],enumerable:!(r=wt(e,s))||r.enumerable});return t};var Tt=t=>Bt(Pe({},"__esModule",{value:!0}),t);var R=(t,e,n)=>At(t,typeof e!="symbol"?e+"":e,n);var nn={};Pt(nn,{BARS:()=>Le,ROLE_NAMES:()=>rt,ROOT_NAMES:()=>Ce,SAMPLE_RATE:()=>Y,SCALES:()=>oe,STYLES:()=>xe,TPS:()=>K,VARIANT_NAMES:()=>Ne,analyse:()=>Te,compose:()=>De,describe:()=>bt,encodeWav:()=>pt,makeBeat:()=>ft,pcmChecksum:()=>mt,renderScore:()=>Ge,scoreDuration:()=>Ke,tickToSeconds:()=>ve,toPCM16:()=>Ze});function be(t,e=2166136261){let n=e>>>0;for(let r of t){let s=r.codePointAt(0);n=Math.imul(n^s&255,16777619),n=Math.imul(n^s>>>8&255,16777619),n=Math.imul(n^s>>>16&255,16777619)}return Je(n)}function Je(t){return t^=t>>>16,t=Math.imul(t,2246822507),t^=t>>>13,t=Math.imul(t,3266489909),t^=t>>>16,t>>>0}function Be(t,e){return Je((t^Math.imul(e+2654435769,2246822507))>>>0)}var ee=class{constructor(e){R(this,"s");this.s=e>>>0}u32(){this.s=this.s+1831565813>>>0;let e=this.s;return e=Math.imul(e^e>>>15,e|1),e^=e+Math.imul(e^e>>>7,e|61),(e^e>>>14)>>>0}float(){return this.u32()/4294967296}int(e){return this.u32()%e}chance(e){return this.float()<e}weighted(e){let n=0;for(let s of e)n+=s;let r=this.float()*n;for(let s=0;s<e.length;s++)if(r-=e[s],r<0)return s;return e.length-1}pick(e){return e[this.int(e.length)]}noise(){return this.u32()/2147483648-1}};var Et=new Set(["\u015F","\xE7","\u011F","\xFC","\xF6","\u0131"]),et={I:"\u0131",\u0130:"i",\u015E:"\u015F",\u00C7:"\xE7",\u011E:"\u011F",\u00DC:"\xFC",\u00D6:"\xF6"};function tt(t){if(et[t])return et[t];let e=t.codePointAt(0);return e>=65&&e<=90?String.fromCharCode(e+32):t}function Rt(t){return tt(t)!==t}var It=[{keys:"1234567890*-",offset:0},{keys:"qwertyu\u0131op\u011F\xFC",offset:.5},{keys:"asdfghjkl\u015Fi,",offset:.75},{keys:"zxcvbnm\xF6\xE7.",offset:1.25}],nt=new Map;It.forEach((t,e)=>{[...t.keys].forEach((n,r)=>nt.set(n,{x:r+t.offset,row:e,onKeyboard:!0}))});function Lt(t){let e=nt.get(t);if(e)return e;let n=t.codePointAt(0);return{x:n%12+.5,row:1+n%3,onKeyboard:!1}}function Ct(t){return t.x<=5.25}function Ue(t,e){let n=t.x-e.x,r=t.row-e.row;return Math.sqrt(n*n+r*r)}function Dt(t){let e=tt(t),n=Lt(e);return{ch:t,lower:e,upper:Rt(t),turkish:Et.has(e),pos:n,left:Ct(n),run:1}}function vt(t){let e=t.length;if(e<2)return null;for(let n=1;n<=Math.floor(e/2);n++){let r=n;for(;r<e&&t[r]===t[r-n];)r++;if(r>=2*n&&r>=.6*e&&e-r<=Math.max(2,Math.floor(r/3)))return{p:n,len:r}}return null}function Kt(t){let e=[...t],n=e.map(Dt),r=n.map(w=>w.lower),s=vt(r),o=w=>{let P=[];for(let T of w){let g=P[P.length-1];g&&g.lower===T.lower?(g.run++,T.upper&&(g.upper=!0)):P.push({...T})}return P},i,a=[],m=1,p=!1;s&&s.p<e.length?(p=!0,i=o(n.slice(0,s.p).map((w,P)=>{let T=!1;for(let g=P;g<s.len;g+=s.p)n[g].upper&&(T=!0);return{...w,upper:T}})),m=s.len/s.p,a=o(n.slice(s.len))):i=o(n);let u=o(n),l=p?n.slice(0,s.p):n,h=0,c=0,b=0;for(let w of l)/\p{L}/u.test(w.ch)&&c++,w.upper&&h++,w.turkish&&b++;if(p){h=0,c=0;for(let w of n.slice(0,s.len))/\p{L}/u.test(w.ch)&&c++,w.upper&&h++}let f=0,d=0,A=p&&l.length>1?l.length:l.length-1;for(let w=0;w<A;w++){let P=l[w],T=l[(w+1)%l.length];d++,Ue(P.pos,T.pos)<=1.2&&f++}return{raw:t,letters:u,periodic:p,unit:i,unitKey:(p?"P:":"R:")+i.map(w=>w.lower).join(""),reps:m,tail:a,capsRatio:c?h/c:0,turkishCount:b,flow:d?f/d:0}}var He=4,Nt=120;function Te(t){let e=[...t.normalize("NFC")].slice(0,Nt).join(""),n=e.split(/\s+/u).filter(u=>u.length>0);if(n.length===0)return null;n.length>He&&(n=[...n.slice(0,He-1),n.slice(He-1).join("")]);let r=n.map(Kt),s=0,o=0,i=0,a=0,m=0;for(let u of r){let l=u.periodic?u.unit.length:[...u.raw].length;s+=[...u.raw].length,m+=l,o+=u.capsRatio*l,i+=u.turkishCount,a+=u.flow*l}let p=m?o/m:0;return{text:e,segments:r,identityKey:r.map(u=>u.unitKey).join("|"),capsRatio:p,allCaps:p>=.7,turkishCount:i,flow:m?a/m:0,repetitive:r.every(u=>u.periodic&&u.unit.length<=4),letterCount:s}}var oe={nihavend:{name:"Nihavend (h\xFCz\xFCnl\xFC)",steps:[0,2,3,5,7,8,10]},kurdi:{name:"K\xFCrdi (karanl\u0131k)",steps:[0,1,3,5,7,8,10]},hicaz:{name:"Hicaz (do\u011Fulu)",steps:[0,1,4,5,7,8,10]},ussak:{name:"U\u015F\u015Fak tad\u0131 (\xE7eyrek ses)",steps:[0,1.5,3,5,7,8,10]},dorian:{name:"Dorian (serin)",steps:[0,2,3,5,7,9,10]},major:{name:"Maj\xF6r (ne\u015Feli)",steps:[0,2,4,5,7,9,11]},mixolydian:{name:"Miksolidyen (g\xFCne\u015Fli)",steps:[0,2,4,5,7,9,10]},pentaMinor:{name:"Pentatonik (sade)",steps:[0,3,5,7,10]}},je=Object.keys(oe),te=0,ie=1,he=2,Ee=3,ae=4,de=5,rt=["Kal\u0131n vuru\u015F","Tok vuru\u015F","T\u0131k\u0131rt\u0131","Bas","Melodi","Baharat"],xe=[{id:"boombap",name:"Boom-bap",stepsPerBar:16,stepsPerBeat:4,groups:[0,4,8,12],tempo:[84,98],swing:[.54,.62],kicks:[[0,10],[0,7,10],[0,3,10,11]],snares:[[4,12],[4,12,15]],hatDensity:[8,6],scales:{nihavend:2,dorian:2,pentaMinor:2,kurdi:1},kitBias:{0:[1,2,1,.5,2,.5],1:[1,2,1,1,.5,2]},duple:!0},{id:"trap",name:"Trap",stepsPerBar:16,stepsPerBeat:4,groups:[0,4,8,12],tempo:[132,152],swing:[.5,.52],kicks:[[0,7,11],[0,3,6,11],[0,10,11]],snares:[[8],[8,15]],hatDensity:[8,12,16],scales:{nihavend:2,kurdi:2,hicaz:1,pentaMinor:1},kitBias:{0:[3,1,.5,2,.5,.5],3:[3,.5,1,1,.5,.5]},duple:!0},{id:"house",name:"House",stepsPerBar:16,stepsPerBeat:4,groups:[0,4,8,12],tempo:[118,128],swing:[.5,.56],kicks:[[0,4,8,12]],snares:[[4,12]],hatDensity:[4,8],scales:{dorian:2,major:1,mixolydian:1,nihavend:1},kitBias:{0:[.5,3,1,1,1,.5],1:[3,1,1,1,.5,.5]},duple:!0},{id:"lofi",name:"Lo-fi",stepsPerBar:16,stepsPerBeat:4,groups:[0,4,8,12],tempo:[70,84],swing:[.57,.64],kicks:[[0,9],[0,7,9]],snares:[[4,12]],hatDensity:[8,5],scales:{dorian:2,major:2,mixolydian:1,pentaMinor:1},kitBias:{0:[.5,1,1,.3,3,.5],1:[.5,1,1,1,1,3]},duple:!0},{id:"dembow",name:"Dembow",stepsPerBar:16,stepsPerBeat:4,groups:[0,4,8,12],tempo:[92,102],swing:[.5,.52],kicks:[[0,4,8,12]],snares:[[3,6,11,14]],hatDensity:[8,4],scales:{nihavend:2,kurdi:1,hicaz:1,mixolydian:1},duple:!0},{id:"dnb",name:"Drum & bass",stepsPerBar:16,stepsPerBeat:4,groups:[0,4,8,12],tempo:[164,176],swing:[.5,.53],kicks:[[0,10],[0,6,10]],snares:[[4,12],[4,12,14]],hatDensity:[8,12],scales:{nihavend:2,kurdi:1,dorian:1},kitBias:{0:[.5,3,2,1,.5,.5],1:[1,3,1,2,.5,.5]},duple:!0},{id:"afro",name:"Afro",stepsPerBar:16,stepsPerBeat:4,groups:[0,4,8,12],tempo:[100,112],swing:[.53,.58],kicks:[[0,6,12],[0,6,10,12]],snares:[[4,12],[3,7,12]],hatDensity:[7,9],scales:{major:2,mixolydian:2,pentaMinor:1,dorian:1},kitBias:{2:[1,2,1,.5,3,1]},duple:!0},{id:"halay",name:"Halay",stepsPerBar:16,stepsPerBeat:4,groups:[0,4,8,12],tempo:[100,118],swing:[.5,.54],kicks:[[0,6,8],[0,3,8,11]],snares:[[4,12],[4,10,12]],hatDensity:[4,8],scales:{hicaz:3,ussak:2,kurdi:1,nihavend:1},kitBias:{0:[.5,1,.5,1,.5,4],1:[.5,1,1,1,3,.5]},duple:!0},{id:"roman",name:"Roman havas\u0131 9/8",stepsPerBar:18,stepsPerBeat:2,groups:[0,4,8,12],tempo:[210,250],swing:[.5,.5],kicks:[[0,8],[0,8,14]],snares:[[4,12,16],[4,12,14,16]],hatDensity:[9,6],scales:{hicaz:3,ussak:2,kurdi:1},kitBias:{0:[.5,1,1,.5,.5,3],1:[.5,1,1,1,3,.5]},duple:!1},{id:"aksak7",name:"Aksak 7/8",stepsPerBar:14,stepsPerBeat:2,groups:[0,4,8],tempo:[200,240],swing:[.5,.5],kicks:[[0,8],[0,4,8]],snares:[[4,12],[8,12]],hatDensity:[7,5],scales:{hicaz:2,ussak:2,nihavend:1,kurdi:1},duple:!1},{id:"aksak5",name:"T\xFCrk aksa\u011F\u0131 5/8",stepsPerBar:10,stepsPerBeat:2,groups:[0,4],tempo:[190,230],swing:[.5,.5],kicks:[[0],[0,6]],snares:[[4],[4,8]],hatDensity:[5,3],scales:{hicaz:2,kurdi:1,nihavend:1,ussak:1},duple:!1},{id:"altisekiz",name:"6/8 sallant\u0131",stepsPerBar:12,stepsPerBeat:6,groups:[0,6],tempo:[52,64],swing:[.5,.5],kicks:[[0,9],[0,7]],snares:[[6],[6,10]],hatDensity:[6,4],scales:{nihavend:2,major:1,hicaz:1,dorian:1},duple:!1}];var st=3.141592653589793,V=6.283185307179586,Fe=1.5707963267948966,ot=.6931471805599453;function ne(t){let e=t-Math.round(t/V)*V;e>Fe?e=st-e:e<-Fe&&(e=-st-e);let n=e*e,r=1/6227020800;return r=-1/39916800+n*r,r=1/362880+n*r,r=-1/5040+n*r,r=1/120+n*r,r=-1/6+n*r,r=1+n*r,e*r}function Re(t){return ne(t+Fe)}function q(t){return ne((t-Math.floor(t))*V)}function ke(t){if(t<-700)return 0;if(t>700)return 1/0;let e=Math.round(t/ot),n=t-e*ot,r=1,s=1;for(let i=1;i<=12;i++)r=r*n/i,s+=r;let o=1;if(e>0)for(let i=0;i<e;i++)o*=2;else for(let i=0;i<-e;i++)o*=.5;return s*o}function U(t,e){return t<=0?0:ke(-1/(t*e))}function j(t){if(t>=3)return 1;if(t<=-3)return-1;let e=t*t;return t*(27+e)/(27+9*e)}var Ot=[1,1.0594630943592953,1.122462048309373,1.189207115002721,1.2599210498948732,1.3348398541700344,1.4142135623730951,1.4983070768766815,1.5874010519682995,1.6817928305074292,1.7817974362806788,1.8877486253633868],_t=1.029302236643492;function Ie(t){let e=Math.round(t*2),n=(e%2+2)%2===1,r=(e-(n?1:0))/2-69,s=Math.floor(r/12),o=r-s*12,i=440*Ot[o];if(s>0)for(let a=0;a<s;a++)i*=2;else for(let a=0;a<-s;a++)i*=.5;return n&&(i*=_t),i}function W(t,e,n){return t<e?e:t>n?n:t}function Ve(t,e,n){return t+(e-t)*n}var K=12,Le=4,Ce=["Do","Do#","Re","Mi\u266D","Mi","Fa","Fa#","Sol","La\u266D","La","Si\u266D","Si"];function zt(t,e){let n=[];for(let r=0;r<e;r++)n.push(r*t%e<t);return n}function it(t,e,n){let r=zt(t,e),s=r.map((i,a)=>i?a:-1).filter(i=>i>=0),o=s.length?s[n.int(s.length)]:0;return r.map((i,a)=>r[(a+o)%e])}function ce(t,e,n){let r=e.length,s=Math.floor(n/r),o=n-s*r;return t+s*12+e[o]}function Ht(t){return xe.map(e=>{let n=1;if(t.turkishCount>0){let r=t.turkishCount>=3?1.9:1.4;["roman","aksak7","aksak5","halay","altisekiz"].includes(e.id)&&(n*=r)}return t.repetitive&&((e.id==="house"||e.id==="dembow"||e.id==="trap")&&(n*=1.8),e.id==="lofi"&&(n*=.6)),t.flow>=.5&&((e.id==="boombap"||e.id==="lofi")&&(n*=2.2),e.id==="afro"&&(n*=1.5)),n})}function Ut(t){return t===1?[4]:t===2?[2,2]:t===3?[2,1,1]:[1,1,1,1]}function jt(t,e){let n=t.stepsPerBar,r=[];return t.duple?r.push(n/4,n/2):n%2===0&&t.groups.length===2&&r.push(n/2),r.push(n,n*2,n*4),r.filter(s=>s<=e&&Number.isInteger(s))}function De(t){let e=Te(t);if(!e)return null;let n=be(e.identityKey),r=new ee(n),s=new ee(be(e.text,625341585)),o=xe[r.weighted(Ht(e))],i=Ve(o.tempo[0],o.tempo[1],r.float());e.allCaps&&(i*=1.06),e.repetitive&&(i*=1.03),i=Math.round(i*10)/10;let a=60/(i*o.stepsPerBeat),m=o.duple?Ve(o.swing[0],o.swing[1],r.float()):.5;o.duple||r.float();let p=r.int(12),u=je.map(k=>{let x=o.scales[k]??.3;return e.turkishCount>0&&(k==="hicaz"||k==="ussak")&&(x*=2),x}),l=je[r.weighted(u)],h=oe[l].steps,c=[];for(let k=0;k<6;k++){let x=[1,1,1,1,1,1],v=o.kitBias?.[k];if(v)for(let N=0;N<6;N++)x[N]*=v[N];e.allCaps&&k===te&&(x[3]*=6,x[1]*=2,x[4]*=.15),e.allCaps&&k===ie&&(x[1]*=3,x[0]*=2,x[5]*=.2),c.push(r.weighted(x))}let b=r.int(o.kicks.length),f=r.int(o.snares.length),d=o.hatDensity[r.int(o.hatDensity.length)],y=36+p,A=60+p,w=ce(A+12,h,4),P=o.stepsPerBar,T=[],g=(k,x,v,N={})=>{T.push({tick:Math.round(k*K),role:x,variant:c[x],vel:W(v,0,1),midi:0,durTicks:K,alt:0,...N})},X=(k,x,v,N,ue,ye={})=>{for(let le=0;le<v;le++)g(k+x*le/v,N,ue*(.7+.3*(le+1)/v),ye)},Oe=Ut(e.segments.length),O=[],_=0,re=o.duple?o.stepsPerBeat:o.stepsPerBeat===6?6:4;e.segments.forEach((k,x)=>{let v=Oe[x],N=_*P,ue=v*P;O.push({raw:k.raw,startBar:_,bars:v});let ye=new ee(Be(n,be(k.unitKey)+x)),le=o.kicks[(b+x)%o.kicks.length],Xe=o.snares[(f+x)%o.snares.length],ht=e.letterCount>20?2:e.letterCount>12?1:0,_e=k.periodic?W(Math.floor((k.reps-2)/2),0,3):0,dt=W(d+ht+(x>0?2:0)+(_e>=1?2:0),2,P),kt=it(dt,P,ye);for(let C=0;C<v;C++){let E=N+C*P;for(let S of le)g(E+S,te,S===0?.95:.82);for(let S of Xe)g(E+S,ie,.88);for(let S=0;S<P;S++){if(!kt[S])continue;let ge=o.groups.includes(S)?.78:.5;g(E+S,he,ge+(s.float()-.5)*.14)}if(_e>=2&&g(E+P-2,he,.85,{alt:1}),o.duple&&s.chance(.5)){let S=[2,7,9,13,15][s.int(5)];Xe.includes(S)||g(E+S,ie,.22)}}let z=k.periodic?k.unit:k.letters,ze=jt(o,ue),yt=k.periodic?z.length*3:z.length*2,se=ze.find(C=>C>=yt)??ze[ze.length-1],Qe=Math.max(1,Math.floor(se*.55));if(z.length>Qe){let C=Qe,E=[];for(let S=0;S<C;S++)E.push(z[Math.floor(S*z.length/C)]);z=E}let Se=it(z.length,se,ye).map((C,E)=>C?E:-1).filter(C=>C>=0),gt=x>0?2+ye.int(3):0;for(let C=0;C<ue/se;C++)for(let E=0;E<z.length;E++){let S=z[E],ge=z[(E-1+z.length)%z.length],H=N+C*se+Se[E],$=(E+1<z.length?Se[E+1]:se+Se[0])-Se[E],Me=z.length>1&&Ue(ge.pos,S.pos)>6,pe=.82;S.upper&&(pe=1),Me&&(pe=1);let me=Math.min(S.run,4);if(!S.pos.onKeyboard){g(H,de,.8,{midi:w});continue}if(S.left){let J=W(Math.floor(S.pos.x-.5),0,4)+(S.pos.row===1?1:0),fe=ce(y,h,J),Ae=Math.min($,8)*K;me>1?X(H,1,me,Ee,pe,{midi:fe,durTicks:K/me}):g(H,Ee,pe,{midi:fe,durTicks:Ae})}else{let J=W(Math.floor(S.pos.x-5.5),0,6);S.pos.row===1&&(J+=2),S.pos.row===3&&(J-=2),S.pos.row===0&&(J+=4),Me&&(J+=4),J+=gt;let fe=ce(A,h,J),Ae=Math.min($,4)*K;me>1?X(H,1,me,ae,pe,{midi:fe,durTicks:K/me}):g(H,ae,pe,{midi:fe,durTicks:Ae});let xt=_e>=3&&H>=N+ue/2;(e.allCaps||xt)&&g(H,ae,.45,{midi:fe+12,durTicks:Ae})}S.upper&&!e.allCaps&&g(H,ie,.5,{variant:0}),S.turkish&&g(H,de,.78,{midi:w})}if(k.periodic&&k.tail.length){let C=se>=P?se:P,E=Math.min(k.tail.length,3);for(let S=1;S*C<=ue;S++){let ge=N+S*C;for(let H=0;H<E;H++){let Q=k.tail[k.tail.length-E+H],$=ge-(E-H)*2;if(Q.turkish||!Q.pos.onKeyboard)X($,1.5,3,ie,.85,{variant:4}),g($+1.5,de,1,{midi:w,variant:0}),g($+1.5,de,.9,{midi:w});else{let Me=Q.left?ce(y,h,W(Math.floor(Q.pos.x-.5),0,4)):ce(A+12,h,W(Math.floor(Q.pos.x-5.5),0,6));g($,Q.left?Ee:ae,1,{midi:Me,durTicks:2*K}),g($,te,.9)}Q.upper&&g($,he,.9,{alt:1})}}}_+=v});for(let k=1;k<O.length;k++){let x=O[k].startBar*P;for(let v=T.length-1;v>=0;v--){let N=T[v].tick/K;N>=x-re&&N<x&&T.splice(v,1)}g(x,te,1),g(x,de,.85,{midi:w}),g(x,he,.9,{alt:1})}let F=Le*P,we=s.int(5);if(we===0)X(F-4,4,4,ie,.8);else if(we===1)g(F-2,te,.85),g(F-1,te,.9);else if(we===2)X(F-2,2,3,he,.8);else if(we===3)for(let k=T.length-1;k>=0;k--){let x=T[k];x.role!==te&&x.tick>=(F-2)*K&&T.splice(k,1)}else g(F-2,ae,.75,{midi:ce(A,h,4),durTicks:K}),g(F-1,ae,.85,{midi:ce(A,h,7),durTicks:K});return T.sort((k,x)=>k.tick-x.tick||k.role-x.role||k.midi-x.midi),{text:e.text,identityKey:e.identityKey,styleId:o.id,styleName:o.name,stepsPerBar:P,stepsPerBeat:o.stepsPerBeat,duple:o.duple,bpm:i,stepDur:a,swing:m,root:p,scaleId:l,kit:c,events:T,segments:O}}function ve(t,e){let n=Math.floor(e/K),r=(e-n*K)/K,s=(n+r)*t.stepDur;return t.duple&&n%2===1&&(s+=(t.swing-.5)*2*t.stepDur),s}function Ke(t){return Le*t.stepsPerBar*t.stepDur}var at=[[.8889,1,.9663,.7439,1.4018,1.1042],[2.5639,.719,1.6118,2.652,1.0806,1.9852],[.5205,.8555,1.1047,5.4531,.6277,2.1075],[.5168,.5134,.3203,.5522,.4363,.208],[.3495,.3519,.7011,.48,.2522,.2783],[.7839,1.1091,1.941,4.3929,.9479,1.0624]];var Y=44100,B=Y,Ne=[["808","Yumruk","Tok","Bozuk","Yumu\u015Fak","Davul"],["El \xE7\u0131rpma","Trampet","Kenar","\u015E\u0131klatma","Darbuka tek","Eski trampet"],["Kapal\u0131 zil","Shaker","T\u0131k","Metal","Tahta","Ka\u015F\u0131k"],["Sub bas","\xC7ekme bas","H\u0131r\u0131lt\u0131","Kal\u0131n \u015Ferit","Kare bas","Saz bas"],["\xC7ekme tel","\xC7an","Atari","Marimba","Saz","Ney \u0131sl\u0131\u011F\u0131"],["Zil","Darbuka","Halay alk\u0131\u015F\u0131","Ka\u015F\u0131k \u015Fak\u0131rt\u0131","Tef","Zurna"]],M=class{constructor(e,n,r){R(this,"b0",0);R(this,"b1",0);R(this,"b2",0);R(this,"a1",0);R(this,"a2",0);R(this,"x1",0);R(this,"x2",0);R(this,"y1",0);R(this,"y2",0);let s=V*W(n,10,B*.45)/B,o=Re(s),a=ne(s)/(2*r),m=1+a,p,u,l;e==="lp"?(p=(1-o)/2,u=1-o,l=(1-o)/2):e==="hp"?(p=(1+o)/2,u=-(1+o),l=(1+o)/2):(p=a,u=0,l=-a),this.b0=p/m,this.b1=u/m,this.b2=l/m,this.a1=-2*o/m,this.a2=(1-a)/m}run(e){let n=this.b0*e+this.b1*this.x1+this.b2*this.x2-this.a1*this.y1-this.a2*this.y2;return this.x2=this.x1,this.x1=e,this.y2=this.y1,this.y1=n,n}};function We(t){return 1-ke(-V*t/B)}function G(t,e,n,r){let s=e+n;s>=0&&s<t.length&&(t[s]+=r)}function Z(t,e){let n=Math.min(e,220);return t>e-n?(e-t)/n:1}function I(t){return Math.max(1,Math.round(t*B))}function L(t,e,n,r,s,o,i=0,a=0){let m=I(s*6),p=U(s,B),u=I(i),l=I(a),h=r;for(let c=0;c<m;c++){let b=n.noise();for(let d of o)b=d.run(b);let f=l>1&&c<l?c/l:1;G(t,e+u,c,b*h*f*Z(c,m)),h*=p}}function D(t,e,n,r,s,o,i,a=1,m=0){let p=I(i*6),u=U(i,B),l=U(o,B),h=I(m),c=n,b=r-s,f=0,d=a>1?1/j(a):1;for(let y=0;y<p;y++){f+=(s+b)/B,b*=l;let A=q(f)*c;a>1&&(A=j(A*a)*d),G(t,e+h,y,A*Z(y,p)),c*=u}}var Ft=[[165,48,.035,.085,3.2,.6],[200,58,.025,.045,2.4,.9],[250,88,.02,.028,2,1],[175,52,.03,.065,7,.7],[130,56,.04,.05,1.8,.35],[110,64,.05,.075,3,.5]];function Vt(t,e,n,r,s){let[o,i,a,m,p,u]=Ft[n];D(t,e,r,o,i,a,m,p),D(t,e,r*.35,o*2,i*3,a,m*.7,2),L(t,e,s,r*u*.5,.0025,[new M("hp",1800,.7)]),n===4&&L(t,e,s,r*.3,.02,[new M("lp",400,.7)]),n===5&&(L(t,e,s,r*.45,.05,[new M("bp",320,1.2)]),L(t,e,s,r*.3,.012,[new M("hp",2500,.7)]))}function Ye(t,e,n,r,s=1200){for(let o=0;o<3;o++)L(t,e,r,n*.7,.005,[new M("bp",s,.9),new M("hp",500,.7)],o*.009);L(t,e,r,n*.8,.045,[new M("bp",s,.8),new M("hp",500,.7)],.02)}function ct(t,e,n,r,s,o){D(t,e,n*.55,200,175,.02,.03),D(t,e,n*.3,340,320,.02,.02);let i=[new M("hp",1400,.7)];o&&i.push(new M("lp",o,.7)),L(t,e,r,n*.85,s,i)}function Wt(t,e,n,r,s){switch(n){case 0:Ye(t,e,r,s);break;case 1:ct(t,e,r,s,.05);break;case 2:D(t,e,r*.6,1720,1700,.01,.007),D(t,e,r*.5,780,760,.01,.01),L(t,e,s,r*.4,.002,[new M("hp",2e3,.7)]);break;case 3:L(t,e,s,r*1.2,.014,[new M("bp",2800,1.4)]),D(t,e,r*.25,1100,900,.005,.006);break;case 4:D(t,e,r*.7,600,520,.01,.022),D(t,e,r*.3,1180,1100,.01,.012),L(t,e,s,r*.5,.004,[new M("bp",4200,1.2)]);break;default:ct(t,e,r*.8,s,.08,2300)}}var Yt=[263,400,421,474,587,845];function $t(t,e,n,r,s,o){let i=s?5:1;switch(n){case 0:L(t,e,o,r,.012*i,[new M("hp",7e3,.7)]);break;case 1:L(t,e,o,r*1.1,.018*i,[new M("bp",5500,1)],0,.008);break;case 2:D(t,e,r*.5,3300,3300,1,.004*i),L(t,e,o,r*.5,.002*i,[new M("hp",8e3,.7)]);break;case 3:{let a=I(.09*i),m=U(.015*i,B),p=new M("bp",9e3,.7),u=new M("hp",7e3,.7),l=[0,0,0,0,0,0],h=r*.6;for(let c=0;c<a;c++){let b=0;for(let f=0;f<6;f++)l[f]+=Yt[f]*1.7/B,b+=l[f]-Math.floor(l[f])<.5?1:-1;G(t,e,c,u.run(p.run(b/6))*h*Z(c,a)),h*=m}break}case 4:D(t,e,r*.6,880,870,.01,.01*i),D(t,e,r*.25,2200,2190,.01,.004*i);break;default:L(t,e,o,r*.9,.004*i,[new M("bp",3200,2)]),L(t,e,o,r*.7,.004*i,[new M("bp",3600,2)],.014)}}function $e(t,e,n,r,s,o,i,a,m=0){let p=Math.max(2,Math.round(B/n)),u=new Float64Array(p),l=0,h=We(i);for(let f=0;f<p;f++)l+=h*(a.noise()-l),u[f]=l;let c=I(s),b=0;for(let f=0;f<c;f++){let d=u[b],y=u[(b+1)%p];u[b]=o*.5*(d+y);let A=d*2;m>0&&(A=j(A*(1+m))),G(t,e,f,A*r*Z(f,c)),b=(b+1)%p}}function qt(t,e,n,r,s,o,i){let a=Ie(r),m=.04,p=I(s+m),u=I(s),l=I(.004),h=O=>(O<l?O/l:1)*(O>u?Math.max(0,1-(O-u)/I(m)):1);if(n===5){$e(t,e,a,o*.9,s+m,.997,1800,i,1.2);return}let c=0,b=0,f=1,d=U(n===0?.6:n===4?.25:.4,B),y=new M("lp",n===3?700:n===4?1100:900,n===3?1:.7),A=We(2600),w=We(320),P=U(.08,B),T=1,g=0,X=1,Oe=U(.15,B);for(let O=0;O<p;O++){c+=a/B;let _;switch(n){case 0:{_=.6*q(c)+.45*q(c*2)+.3*q(c*3),_=j(_*3)*.8;break}case 1:{let re=(c-Math.floor(c))*2-1,F=w+(A-w)*T;g+=F*(re-g),T*=P,_=j(g*1.6);break}case 2:{_=ne(V*(c-Math.floor(c))+(1+3*X)*q(c)),X*=Oe,_=j(_*1.5);break}case 3:{b+=a*1.007/B;let re=(c-Math.floor(c))*2-1,F=(b-Math.floor(b))*2-1;_=j(y.run((re+F)*.6)*1.8);break}default:{let re=c-Math.floor(c)<.5?1:-1;_=j(y.run(re)*1.4)}}G(t,e,O,_*o*h(O)*f*Z(O,p)),f*=d}}function Gt(t,e,n,r,s,o,i){let a=Ie(r);switch(n){case 0:$e(t,e,a,o,.7,.996,5e3,i);return;case 4:$e(t,e,a,o*.9,.9,.998,7e3,i,.8),L(t,e,i,o*.25,.003,[new M("bp",3e3,1.5)]);return;case 1:{let m=I(1.2),p=U(.35,B),u=U(.12,B),l=o*.6,h=2.5,c=0;for(let b=0;b<m;b++){c+=a/B;let f=ne(V*(c-Math.floor(c))+h*q(c*3.5));G(t,e,b,f*l*Z(b,m)),l*=p,h*=u}return}case 2:{let m=I(Math.max(.08,s)+.03),p=U(.18,B),u=o*.32,l=0;for(let h=0;h<m;h++){l+=a/B;let c=l-Math.floor(l)<.25?1:-1;G(t,e,h,c*u*Z(h,m)),u*=p}return}case 3:D(t,e,o*.7,a,a,1,.12),D(t,e,o*.3,a*3.93,a*3.93,1,.02),D(t,e,o*.08,a*10.2,a*10.2,1,.006);return;default:{let m=Math.max(.12,s)+.08,p=I(m),u=I(.04),l=I(Math.max(.12,s)),h=new M("bp",a*2,3),c=0,b=0;for(let f=0;f<p;f++){b+=5.2/B;let d=f>I(.08)?1+.006*q(b):1;c+=a*d/B;let y=(f<u?f/u:1)*(f>l?Math.max(0,1-(f-l)/(p-l)):1),A=q(c)*.6+h.run(i.noise())*.25;G(t,e,f,A*y*o*Z(f,p))}}}}var Zt=[[1,1,.18],[1.47,.7,.15],[2.09,.55,.12],[2.56,.45,.1],[3.17,.35,.08],[3.79,.25,.06]];function Xt(t,e,n,r,s,o){switch(n){case 0:for(let[i,a,m]of Zt)D(t,e,s*a*.22,1850*i,1850*i,1,m);L(t,e,o,s*.3,.003,[new M("hp",6e3,.7)]);return;case 1:D(t,e,s*.6,640,560,.008,.02),D(t,e,s*.25,1300,1250,.008,.01),L(t,e,o,s*.5,.005,[new M("bp",5e3,1.3)]);return;case 2:Ye(t,e,s*.8,o,1100),Ye(t,e+I(.011),s*.7,o,1550);return;case 3:for(let i=0;i<3;i++)L(t,e,o,s*(1-i*.25),.004,[new M("bp",3300+i*300,2)],i*.03);return;case 4:D(t,e,s*.6,180,150,.01,.03,1.5),L(t,e,o,s*.55,.05,[new M("hp",6500,.7)],.004);return;default:{let i=Ie(r),a=I(.22),m=I(.01),p=U(.08,B),u=new M("bp",1600,2),l=new M("bp",3e3,3),h=s,c=0;for(let b=0;b<a;b++){c+=i/B;let f=(c-Math.floor(c))*2-1,d=j((u.run(f)+.6*l.run(f))*3)*.45;G(t,e,b,d*h*(b<m?b/m:1)*Z(b,a)),h*=p}}}}function ut(t,e,n,r){let s=new ee(n.seed),o=n.vel*(r??at[n.role][n.variant]);switch(n.role){case 0:Vt(t,e,n.variant,o,s);break;case 1:Wt(t,e,n.variant,o,s);break;case 2:$t(t,e,n.variant,o,n.alt,s);break;case 3:qt(t,e,n.variant,n.midi,n.dur,o,s);break;case 4:Gt(t,e,n.variant,n.midi,n.dur,o,s);break;default:Xt(t,e,n.variant,n.midi,o,s)}}var Qt=1.2,Jt=.89,en=.45,lt=.22,tn=1.6,qe=class{constructor(e,n){R(this,"b0");R(this,"b1");R(this,"b2");R(this,"a1");R(this,"a2");R(this,"x1",0);R(this,"x2",0);R(this,"y1",0);R(this,"y2",0);let r=V*e/Y,s=Re(r),o=ne(r)/(2*n),i=1+o;this.b0=(1+s)/2/i,this.b1=-(1+s)/i,this.b2=(1+s)/2/i,this.a1=-2*s/i,this.a2=(1-o)/i}run(e){let n=this.b0*e+this.b1*this.x1+this.b2*this.x2-this.a1*this.y1-this.a2*this.y2;return this.x2=this.x1,this.x1=e,this.y2=this.y1,this.y1=n,n}};function Ge(t,e=1,n=!0){let r=Ke(t),s=Math.ceil((r*e+Qt)*Y),o=new Float64Array(s),i=be(t.text);for(let d=0;d<e;d++)t.events.forEach((y,A)=>{let w=ve(t,y.tick)+d*r,P=Math.round(w*Y);ut(o,P,{role:y.role,variant:y.variant,vel:y.vel,midi:y.midi,dur:y.durTicks/K*t.stepDur,alt:y.alt,seed:Be(i,A*7919+y.tick)})});let a=new qe(70,.7);if(!n){let d=new Float32Array(s);for(let y=0;y<s;y++)d[y]=a.run(o[y]);return d}let m=1-ke(-V*140/Y),p=0,u=0;for(let d=0;d<s;d++){let y=a.run(o[d]);p+=m*(y-p);let A=y-en*p;o[d]=A;let w=A<0?-A:A;w>u&&(u=w)}let l=u>0?1/u:0,h=ke(-1/(.08*Y)),c=0;u=0;for(let d=0;d<s;d++){let y=o[d]*l,A=y<0?-y:y;c=A>c?A:c*h+A*(1-h);let w=c>lt?lt/c:1,P=j(y*w*tn);o[d]=P;let T=P<0?-P:P;T>u&&(u=T)}let b=u>0?Jt/u:0,f=new Float32Array(s);for(let d=0;d<s;d++)f[d]=o[d]*b;return f}function Ze(t){let e=new Int16Array(t.length);for(let n=0;n<t.length;n++){let r=t[n]<-1?-1:t[n]>1?1:t[n];e[n]=Math.round(r*32767)}return e}function pt(t,e=Y){let n=new Uint8Array(44+t.length*2),r=new DataView(n.buffer),s=(o,i)=>{for(let a=0;a<i.length;a++)r.setUint8(o+a,i.charCodeAt(a))};s(0,"RIFF"),r.setUint32(4,36+t.length*2,!0),s(8,"WAVE"),s(12,"fmt "),r.setUint32(16,16,!0),r.setUint16(20,1,!0),r.setUint16(22,1,!0),r.setUint32(24,e,!0),r.setUint32(28,e*2,!0),r.setUint16(32,2,!0),r.setUint16(34,16,!0),s(36,"data"),r.setUint32(40,t.length*2,!0);for(let o=0;o<t.length;o++)r.setInt16(44+o*2,t[o],!0);return n}function mt(t){let e=2166136261;for(let n=0;n<t.length;n++)e=Math.imul(e^t[n]&255,16777619),e=Math.imul(e^t[n]>>8&255,16777619);return(e>>>0).toString(16).padStart(8,"0")+":"+t.length}function ft(t,e=1){let n=De(t);return n?{score:n,pcm:Ze(Ge(n,e))}:null}function bt(t){let e=`${Math.round(t.bpm)} tempo`,n=`${Ce[t.root]} ${oe[t.scaleId].name}`,r=t.kit.map((s,o)=>Ne[o][s]);return{style:t.styleName,tempo:e,key:n,kit:r,line:`${t.styleName} \xB7 ${e} \xB7 ${n}`}}return Tt(nn);})();
+</script>
+<script>
+const DATA = {"main":[{"text":"sjsjsj","listen":"Kalın bir bas notası ile ince bir saz teli sırayla gidip geliyor, altında hızlı tıkırtılar var. Bu, gülüşünün motifi."},{"text":"sjsjsjŞ","listen":"Aynı gidip gelme duruyor. Her ölçünün sonunda darbuka hızlanıyor, bir zil ve tef çarpıyor. O vurgu, sondaki Ş."},{"text":"gkdncomdşcmr dpftpcşdpvkrnvşdmfofnclsxkjrıf","listen":"İki ölçü boyunca yoğun bir dembow. Sonra bütün sesler bir vuruşluk susuyor: o senin boşluğun. İkinci yarı başka bir melodiyle geri giriyor."}],"ten":["asdfghjkl","fjfjfjfj","HAHAHAHA","jdjdjdjdjd","SKDJFHSKDJ","şkşkşkşk","qwpeoıruty","ahahahaha","ğüğüğü","bhbhbhbh"],"small":[{"title":"Küçük harf ve büyük harf","a":"sjsjsj","b":"SJSJSJ"},{"title":"Kısa ve uzun gülüş","a":"sjsjsj","b":"sjsjsjsjsjsj"},{"title":"Boşluksuz ve boşluklu","a":"akdjfsldkfj","b":"akdjf sldkfj"}],"near":[{"a":"JSJSJSJSJSJSJSŞ","b":"jzşsjzşsjzşsjzşsş","d":0.18891548082345172},{"a":"JSJSJSJSJSJSJSIÇ","b":"jzşsjzşsjzşsjzşsş","d":0.19960025728072392},{"a":"JSJSJS","b":"jzşsjzşsjzşsjzşsş","d":0.20850194698886523},{"a":"qkeyöıaöucei","b":"IJRHDİ","d":0.20895427537489153},{"a":"JSJSJSJSJSJSJS","b":"jzşsjzşsjzşsjzşsş","d":0.2140271235666734}],"device":[{"text":"sjsjsj","sum":"e043a9f1:348563"},{"text":"sjsjsjŞ","sum":"28eec5d1:348563"},{"text":"gkdncomdşcmr dpftpcşdpvkrnvşdmfofnclsxkjrıf","sum":"79514196:495303"},{"text":"HAHAHAHA","sum":"907f42ea:288855"},{"text":"aşkdjfaşlkdj","sum":"72efb692:383670"},{"text":"😂 ğüşiöçı","sum":"ef531b56:349807"}]};
+
+const ROLE_LABELS = ["Kalın vuruş", "Tok vuruş", "Tıkırtı", "Bas", "Melodi", "Baharat"];
+const player = document.getElementById("player");
+let current = null; // { button, url, canvas, score, start }
+
+function token(name) {
+  return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+}
+
+const legend = document.getElementById("legend");
+ROLE_LABELS.forEach((label, r) => {
+  const s = document.createElement("span");
+  s.innerHTML = `<i style="background:var(--r${r})"></i>${label}`;
+  legend.appendChild(s);
+});
+
+const PLAY = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4.5v15l13-7.5z"/></svg>';
+const STOP = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6h12v12H6z"/></svg>';
+
+const scores = new Map();
+function scoreOf(text) {
+  if (!scores.has(text)) scores.set(text, RB.compose(text));
+  return scores.get(text);
+}
+
+function drawGrid(canvas, score, progress) {
+  const dpr = window.devicePixelRatio || 1;
+  const w = canvas.clientWidth, h = canvas.clientHeight;
+  if (!w) return;
+  canvas.width = Math.round(w * dpr);
+  canvas.height = Math.round(h * dpr);
+  const ctx = canvas.getContext("2d");
+  ctx.scale(dpr, dpr);
+  ctx.clearRect(0, 0, w, h);
+  const steps = 4 * score.stepsPerBar;
+  const rowH = h / 6;
+  const cw = w / steps;
+  ctx.fillStyle = token("--line");
+  for (let b = 1; b < 4; b++) ctx.fillRect(Math.round(b * score.stepsPerBar * cw), 0, 1, h);
+  const colors = [0, 1, 2, 3, 4, 5].map((r) => token(`--r${r}`));
+  for (const e of score.events) {
+    const x = (e.tick / RB.TPS) * cw;
+    const y = e.role * rowH;
+    ctx.globalAlpha = 0.35 + 0.65 * e.vel;
+    ctx.fillStyle = colors[e.role];
+    ctx.fillRect(x + 0.5, y + 1.5, Math.max(1.5, cw * 0.72), rowH - 3);
+  }
+  ctx.globalAlpha = 1;
+  if (progress != null) {
+    ctx.fillStyle = token("--ink");
+    ctx.fillRect(Math.round(progress * w), 0, 2, h);
+  }
+}
+
+function card(text, opts = {}) {
+  const score = scoreOf(text);
+  const el = document.createElement("div");
+  el.className = "card";
+  if (!score) {
+    el.innerHTML = `<p class="note">Bu yazıdan beat çıkmadı. Bir iki harf yaz.</p>`;
+    return el;
+  }
+  const d = RB.describe(score);
+  el.innerHTML = `
+    <div class="row">
+      <button class="play" type="button" aria-pressed="false" aria-label="${escapeHtml(text)} çal">${PLAY}</button>
+      <div class="meta">
+        <span class="key">${escapeHtml(text)}</span>
+        <span class="desc">${escapeHtml(d.line)}<br>${escapeHtml(d.kit.join(" · "))}</span>
+      </div>
+    </div>
+    ${opts.listen ? `<p class="listen">${escapeHtml(opts.listen)}</p>` : ""}
+    ${opts.compact ? "" : '<canvas class="grid" aria-hidden="true"></canvas>'}`;
+  const btn = el.querySelector(".play");
+  const canvas = el.querySelector("canvas");
+  if (canvas) requestAnimationFrame(() => drawGrid(canvas, score));
+  btn.addEventListener("click", () => toggle(text, btn, canvas, score));
+  el._redraw = () => canvas && drawGrid(canvas, score);
+  return el;
+}
+
+function escapeHtml(s) {
+  return s.replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
+}
+
+const wavCache = new Map();
+function wavUrl(text) {
+  if (!wavCache.has(text)) {
+    const beat = RB.makeBeat(text, 2);
+    const blob = new Blob([RB.encodeWav(beat.pcm)], { type: "audio/wav" });
+    wavCache.set(text, URL.createObjectURL(blob));
+  }
+  return wavCache.get(text);
+}
+
+function stop() {
+  if (!current) return;
+  player.pause();
+  current.button.setAttribute("aria-pressed", "false");
+  current.button.innerHTML = PLAY;
+  if (current.canvas) drawGrid(current.canvas, current.score);
+  current = null;
+}
+
+function toggle(text, button, canvas, score) {
+  if (current && current.button === button) return stop();
+  stop();
+  button.innerHTML = STOP;
+  button.setAttribute("aria-pressed", "true");
+  current = { button, canvas, score };
+  // build the sound right after the tap so iPhone allows playback
+  player.src = wavUrl(text);
+  player.currentTime = 0;
+  const p = player.play();
+  if (p && p.catch) p.catch(() => stop());
+  tick();
+}
+
+function tick() {
+  if (!current) return;
+  if (current.canvas && player.duration) {
+    const loop = RB.scoreDuration(current.score);
+    const t = player.currentTime % loop;
+    drawGrid(current.canvas, current.score, t / loop);
+  }
+  requestAnimationFrame(tick);
+}
+player.addEventListener("ended", stop);
+
+function fill(id, items) {
+  const box = document.getElementById(id);
+  for (const it of items) box.appendChild(card(it.text, it));
+}
+
+function pairBlock(boxId, title, a, b, note) {
+  const box = document.getElementById(boxId);
+  const wrap = document.createElement("div");
+  wrap.className = "card";
+  wrap.innerHTML = `<div class="row" style="justify-content:space-between"><span class="pair-title">${escapeHtml(title)}</span>${note ? `<span class="score">${escapeHtml(note)}</span>` : ""}</div><div class="pair"></div>`;
+  const pair = wrap.querySelector(".pair");
+  pair.appendChild(card(a, { compact: true }));
+  pair.appendChild(card(b, { compact: true }));
+  box.appendChild(wrap);
+}
+
+fill("main", DATA.main);
+fill("ten", DATA.ten.map((text) => ({ text })));
+for (const p of DATA.small) pairBlock("small", p.title, p.a, p.b);
+DATA.near.forEach((p) => pairBlock("near", "Bağımsız iki gülüş", p.a, p.b, "benzerlik puanı " + (1 - p.d).toFixed(2).replace(".", ",")));
+
+// try it yourself
+const input = document.getElementById("try-input");
+const out = document.getElementById("try-out");
+input.value = DATA.main[2].text;
+function showTry() {
+  stop();
+  out.innerHTML = "";
+  out.appendChild(card(input.value));
+}
+document.getElementById("try-form").addEventListener("submit", (e) => {
+  e.preventDefault();
+  showTry();
+});
+showTry();
+
+// redraw rhythm strips when the theme or width changes
+const redrawAll = () => document.querySelectorAll(".card").forEach((c) => c._redraw && c._redraw());
+window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", redrawAll);
+new MutationObserver(redrawAll).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
+let rt;
+window.addEventListener("resize", () => { clearTimeout(rt); rt = setTimeout(redrawAll, 120); });
+
+// does this device produce exactly the same sound as the reference?
+setTimeout(() => {
+  const chip = document.getElementById("device");
+  const label = document.getElementById("device-text");
+  try {
+    const bad = DATA.device.filter((d) => RB.pcmChecksum(RB.makeBeat(d.text).pcm) !== d.sum);
+    if (bad.length === 0) {
+      chip.dataset.state = "ok";
+      label.textContent = "Bu cihaz beat'leri birebir doğru üretiyor";
+    } else {
+      chip.dataset.state = "bad";
+      label.textContent = `Bu cihazda ${bad.length} beat farklı çıktı. Bana yaz: ${DATA.device.length - bad.length}/${DATA.device.length}`;
+    }
+  } catch (err) {
+    chip.dataset.state = "bad";
+    label.textContent = "Kontrol çalışmadı: " + err.message;
+  }
+}, 400);
+</script>

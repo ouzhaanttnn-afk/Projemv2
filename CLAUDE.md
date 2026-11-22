@@ -1,7 +1,14 @@
 # Randombeat
 
 Bu depo Randombeat projesidir: klavye kahkahasını ("sjsjsj", random atmak)
-beat'e çeviren bir uygulama. Henüz uygulama dosyası yok; yalnızca plan var.
+beat'e çeviren bir uygulama.
+
+- `src/engine/`: ses motoru (yazıyı okuma, kurallar, 36 ses, karıştırma).
+  Her cihazda bit bit aynı sesi vermesi için Math.sin, Math.exp gibi
+  fonksiyonlar kullanılmaz; `dmath.ts` kullanılır.
+- `tools/`: testler, benzersizlik testi, ses seviyesi ayarı, dinleme sayfası.
+- `web/`: dinleme sayfası. `reports/`: test raporları.
+- TypeScript dosyaları doğrudan `node dosya.ts` ile çalışır.
 
 ## Önce bunu yap
 `PLAN.md` dosyasının tamamını oku. Bütün kararlar, ses kuralları, teknik

@@ -1,0 +1,16 @@
+{
+  "name": "randombeat",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Klavye kahkahasını beat'e çeviren uygulama",
+  "scripts": {
+    "test": "node tools/test-engine.ts",
+    "benzersizlik": "node tools/uniqueness.ts",
+    "ornekler": "node tools/render-examples.ts",
+    "dinle": "node tools/build-listen.ts"
+  },
+  "devDependencies": {
+    "esbuild": "0.25.10"
+  }
+}

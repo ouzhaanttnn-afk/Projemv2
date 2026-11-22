@@ -1,0 +1,157 @@
+{
+  "threshold": 0.25,
+  "pass": {
+    "identical": true,
+    "similar": true,
+    "balance": true
+  },
+  "pairs": 31990119,
+  "below": 27,
+  "sameIdentity": 5881,
+  "sameIdentityBelow": 5586,
+  "nearest": [
+    {
+      "a": "JSJSJSJSJSJSJSŞ",
+      "b": "jzşsjzşsjzşsjzşsş",
+      "d": 0.18891548082345172,
+      "da": "Trap · 147 tempo · Do Nihavend (hüzünlü)",
+      "db": "Trap · 147 tempo · Do Nihavend (hüzünlü)"
+    },
+    {
+      "a": "JSJSJSJSJSJSJSIÇ",
+      "b": "jzşsjzşsjzşsjzşsş",
+      "d": 0.19960025728072392,
+      "da": "Trap · 147 tempo · Do Nihavend (hüzünlü)",
+      "db": "Trap · 147 tempo · Do Nihavend (hüzünlü)"
+    },
+    {
+      "a": "JSJSJS",
+      "b": "jzşsjzşsjzşsjzşsş",
+      "d": 0.20850194698886523,
+      "da": "Trap · 147 tempo · Do Nihavend (hüzünlü)",
+      "db": "Trap · 147 tempo · Do Nihavend (hüzünlü)"
+    },
+    {
+      "a": "qkeyöıaöucei",
+      "b": "IJRHDİ",
+      "d": 0.20895427537489153,
+      "da": "Roman havası 9/8 · 231 tempo · Sol Hicaz (doğulu)",
+      "db": "Roman havası 9/8 · 231 tempo · Sol Hicaz (doğulu)"
+    },
+    {
+      "a": "JSJSJSJSJSJSJS",
+      "b": "jzşsjzşsjzşsjzşsş",
+      "d": 0.2140271235666734,
+      "da": "Trap · 147 tempo · Do Nihavend (hüzünlü)",
+      "db": "Trap · 147 tempo · Do Nihavend (hüzünlü)"
+    },
+    {
+      "a": "zzzzzzzzü",
+      "b": "FFFFFFFFÇ",
+      "d": 0.22321626995933588,
+      "da": "Roman havası 9/8 · 245 tempo · Si♭ Nihavend (hüzünlü)",
+      "db": "Roman havası 9/8 · 250 tempo · Fa Nihavend (hüzünlü)"
+    },
+    {
+      "a": "ŞFŞFŞFŞFŞFŞFĞ",
+      "b": "JAJAJAJAJAJAJAJAÇ",
+      "d": 0.2289463477698772,
+      "da": "Dembow · 111 tempo · Re Hicaz (doğulu)",
+      "db": "Dembow · 111 tempo · Sol Miksolidyen (güneşli)"
+    },
+    {
+      "a": "zzzzzzzzü",
+      "b": "FFFFFFFÖ",
+      "d": 0.23369246043552636,
+      "da": "Roman havası 9/8 · 245 tempo · Si♭ Nihavend (hüzünlü)",
+      "db": "Roman havası 9/8 · 250 tempo · Fa Nihavend (hüzünlü)"
+    },
+    {
+      "a": "fff",
+      "b": "zzzı",
+      "d": 0.23521787662764887,
+      "da": "Roman havası 9/8 · 236 tempo · Fa Nihavend (hüzünlü)",
+      "db": "Roman havası 9/8 · 245 tempo · Si♭ Nihavend (hüzünlü)"
+    },
+    {
+      "a": "zzzzzzzzü",
+      "b": "fffffffğ",
+      "d": 0.2366908925006648,
+      "da": "Roman havası 9/8 · 245 tempo · Si♭ Nihavend (hüzünlü)",
+      "db": "Roman havası 9/8 · 236 tempo · Fa Nihavend (hüzünlü)"
+    },
+    {
+      "a": "vbnm",
+      "b": "fkdfkdfkdfkdfkdfkdfkd",
+      "d": 0.2370701043839374,
+      "da": "Roman havası 9/8 · 239 tempo · Mi Hicaz (doğulu)",
+      "db": "Roman havası 9/8 · 237 tempo · Mi Hicaz (doğulu)"
+    },
+    {
+      "a": "dlxdjdrh",
+      "b": "tkejdz",
+      "d": 0.23800777314445715,
+      "da": "Dembow · 97 tempo · Sol Miksolidyen (güneşli)",
+      "db": "Dembow · 97 tempo · Sol Miksolidyen (güneşli)"
+    }
+  ],
+  "keyPairs": [
+    {
+      "a": "sjsjsj",
+      "b": "sjsjsjŞ",
+      "d": 0.05244444444444446
+    },
+    {
+      "a": "sjsjsj",
+      "b": "SJSJSJ",
+      "d": 0.18624879459618585
+    },
+    {
+      "a": "sjsjsj",
+      "b": "sjsjsjsjsjsj",
+      "d": 0.06120879120879121
+    },
+    {
+      "a": "sjsjsj",
+      "b": "sjsj sjsj",
+      "d": 0.4533183404511587
+    }
+  ],
+  "variantStats": [
+    {
+      "kind": "son harf ekle",
+      "median": 0.772362193516245,
+      "p10": 0.036974789915966394,
+      "p90": 0.9586797385620917,
+      "same": 0
+    },
+    {
+      "kind": "bir harf değiştir",
+      "median": 0.8018095238095239,
+      "p10": 0.47108385863919505,
+      "p90": 0.9534373289545705,
+      "same": 0
+    },
+    {
+      "kind": "bir harfi büyüt",
+      "median": 0.028458498023715424,
+      "p10": 0.012561403508771931,
+      "p90": 0.052000000000000005,
+      "same": 4
+    },
+    {
+      "kind": "bir tekrar ekle",
+      "median": 0.7865885103963862,
+      "p10": 0.04656084656084657,
+      "p90": 0.9563941299790357,
+      "same": 1
+    },
+    {
+      "kind": "boşluk ekle",
+      "median": 0.8094986111192038,
+      "p10": 0.6171964911110206,
+      "p90": 0.9593896173606319,
+      "same": 0
+    }
+  ]
+}

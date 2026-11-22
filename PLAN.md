@@ -3,7 +3,7 @@
 Bu dosya, projeyi sıfırdan devralan bir yardımcının başka hiçbir şeye bakmadan
 işe başlayabilmesi için yazıldı. Depoda henüz hiçbir uygulama dosyası yok.
 
-Son güncelleme: 22 Kasım 2026
+Son güncelleme: 22 Kasım 2026 (1. hafta yapıldı)
 
 ---
 
@@ -12,7 +12,7 @@ Son güncelleme: 22 Kasım 2026
 | Adım | Durum |
 |---|---|
 | Fikir, araştırma, plan | Tamamlandı |
-| 1. hafta — Ses | Başlanmadı |
+| 1. hafta — Ses | Yapıldı; kapıda, ürün sahibinin dinlemesi bekleniyor |
 | 2. hafta — Web sayfası ve WhatsApp denemesi | Başlanmadı |
 | 3. hafta — Kartlar ve koleksiyon | Başlanmadı |
 | 4. hafta — 10-15 kişilik deneme | Başlanmadı |
@@ -20,6 +20,30 @@ Son güncelleme: 22 Kasım 2026
 | 7-8. hafta — Test sürümü ve App Store | Başlanmadı |
 
 Her adımı bitirince bu tabloyu güncelle.
+
+### 1. hafta notları
+
+- Dinleme sayfası: https://claude.ai/artifact/8zffBbe3EJapypJMkpVsxP
+  (kaynağı `web/dinle.template.html`, oluşturmak için `npm run dinle`).
+- Ses motoru `src/engine/` içinde. Testler: `npm test`; tarayıcıda aynı sesi
+  verme testi: `node tools/test-browser.ts`; benzersizlik testi:
+  `npm run benzersizlik` (rapor `reports/benzersizlik.md`).
+- Benzersizlik testi üç şartı da geçti (gülüşler gerçekçi ama yapay;
+  gerçek random'larla yeniden çalıştırılmalı). Eşik 0,25, kulakla ayarlanacak.
+- Plandan sapmalar ve verilen kararlar:
+  - Baharat sesleri (zil, darbuka, tef, kaşık, el çırpma, zurna) şimdilik
+    kayıt değil, telefonda üretiliyor. Serbest lisanslı kayıt doğrulanınca
+    değiştirilebilir.
+  - Büyük harf tarzı değiştirmiyor: "SJSJSJ", "sjsjsj"nin sert takımlı,
+    daha hızlı ve melodisi kalınlaşmış hali.
+  - Gülüşün uzunluğu (tekrar sayısı) kimliği değiştirmiyor, enerjiyi
+    artırıyor (daha sık tıkırtı, açık zil, melodi katlanması).
+  - Tekrarsız uzun bir random'da tek harf değiştirmek ya da boşluk eklemek
+    tamamen yeni bir beat veriyor. Her random kendine özgü olsun diye.
+  - Ses, telefon hoparlörü düşünülerek dengelendi: 36 sesin seviyesi
+    `tools/calibrate.ts` ile otomatik ayarlandı, çok kalın sesler kısıldı.
+  - iPhone'da aynı sesin çıktığı burada denenemedi; dinleme sayfası bunu
+    telefonda kendisi kontrol edip gösteriyor.
 
 ---
 
