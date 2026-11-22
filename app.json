@@ -8,11 +8,6 @@
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "backgroundColor": "#F6F3EE",
-    "splash": {
-      "image": "./assets/splash-icon.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#F6F3EE"
-    },
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.example.foy",
@@ -45,6 +40,15 @@
         {
           "photosPermission": "Föy, ürün föyüne koymak istediğin fotoğrafları seçebilmen için fotoğraflarına erişir.",
           "cameraPermission": "Föy, ürününün fotoğrafını çekebilmen için kamerayı kullanır."
+        }
+      ],
+      [
+        "expo-splash-screen",
+        {
+          "image": "./assets/splash-icon.png",
+          "imageWidth": 160,
+          "resizeMode": "contain",
+          "backgroundColor": "#F6F3EE"
         }
       ]
     ],

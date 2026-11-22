@@ -100,7 +100,10 @@ describe('özel karakterler', () => {
 
   it('betik enjeksiyonu metin olarak kalır', () => {
     const html = renderFoy('story', data(product({ name: '<script>alert(1)</script>', template: 'story' })));
-    expect(html).not.toMatch(/<script/i);
+    // Föyde yalnızca kalıbın kendi sığdırma betiği bulunur; kullanıcı metni betik olarak çalışmaz.
+    expect(html.match(/<script/gi)?.length).toBe(1);
+    expect(html).not.toContain('<script>alert');
+    expect(html).toContain('&lt;script&gt;alert(1)&lt;/script&gt;');
   });
 
   it('esc tüm tehlikeli karakterleri kaçırır', () => {

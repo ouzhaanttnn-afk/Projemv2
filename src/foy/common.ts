@@ -45,13 +45,18 @@ const FONT_CSS = `
 `;
 
 // Tüm ölçüler milimetre: sayfa A4 dikey (210 × 297 mm), kenar boşlukları 16 mm.
+// Yoğunluk değişkenleri (--fs, --row …) içerik sayfaya sığmazsa d1/d2/d3 sınıflarıyla küçülür.
 const BASE_CSS = `
 @page{size:210mm 297mm;margin:0}
 :root{--paper:#FBFAF7;--ink:#1D1B18;--muted:#6F6960;--rule:#D9D3C8;--accent:#A24F2D;--m:16mm}
+body{--fs:8.6pt;--lede:10pt;--title:36pt;--row:1.5mm;--gap:7mm;--note:10pt;--ph-min:70mm;--tile:1/1}
+body.d1{--fs:8pt;--lede:9.2pt;--title:31pt;--row:1.1mm;--gap:5.5mm;--note:9pt;--ph-min:52mm}
+body.d2{--fs:7.4pt;--lede:8.5pt;--title:27pt;--row:.75mm;--gap:4.5mm;--note:8.2pt;--ph-min:40mm;--tile:4/3}
+body.d3{--fs:6.9pt;--lede:7.9pt;--title:23pt;--row:.5mm;--gap:3.5mm;--note:7.6pt;--ph-min:28mm;--tile:16/9}
 *{box-sizing:border-box}
 figure{margin:0}
 html,body{margin:0;padding:0;background:var(--paper)}
-body{font-family:'Foy Sans','Helvetica Neue',Arial,sans-serif;color:var(--ink);font-size:8.6pt;line-height:1.45;
+body{font-family:'Foy Sans','Helvetica Neue',Arial,sans-serif;color:var(--ink);font-size:var(--fs);line-height:1.45;
   -webkit-font-smoothing:antialiased;-webkit-print-color-adjust:exact;print-color-adjust:exact;
   font-variant-numeric:lining-nums tabular-nums;-webkit-text-size-adjust:100%}
 .page{width:210mm;height:296.8mm;padding:13mm var(--m) 10mm;display:flex;flex-direction:column;overflow:hidden;background:var(--paper)}
@@ -60,22 +65,25 @@ body{font-family:'Foy Sans','Helvetica Neue',Arial,sans-serif;color:var(--ink);f
 .top .maker{color:var(--ink);letter-spacing:.12em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:110mm}
 .top .dot{display:inline-block;width:1.6mm;height:1.6mm;border-radius:50%;background:var(--accent);margin-right:2.2mm;vertical-align:.15mm}
 .head{flex:none}
-.title{font-family:'Foy Serif',Georgia,'Times New Roman',serif;font-weight:400;font-size:36pt;line-height:1.02;letter-spacing:-.012em;margin:8mm 0 0;overflow-wrap:anywhere}
-.title.l{font-size:29pt}
-.title.xl{font-size:23pt;line-height:1.08}
-.lede{margin:4mm 0 0;font-size:10pt;line-height:1.5;max-width:132mm;color:var(--ink);overflow-wrap:anywhere}
+.title{font-family:'Foy Serif',Georgia,'Times New Roman',serif;font-weight:400;font-size:var(--title);line-height:1.04;letter-spacing:-.012em;margin:calc(var(--gap) + 1mm) 0 0;overflow-wrap:anywhere}
+.title.l{font-size:calc(var(--title) * .82)}
+.title.xl{font-size:calc(var(--title) * .66);line-height:1.08}
+.lede{margin:calc(var(--gap) * .55) 0 0;font-size:var(--lede);line-height:1.5;max-width:132mm;color:var(--ink);overflow-wrap:anywhere}
 .ph{position:relative;overflow:hidden;background:#ECE8E1}
 .ph img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
 .info{flex:none;display:grid;grid-template-columns:40mm 1fr;column-gap:6mm;border-top:.3mm solid var(--ink);padding-top:2.6mm}
-.info>.kicker{padding-top:1.3mm}
+.info>.kicker{padding-top:calc(var(--row) - .2mm)}
 .spec{margin:0;padding:0}
-.spec .row{display:grid;grid-template-columns:36mm 1fr;column-gap:4mm;padding:1.55mm 0 1.45mm;border-bottom:.2mm solid var(--rule);break-inside:avoid}
-.spec .row:first-child{padding-top:1.3mm}
+.spec .row{display:grid;grid-template-columns:36mm 1fr;column-gap:4mm;padding:var(--row) 0 calc(var(--row) - .1mm);border-bottom:.2mm solid var(--rule);break-inside:avoid}
+.spec .row:first-child{padding-top:calc(var(--row) - .2mm)}
 .spec dt{color:var(--muted);margin:0;overflow-wrap:anywhere}
 .spec dd{margin:0;overflow-wrap:anywhere}
 .spec .row.solo{grid-template-columns:1fr}
 .spec .price dd{font-weight:500}
-.foot{flex:none;margin-top:5mm;padding-top:2.6mm;border-top:.2mm solid var(--rule);display:flex;justify-content:space-between;align-items:baseline;gap:8mm}
+.spec.cols{display:grid;grid-template-columns:1fr 1fr;column-gap:8mm}
+.spec.cols .row{grid-template-columns:28mm 1fr}
+.spec.cols .row:nth-child(2){padding-top:calc(var(--row) - .2mm)}
+.foot{flex:none;margin-top:calc(var(--gap) * .7);padding-top:2.6mm;border-top:.2mm solid var(--rule);display:flex;justify-content:space-between;align-items:baseline;gap:8mm}
 .contact{display:flex;flex-wrap:wrap;align-items:baseline;column-gap:4.2mm;row-gap:.6mm;font-size:8pt;color:var(--ink);min-width:0}
 .contact .kicker{margin-right:.8mm}
 .contact span{overflow-wrap:anywhere}
@@ -83,7 +91,29 @@ body{font-family:'Foy Sans','Helvetica Neue',Arial,sans-serif;color:var(--ink);f
 .sig b{font-family:'Foy Serif',Georgia,serif;font-weight:400;font-style:italic;font-size:8pt;letter-spacing:0;color:var(--accent)}
 `;
 
-export function documentHtml(lang: Lang, title: string, bodyClass: string, css: string, body: string): string {
+/**
+ * Sığdırma: içerik sayfadan taşarsa sırayla daha sıkı yoğunluk sınıfları denenir.
+ * Kullanıcı verisi içermez; yalnızca sayfanın kendi ölçüsüne bakar. Yazı tipleri
+ * yüklenince bir kez daha çalışır.
+ */
+function fitScript(levels: string[]): string {
+  const list = JSON.stringify(levels);
+  return `<script>(function(){var b=document.body,p=document.querySelector('.page'),L=${list},base=b.className;
+function over(){return p.scrollHeight>p.clientHeight+1}
+function fit(){b.className=base;for(var i=0;i<L.length&&over();i++){b.className=base+' '+L[i];}}
+fit();if(document.fonts&&document.fonts.ready){document.fonts.ready.then(fit);}})();</script>`;
+}
+
+export const DEFAULT_LEVELS = ['d1', 'd2', 'd3'];
+
+export function documentHtml(
+  lang: Lang,
+  title: string,
+  bodyClass: string,
+  css: string,
+  body: string,
+  levels: string[] = DEFAULT_LEVELS,
+): string {
   return `<!doctype html>
 <html lang="${lang}">
 <head>
@@ -94,6 +124,7 @@ export function documentHtml(lang: Lang, title: string, bodyClass: string, css: 
 </head>
 <body class="${bodyClass}">
 ${body}
+${fitScript(levels)}
 </body>
 </html>`;
 }
@@ -146,10 +177,10 @@ export function specList(rows: InfoRow[], extraClass = ''): string {
   return `<dl class="spec ${extraClass}">${items}</dl>`;
 }
 
-/** "Bilgiler" bölümü; hiç satır yoksa bölüm de yoktur. */
-export function infoSection(d: FoyData, rows: InfoRow[], extraClass = ''): string {
+/** "Bilgiler" bölümü; hiç satır yoksa bölüm de yoktur. `cols`: tablo iki sütun. */
+export function infoSection(d: FoyData, rows: InfoRow[], opts: { cols?: boolean } = {}): string {
   if (!rows.length) return '';
-  return `<section class="info ${extraClass}"><div class="kicker">${esc(t(d.lang, 'foyDetails'))}</div>${specList(rows)}</section>`;
+  return `<section class="info"><div class="kicker">${esc(t(d.lang, 'foyDetails'))}</div>${specList(rows, opts.cols ? 'cols' : '')}</section>`;
 }
 
 export function footer(d: FoyData, opts: RenderOptions = {}): string {
