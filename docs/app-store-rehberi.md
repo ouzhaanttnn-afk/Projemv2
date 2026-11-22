@@ -1,5 +1,10 @@
 # iPhone uygulamasını TestFlight'a çıkarma rehberi
 
+**Durum (22 Kasım 2026): 1-5. adımlar tamamlandı; ilk derleme TestFlight'a
+yüklendi.** Kurulum, ekipteki hazır "Codemagic" App Store Connect bağlantısı
+ve `tradeup_distribution` sertifikasıyla yapıldı; 3. ve 4. adımlardaki yeni
+anahtar gerekmedi. Sıradaki: 6. adım.
+
 Bu adımlar yalnızca senin hesaplarınla yapılabilir. Bir kez yapılır;
 sonrasında her yeni sürüm tek tıkla derlenir. Menü adları değişmiş olabilir,
 takılırsan ekran görüntüsü gönder.

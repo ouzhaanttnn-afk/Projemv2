@@ -16,7 +16,7 @@ Son güncelleme: 22 Kasım 2026 (1. hafta yapıldı)
 | 2. hafta — Web sayfası ve WhatsApp denemesi | Tamamlandı; telefonda ve WhatsApp'ta çalıştı |
 | 3. hafta — Kartlar ve koleksiyon | Tamamlandı |
 | 4. hafta — 10-15 kişilik deneme | Hazır; kapıda, ürün sahibinin denemesi bekleniyor |
-| 5-6. hafta — Uygulamaya çevirme ve satış | Uygulama hazır; Apple ve Codemagic kurulumu bekleniyor. Satış, fiyat denemesine kadar bekliyor |
+| 5-6. hafta — Uygulamaya çevirme ve satış | İlk derleme TestFlight'a yüklendi; telefonda deneme bekleniyor. Satış, fiyat denemesine kadar bekliyor |
 | 7-8. hafta — Test sürümü ve App Store | Başlanmadı |
 
 Her adımı bitirince bu tabloyu güncelle.
@@ -120,7 +120,15 @@ Her adımı bitirince bu tabloyu güncelle.
   Şimdilik ücretsiz görünüyor; fiyat denemesine göre ücretli olabilir.
   MP3 kodlayıcı (LGPL lisanslı) lisans yüzünden kullanılmadı.
 - Simge ve açılış ekranı: `node tools/build-icons.ts`.
-- Bulutta derleme: `codemagic.yaml` (TestFlight'a yükler). Kurulum adımları
+- Bulutta derleme: `codemagic.yaml` (TestFlight'a yükler). Codemagic
+  uygulama kimliği `6b032fb5cec6dd9ec640c679`, iş akışı `ios-testflight`.
+  Ekibin hazır App Store Connect bağlantısı ("Codemagic") ve dağıtım
+  sertifikası (`tradeup_distribution`, 12 Eylül 2027) kullanılıyor; profil
+  `randombeat_appstore`. Derleme bu oturumdan Codemagic API'siyle
+  başlatılabiliyor (anahtar ortamın gizli ayarlarında). İlk başarılı
+  derleme 22 Kasım 2026.
+- Hesapta 4 dağıtım sertifikası var, Apple yenisine izin vermiyor; yeni
+  sertifika oluşturmaya çalışma, mevcut olanı kullan. Kurulum adımları
   `docs/app-store-rehberi.md`, mağaza metinleri `docs/app-store-metin.md`.
 - Gizlilik sayfası: sitede `/gizlilik.html`; iletişim e-postası
   `CONTACT_EMAIL` ile eklenecek (ürün sahibine sorulacak).
