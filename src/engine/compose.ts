@@ -37,8 +37,21 @@ export interface NoteEvent {
   alt: number; // 1 = open/long variant
 }
 
+/** Tempo steps the person can choose: each step is 5% (-20% .. +50%). */
+export const TEMPO_MIN = -4;
+export const TEMPO_MAX = 10;
+
+export interface ComposeOptions {
+  /** -4..10, 0 = the tempo the laugh picked itself */
+  tempoStep?: number;
+  /** used for the reply in a duet: take style, tempo and key from the first laugh */
+  force?: { styleId: string; bpm: number; root: number; scaleId: ScaleId };
+}
+
 export interface Score {
   text: string;
+  bars: number;
+  tempoStep: number;
   identityKey: string;
   styleId: string;
   styleName: string;
@@ -116,7 +129,7 @@ function allowedSpans(style: Style, segSteps: number): number[] {
   return spans.filter((s) => s <= segSteps && Number.isInteger(s));
 }
 
-export function compose(input: string): Score | null {
+export function compose(input: string, opts: ComposeOptions = {}): Score | null {
   const a = analyse(input);
   if (!a) return null;
 
@@ -125,21 +138,28 @@ export function compose(input: string): Score | null {
   const d = new Rng(hashString(a.text, 0x2545f491)); // details: every character counts
 
   // ---- global choices (order of rng calls is part of the format; do not reorder)
-  const style = STYLES[g.weighted(styleWeights(a))];
+  const force = opts.force;
+  const tempoStep = force ? 0 : clamp(Math.round(opts.tempoStep ?? 0), TEMPO_MIN, TEMPO_MAX);
+  let style = STYLES[g.weighted(styleWeights(a))];
+  if (force) style = STYLES.find((x) => x.id === force.styleId) ?? style;
   let bpm = lerp(style.tempo[0], style.tempo[1], g.float());
   if (a.allCaps) bpm *= 1.06;
   if (a.repetitive) bpm *= 1.03;
+  bpm *= 1 + 0.05 * tempoStep;
   bpm = Math.round(bpm * 10) / 10;
+  if (force) bpm = force.bpm;
   const stepDur = 60 / (bpm * style.stepsPerBeat);
   const swing = style.duple ? lerp(style.swing[0], style.swing[1], g.float()) : 0.5;
   if (!style.duple) g.float();
-  const root = g.int(12);
+  let root = g.int(12);
+  if (force) root = force.root;
   const scaleWeights = SCALE_IDS.map((id) => {
     let w = style.scales[id] ?? 0.3;
     if (a.turkishCount > 0 && (id === "hicaz" || id === "ussak")) w *= 2;
     return w;
   });
-  const scaleId = SCALE_IDS[g.weighted(scaleWeights)];
+  let scaleId = SCALE_IDS[g.weighted(scaleWeights)];
+  if (force) scaleId = force.scaleId;
   const scale = SCALES[scaleId].steps;
   const kit: number[] = [];
   for (let role = 0; role < 6; role++) {
@@ -341,6 +361,8 @@ export function compose(input: string): Score | null {
 
   return {
     text: a.text,
+    bars: BARS,
+    tempoStep,
     identityKey: a.identityKey,
     styleId: style.id,
     styleName: style.name,
@@ -368,5 +390,5 @@ export function tickToSeconds(score: Score, tick: number): number {
 }
 
 export function scoreDuration(score: Score): number {
-  return BARS * score.stepsPerBar * score.stepDur;
+  return score.bars * score.stepsPerBar * score.stepDur;
 }

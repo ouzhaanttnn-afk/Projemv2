@@ -1,0 +1,505 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Randombeat</title>
+<meta name="description" content="Gülüşünü yaz, beat olsun. Arkadaşın kendi random'uyla cevap versin.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Randombeat">
+<meta property="og:title" content="Randombeat: gülüşün beat oldu">
+<meta property="og:description" content="Dinle, sen de kendi random'unla cevap ver.">
+<meta property="og:image" content="__SITE__og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="theme-color" content="#f3f5f9" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0e1220" media="(prefers-color-scheme: dark)">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500;700&family=Space+Grotesk:wght@500;700&display=swap">
+<style>
+  /* Layout: one phone-width column; the laugh is a big keycap, the beat a strip of coloured hits. */
+  :root {
+    --bg: #f3f5f9; --surface: #ffffff; --ink: #161b2e; --muted: #5a6377; --line: #dbe0ea;
+    --accent: #a86c06; --accent-ink: #ffffff; --ok: #1d7a46; --warn: #a3470f;
+    --r0: #3b4ba8; --r1: #cf4d33; --r2: #7c879b; --r3: #0d8587; --r4: #b9850f; --r5: #a8327f;
+    --font-display: "Space Grotesk", "Segoe UI", system-ui, sans-serif;
+    --font-body: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+    --font-key: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
+    color-scheme: light;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0e1220; --surface: #161b2b; --ink: #e8ecf5; --muted: #9aa3b8; --line: #2a3146;
+      --accent: #e5a93a; --accent-ink: #1b1403; --ok: #4cc27f; --warn: #f08a4b;
+      --r0: #8c9bff; --r1: #ff8466; --r2: #a9b3c6; --r3: #3cc9c9; --r4: #f2c14e; --r5: #f07bcb;
+      color-scheme: dark;
+    }
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body {
+    background: var(--bg); color: var(--ink);
+    font: 400 16px/1.5 var(--font-body);
+    padding: env(safe-area-inset-top, 0px) max(16px, env(safe-area-inset-right, 0px)) env(safe-area-inset-bottom, 0px) max(16px, env(safe-area-inset-left, 0px));
+    -webkit-text-size-adjust: 100%;
+  }
+  main { max-width: 520px; margin: 0 auto; padding-block: 20px 48px; display: flex; flex-direction: column; gap: 22px; }
+  .brand { font: 700 1.05rem/1 var(--font-display); letter-spacing: -0.01em; display: flex; align-items: center; gap: 8px; color: var(--ink); text-decoration: none; }
+  .brand i { width: 18px; height: 18px; border-radius: 5px; background: var(--accent); display: inline-block; box-shadow: inset 0 -3px 0 rgba(0,0,0,.18); }
+  h1 { font: 700 1.75rem/1.15 var(--font-display); margin: 0; text-wrap: balance; letter-spacing: -0.015em; }
+  h2 { font: 700 1.15rem/1.2 var(--font-display); margin: 0; }
+  p { margin: 0; }
+  .muted { color: var(--muted); }
+  .small { font-size: 0.85rem; }
+  [hidden] { display: none !important; }
+
+  .stack { display: flex; flex-direction: column; gap: 12px; }
+  .key-input {
+    width: 100%; font: 700 1.25rem/1.3 var(--font-key); padding: 14px 16px; border-radius: 12px;
+    border: 1px solid var(--line); border-bottom-width: 4px; background: var(--surface); color: var(--ink);
+  }
+  .key-input::placeholder { color: var(--muted); opacity: .6; }
+  .key { font: 700 1.2rem/1.3 var(--font-key); padding: 6px 10px; border-radius: 8px; background: var(--surface); border: 1px solid var(--line); border-bottom-width: 4px; overflow-wrap: anywhere; align-self: flex-start; max-width: 100%; }
+  .keys { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+  .plus { font: 700 1.2rem/1 var(--font-display); color: var(--muted); }
+
+  .beat { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 14px; display: flex; flex-direction: column; gap: 12px; }
+  .beat-top { display: flex; gap: 14px; align-items: center; min-width: 0; }
+  .play { flex: none; width: 60px; height: 60px; border-radius: 50%; border: 0; background: var(--accent); color: var(--accent-ink); display: grid; place-items: center; cursor: pointer; }
+  .play svg { width: 22px; height: 22px; fill: currentColor; }
+  .play[aria-pressed="true"] { background: var(--ink); color: var(--bg); }
+  .play:disabled { opacity: .4; cursor: default; }
+  .desc { min-width: 0; font-size: 0.9rem; color: var(--muted); }
+  .desc b { color: var(--ink); font-weight: 600; display: block; font-size: 1rem; }
+  canvas.grid { width: 100%; height: 72px; display: block; }
+  .parts { display: grid; grid-template-columns: 2fr 2fr 2fr; font-size: 0.75rem; color: var(--muted); text-align: center; }
+  .parts span { border-top: 2px solid var(--line); padding-top: 4px; }
+
+  .tempo { display: flex; align-items: center; gap: 10px; }
+  .tempo .label { flex: 1; font-size: 0.9rem; color: var(--muted); }
+  .tempo output { font: 700 1rem/1 var(--font-key); min-width: 5.5ch; text-align: center; font-variant-numeric: tabular-nums; }
+  .round { width: 40px; height: 40px; border-radius: 50%; border: 1px solid var(--line); background: var(--surface); color: var(--ink); font: 600 1.3rem/1 var(--font-body); cursor: pointer; }
+  .round:disabled { opacity: .35; }
+
+  .actions { display: flex; flex-direction: column; gap: 10px; }
+  .btn { font: 600 1.05rem/1 var(--font-body); padding: 16px 18px; border-radius: 12px; border: 0; background: var(--accent); color: var(--accent-ink); cursor: pointer; text-align: center; text-decoration: none; }
+  .btn.ghost { background: transparent; color: var(--ink); border: 1px solid var(--line); }
+  .btn:disabled { opacity: .45; cursor: default; }
+  .link { color: var(--accent); font-weight: 600; text-decoration: none; }
+  button:focus-visible, input:focus-visible, a:focus-visible { outline: 3px solid var(--r0); outline-offset: 2px; }
+
+  .toast { position: fixed; left: 50%; bottom: calc(20px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%); background: var(--ink); color: var(--bg); padding: 10px 16px; border-radius: 10px; font-size: 0.95rem; max-width: calc(100% - 32px); }
+  .video-box { display: flex; flex-direction: column; gap: 10px; }
+  .video-box video { width: 100%; max-width: 360px; border-radius: 12px; border: 1px solid var(--line); background: #000; }
+  footer { font-size: 0.8rem; color: var(--muted); }
+</style>
+</head>
+<body>
+<main>
+  <a class="brand" href="./" id="home-link"><i></i>Randombeat</a>
+
+  <!-- 1. kendi gülüşünü yap -->
+  <section class="stack" id="view-make" hidden>
+    <h1>Gülüşünü yaz, beat olsun</h1>
+    <p class="muted">Grupta nasıl gülüyorsan öyle yaz: sjsjsj, aşkdjfşlkdj, ne gelirse.</p>
+    <label for="make-input" class="small muted">Gülüşün</label>
+    <input id="make-input" class="key-input" placeholder="sjsjsjŞ" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" maxlength="120" enterkeyhint="done">
+    <div id="make-beat"></div>
+    <div class="actions">
+      <button class="btn" id="make-send" type="button" disabled>Arkadaşına gönder</button>
+      <button class="btn ghost" id="make-video" type="button" disabled>Video olarak gönder (deneme)</button>
+    </div>
+  </section>
+
+  <!-- 2. sana bir gülüş geldi -->
+  <section class="stack" id="view-reply" hidden>
+    <h1>Biri sana güldü</h1>
+    <p class="muted">Önce dinle. Sonra kendi random'unla cevap ver; ikinizin beat'i birleşsin.</p>
+    <div id="reply-first"></div>
+    <label for="reply-input" class="small muted">Senin gülüşün</label>
+    <input id="reply-input" class="key-input" placeholder="ksksksk" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" maxlength="120" enterkeyhint="done">
+    <div id="reply-duet"></div>
+    <div class="actions">
+      <button class="btn" id="reply-send" type="button" disabled>Geri gönder</button>
+      <button class="btn ghost" id="reply-video" type="button" disabled>Video olarak gönder (deneme)</button>
+    </div>
+  </section>
+
+  <!-- 3. ikinizin beat'i -->
+  <section class="stack" id="view-duet" hidden>
+    <h1>İkinizin beat'i</h1>
+    <p class="muted">Önce ilk gülüş, sonra cevap, sonra ikisi birlikte.</p>
+    <div id="duet-beat"></div>
+    <div class="actions">
+      <button class="btn" id="duet-answer" type="button">Sen de cevap ver</button>
+      <button class="btn ghost" id="duet-send" type="button">Bu harmanı paylaş</button>
+    </div>
+  </section>
+
+  <section class="video-box" id="video-box" hidden>
+    <h2>Video</h2>
+    <p class="small muted" id="video-status"></p>
+    <video id="video-preview" playsinline controls hidden></video>
+    <button class="btn" id="video-share" type="button" hidden>Videoyu paylaş</button>
+    <a class="btn ghost" id="video-save" hidden>Videoyu kaydet</a>
+  </section>
+
+  <footer>Sesler telefonunda üretilir. Yazdığın gülüş yalnızca gönderdiğin bağlantının içinde durur; hiçbir yerde saklanmaz.</footer>
+</main>
+
+<div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+<audio id="player" preload="none" playsinline></audio>
+
+<script>/*__ENGINE__*/</script>
+<script>
+"use strict";
+const $ = (id) => document.getElementById(id);
+const PLAY = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4.5v15l13-7.5z"/></svg>';
+const STOP = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6h12v12H6z"/></svg>';
+const player = $("player");
+
+// ---------------------------------------------------------------- link
+const params = new URLSearchParams(location.search);
+const state = {
+  first: (params.get("g") || "").slice(0, 120),
+  reply: (params.get("c") || "").slice(0, 120),
+  tempo: clampTempo(parseInt(params.get("h") || "0", 10) || 0),
+};
+function clampTempo(n) { return Math.max(RB.TEMPO_MIN, Math.min(RB.TEMPO_MAX, n)); }
+function linkFor(first, reply, tempo) {
+  const p = new URLSearchParams();
+  p.set("g", first);
+  if (reply) p.set("c", reply);
+  if (tempo) p.set("h", String(tempo));
+  return location.origin + location.pathname + "?" + p.toString();
+}
+
+// ---------------------------------------------------------------- toast
+let toastTimer;
+function toast(msg) {
+  const t = $("toast");
+  t.textContent = msg;
+  t.hidden = false;
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => (t.hidden = true), 2600);
+}
+
+// ---------------------------------------------------------------- drawing
+function token(name) { return getComputedStyle(document.documentElement).getPropertyValue(name).trim(); }
+function drawGrid(canvas, score, progress) {
+  const dpr = window.devicePixelRatio || 1;
+  const w = canvas.clientWidth, h = canvas.clientHeight;
+  if (!w) return;
+  canvas.width = Math.round(w * dpr);
+  canvas.height = Math.round(h * dpr);
+  const ctx = canvas.getContext("2d");
+  ctx.scale(dpr, dpr);
+  paintGrid(ctx, score, 0, 0, w, h, progress, {
+    line: token("--line"), ink: token("--ink"), roles: [0, 1, 2, 3, 4, 5].map((r) => token(`--r${r}`)),
+  });
+}
+function paintGrid(ctx, score, x0, y0, w, h, progress, colors) {
+  const steps = score.bars * score.stepsPerBar;
+  const rowH = h / 6, cw = w / steps;
+  ctx.fillStyle = colors.line;
+  for (let b = 1; b < score.bars; b++) ctx.fillRect(x0 + Math.round(b * score.stepsPerBar * cw), y0, 1, h);
+  for (const e of score.events) {
+    ctx.globalAlpha = 0.35 + 0.65 * e.vel;
+    ctx.fillStyle = colors.roles[e.role];
+    ctx.fillRect(x0 + (e.tick / RB.TPS) * cw + 0.5, y0 + e.role * rowH + 1.5, Math.max(1.5, cw * 0.72), rowH - 3);
+  }
+  ctx.globalAlpha = 1;
+  if (progress != null) {
+    ctx.fillStyle = colors.ink;
+    ctx.fillRect(x0 + Math.round(progress * w), y0, 2, h);
+  }
+}
+
+// ---------------------------------------------------------------- beats
+// A beat card: play button, description, rhythm strip. `make` returns {score, pcm}.
+let current = null;
+const urls = new Map();
+function beatCard(box, key, make, opts = {}) {
+  box.innerHTML = "";
+  const built = make(false);
+  if (!built || !built.score) {
+    box.innerHTML = '<p class="small muted">Bu yazıdan beat çıkmadı. Bir iki harf daha yaz.</p>';
+    return null;
+  }
+  const score = built.score;
+  const d = RB.describe(score);
+  const el = document.createElement("div");
+  el.className = "beat";
+  el.innerHTML = `
+    <div class="beat-top">
+      <button class="play" type="button" aria-pressed="false" aria-label="Çal">${PLAY}</button>
+      <div class="desc"><b>${esc(d.style)} · ${Math.round(score.bpm)} tempo</b>${esc(d.key)}${score.bars === 6 ? "" : "<br>" + esc(d.kit.join(" · "))}</div>
+    </div>
+    <canvas class="grid" aria-hidden="true"></canvas>
+    ${score.bars === 6 ? `<div class="parts"><span>${esc(opts.firstLabel || "ilk gülüş")}</span><span>${esc(opts.replyLabel || "cevap")}</span><span>ikisi birlikte</span></div>` : ""}
+    ${opts.tempo ? `<div class="tempo"><span class="label">Hız</span><button class="round" type="button" data-d="-1" aria-label="Yavaşlat">−</button><output aria-live="polite">${Math.round(score.bpm)}</output><button class="round" type="button" data-d="1" aria-label="Hızlandır">+</button></div>` : ""}`;
+  box.appendChild(el);
+  const canvas = el.querySelector("canvas");
+  const btn = el.querySelector(".play");
+  requestAnimationFrame(() => drawGrid(canvas, score));
+  btn.addEventListener("click", () => {
+    if (current && current.btn === btn) return stop();
+    stop();
+    // build the audio right after the tap so phones allow playback
+    if (!urls.has(key)) {
+      const beat = make(true);
+      urls.set(key, URL.createObjectURL(new Blob([RB.encodeWav(beat.pcm)], { type: "audio/wav" })));
+    }
+    btn.innerHTML = STOP;
+    btn.setAttribute("aria-pressed", "true");
+    current = { btn, canvas, score };
+    player.src = urls.get(key);
+    player.currentTime = 0;
+    const p = player.play();
+    if (p && p.catch) p.catch(() => { stop(); toast("Ses çalınamadı. Telefonun sesini açıp tekrar dene."); });
+    tick();
+  });
+  if (opts.tempo) {
+    el.querySelectorAll(".round").forEach((b) => {
+      const dir = Number(b.dataset.d);
+      b.disabled = dir < 0 ? state.tempo <= RB.TEMPO_MIN : state.tempo >= RB.TEMPO_MAX;
+      b.addEventListener("click", () => {
+        state.tempo = clampTempo(state.tempo + dir);
+        stop();
+        opts.tempo();
+      });
+    });
+  }
+  el._redraw = () => drawGrid(canvas, score);
+  return score;
+}
+function stop() {
+  if (!current) return;
+  player.pause();
+  current.btn.innerHTML = PLAY;
+  current.btn.setAttribute("aria-pressed", "false");
+  drawGrid(current.canvas, current.score);
+  current = null;
+}
+function tick() {
+  if (!current) return;
+  if (player.duration) {
+    const loop = RB.scoreDuration(current.score);
+    drawGrid(current.canvas, current.score, (player.currentTime % loop) / loop);
+  }
+  requestAnimationFrame(tick);
+}
+player.addEventListener("ended", stop);
+function esc(s) { return String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]); }
+// a single laugh plays twice; a duet (6 bars) plays once
+const single = (text, tempo) => (full) => (full ? RB.makeBeat(text, 2, { tempoStep: tempo }) : { score: RB.compose(text, { tempoStep: tempo }) });
+const duo = (a, b, tempo) => (full) => (full ? RB.makeDuet(a, b, 1, { tempoStep: tempo }) : { score: RB.duet(a, b, { tempoStep: tempo }) });
+
+// ---------------------------------------------------------------- sharing
+async function shareLink(url, text) {
+  try { await navigator.clipboard.writeText(url); } catch (e) {}
+  if (navigator.share) {
+    try {
+      await navigator.share({ text: text + "\n" + url });
+      return;
+    } catch (e) {
+      if (e && e.name === "AbortError") return;
+    }
+  }
+  toast("Bağlantı kopyalandı. WhatsApp'a yapıştırabilirsin.");
+}
+
+// ---------------------------------------------------------------- video (experiment)
+// Records the beat with a simple animation into a video file, in real time.
+function pickVideoType() {
+  if (!window.MediaRecorder) return null;
+  // H.264 + AAC in MP4 is what WhatsApp plays everywhere; try it first
+  const types = [
+    "video/mp4;codecs=avc1.42E01E,mp4a.40.2",
+    "video/mp4;codecs=avc1,mp4a.40.2",
+    "video/mp4;codecs=avc1.42E01E",
+    "video/mp4;codecs=avc1",
+    "video/mp4",
+    "video/webm;codecs=vp9,opus",
+    "video/webm",
+  ];
+  return types.find((t) => MediaRecorder.isTypeSupported(t)) || null;
+}
+let videoFile = null;
+async function makeVideo(make, title, link) {
+  const box = $("video-box");
+  const status = $("video-status");
+  const preview = $("video-preview");
+  box.hidden = false;
+  preview.hidden = true;
+  $("video-share").hidden = true;
+  $("video-save").hidden = true;
+  box.scrollIntoView({ behavior: "smooth", block: "start" });
+  const type = pickVideoType();
+  if (!type) { status.textContent = "Bu tarayıcı video kaydedemiyor."; return; }
+  stop();
+  const beat = make(true);
+  const score = beat.score;
+  const seconds = beat.pcm.length / RB.SAMPLE_RATE;
+  const AC = window.AudioContext || window.webkitAudioContext;
+  const ac = new AC({ sampleRate: RB.SAMPLE_RATE });
+  await ac.resume();
+  const buf = ac.createBuffer(1, beat.pcm.length, RB.SAMPLE_RATE);
+  const ch = buf.getChannelData(0);
+  for (let i = 0; i < beat.pcm.length; i++) ch[i] = beat.pcm[i] / 32768;
+  const src = ac.createBufferSource();
+  src.buffer = buf;
+  const dest = ac.createMediaStreamDestination();
+  src.connect(dest);
+
+  const cv = document.createElement("canvas");
+  cv.width = 720; cv.height = 720;
+  const ctx = cv.getContext("2d");
+  const stream = new MediaStream([...cv.captureStream(30).getVideoTracks(), ...dest.stream.getAudioTracks()]);
+  const rec = new MediaRecorder(stream, { mimeType: type, videoBitsPerSecond: 1500000, audioBitsPerSecond: 128000 });
+  const chunks = [];
+  rec.ondataavailable = (e) => e.data.size && chunks.push(e.data);
+  const done = new Promise((res) => (rec.onstop = res));
+  const colors = { line: "#2a3146", ink: "#e8ecf5", roles: ["#8c9bff", "#ff8466", "#a9b3c6", "#3cc9c9", "#f2c14e", "#f07bcb"] };
+  const short = link.replace(/^https?:\/\//, "");
+  const t0 = ac.currentTime + 0.15;
+  function frame() {
+    if (rec.state !== "recording") return; // a late frame must not overwrite "Hazır"
+    const t = ac.currentTime - t0;
+    const loop = RB.scoreDuration(score);
+    ctx.fillStyle = "#0e1220"; ctx.fillRect(0, 0, 720, 720);
+    ctx.fillStyle = "#e5a93a"; ctx.fillRect(48, 52, 26, 26);
+    ctx.fillStyle = "#e8ecf5"; ctx.font = "700 32px 'Space Grotesk', sans-serif"; ctx.fillText("Randombeat", 88, 77);
+    ctx.font = "700 44px 'JetBrains Mono', monospace";
+    wrapText(ctx, title, 48, 180, 624, 54, 3);
+    ctx.font = "500 24px 'Inter', sans-serif"; ctx.fillStyle = "#9aa3b8";
+    const d = RB.describe(score);
+    ctx.fillText(`${d.style} · ${Math.round(score.bpm)} tempo`, 48, 380);
+    paintGrid(ctx, score, 48, 420, 624, 150, t > 0 ? (t % loop) / loop : null, colors);
+    ctx.fillStyle = "#e5a93a"; ctx.font = "600 26px 'Inter', sans-serif";
+    ctx.fillText("Sen de random'unla cevap ver:", 48, 630);
+    ctx.fillStyle = "#e8ecf5"; ctx.font = "500 22px 'JetBrains Mono', monospace";
+    ctx.fillText(short.length > 48 ? short.slice(0, 47) + "…" : short, 48, 668);
+    status.textContent = t < 0 ? "Video hazırlanıyor…" : `Video hazırlanıyor… ${Math.max(0, Math.ceil(seconds - t))} sn`;
+    if (rec.state === "recording") requestAnimationFrame(frame);
+  }
+  rec.start(250);
+  src.start(t0);
+  requestAnimationFrame(frame);
+  // stop when the sound ends; the timer is a safety net if "ended" never fires
+  const finish = () => rec.state === "recording" && rec.stop();
+  src.onended = () => setTimeout(finish, 200);
+  setTimeout(finish, (seconds + 1.5) * 1000);
+  await done;
+  ac.close();
+  const blob = new Blob(chunks, { type: type.split(";")[0] });
+  const ext = type.startsWith("video/mp4") ? "mp4" : "webm";
+  videoFile = new File([blob], `randombeat.${ext}`, { type: blob.type });
+  const url = URL.createObjectURL(blob);
+  preview.src = url;
+  preview.hidden = false;
+  const codec = type.includes("avc1") && type.includes("mp4a")
+    ? "H.264 + AAC"
+    : type.includes("avc1")
+      ? "H.264, ses biçimi belirsiz"
+      : type === "video/mp4"
+        ? "biçim belirsiz"
+        : "WhatsApp'ta oynamayabilir";
+  status.textContent = `Hazır: ${(blob.size / 1048576).toFixed(1)} MB, ${ext.toUpperCase()} (${codec}). Bağlantı panoya kopyalandı; WhatsApp'ta videonun altına yapıştırabilirsin.`;
+  try { await navigator.clipboard.writeText(link); } catch (e) {}
+  const canShareFile = navigator.canShare && navigator.canShare({ files: [videoFile] });
+  $("video-share").hidden = !canShareFile;
+  const save = $("video-save");
+  save.href = url;
+  save.download = videoFile.name;
+  save.hidden = false;
+}
+function wrapText(ctx, text, x, y, maxW, lineH, maxLines) {
+  const chars = [...text];
+  let line = "", lines = 0;
+  for (const c of chars) {
+    if (ctx.measureText(line + c).width > maxW) {
+      ctx.fillText(line, x, y + lines * lineH);
+      line = c;
+      if (++lines >= maxLines) return;
+    } else line += c;
+  }
+  ctx.fillText(line, x, y + lines * lineH);
+}
+$("video-share").addEventListener("click", async () => {
+  if (!videoFile) return;
+  try { await navigator.share({ files: [videoFile] }); } catch (e) {}
+});
+
+// ---------------------------------------------------------------- views
+function debounce(fn, ms) { let t; return (...a) => { clearTimeout(t); t = setTimeout(() => fn(...a), ms); }; }
+
+function showMake() {
+  $("view-make").hidden = false;
+  const input = $("make-input");
+  const render = () => {
+    const text = input.value;
+    const has = text.trim().length > 0;
+    $("make-send").disabled = !has;
+    $("make-video").disabled = !has;
+    if (!has) { $("make-beat").innerHTML = ""; return; }
+    beatCard($("make-beat"), "m:" + text + ":" + state.tempo, single(text, state.tempo), { tempo: render });
+  };
+  input.addEventListener("input", debounce(() => { stop(); render(); }, 250));
+  input.addEventListener("keydown", (e) => { if (e.key === "Enter") input.blur(); });
+  $("make-send").addEventListener("click", () => shareLink(linkFor(input.value, "", state.tempo), "Bunu dinle, sen de random'unla cevap ver:"));
+  $("make-video").addEventListener("click", () => makeVideo(single(input.value, state.tempo), input.value, linkFor(input.value, "", state.tempo)));
+  if (state.first) input.value = state.first;
+  render();
+}
+
+function showReply() {
+  $("view-reply").hidden = false;
+  // the friend hears the sender's tempo; no tempo control here
+  beatCard($("reply-first"), "f:" + state.first + ":" + state.tempo, single(state.first, state.tempo));
+  const keyEl = document.createElement("span");
+  keyEl.className = "key";
+  keyEl.textContent = state.first;
+  $("reply-first").prepend(keyEl);
+  const input = $("reply-input");
+  const render = () => {
+    const text = input.value;
+    const has = text.trim().length > 0;
+    $("reply-send").disabled = !has;
+    $("reply-video").disabled = !has;
+    if (!has) { $("reply-duet").innerHTML = ""; return; }
+    beatCard($("reply-duet"), "d:" + state.first + "|" + text + ":" + state.tempo, duo(state.first, text, state.tempo), { firstLabel: "o", replyLabel: "sen" });
+  };
+  input.addEventListener("input", debounce(() => { stop(); render(); }, 250));
+  input.addEventListener("keydown", (e) => { if (e.key === "Enter") input.blur(); });
+  $("reply-send").addEventListener("click", () => shareLink(linkFor(state.first, input.value, state.tempo), "Cevabım geldi, ikimizin beat'i:"));
+  $("reply-video").addEventListener("click", () => makeVideo(duo(state.first, input.value, state.tempo), state.first + " + " + input.value, linkFor(state.first, input.value, state.tempo)));
+}
+
+function showDuet() {
+  $("view-duet").hidden = false;
+  const box = $("duet-beat");
+  const keys = document.createElement("div");
+  keys.className = "keys";
+  keys.innerHTML = `<span class="key"></span><span class="plus">+</span><span class="key"></span>`;
+  keys.children[0].textContent = state.first;
+  keys.children[2].textContent = state.reply;
+  beatCard(box, "d:" + state.first + "|" + state.reply + ":" + state.tempo, duo(state.first, state.reply, state.tempo));
+  box.prepend(keys);
+  // answering continues the chain: the reply becomes the laugh you answer
+  $("duet-answer").addEventListener("click", () => { location.href = linkFor(state.reply, "", 0); });
+  $("duet-send").addEventListener("click", () => shareLink(location.href, "İkimizin beat'i:"));
+}
+
+if (state.first && state.reply) showDuet();
+else if (state.first) showReply();
+else showMake();
+
+const redrawAll = () => document.querySelectorAll(".beat").forEach((b) => b._redraw && b._redraw());
+window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", redrawAll);
+let rt;
+window.addEventListener("resize", () => { clearTimeout(rt); rt = setTimeout(redrawAll, 120); });
+</script>
+</body>
+</html>

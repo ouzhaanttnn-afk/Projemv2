@@ -12,8 +12,8 @@ Son güncelleme: 22 Kasım 2026 (1. hafta yapıldı)
 | Adım | Durum |
 |---|---|
 | Fikir, araştırma, plan | Tamamlandı |
-| 1. hafta — Ses | Yapıldı; kapıda, ürün sahibinin dinlemesi bekleniyor |
-| 2. hafta — Web sayfası ve WhatsApp denemesi | Başlanmadı |
+| 1. hafta — Ses | Tamamlandı; ürün sahibi beğendi |
+| 2. hafta — Web sayfası ve WhatsApp denemesi | Sayfa hazır; yayına alma ve telefonda deneme bekleniyor |
 | 3. hafta — Kartlar ve koleksiyon | Başlanmadı |
 | 4. hafta — 10-15 kişilik deneme | Başlanmadı |
 | 5-6. hafta — Uygulamaya çevirme ve satış | Başlanmadı |
@@ -44,6 +44,27 @@ Her adımı bitirince bu tabloyu güncelle.
     `tools/calibrate.ts` ile otomatik ayarlandı, çok kalın sesler kısıldı.
   - iPhone'da aynı sesin çıktığı burada denenemedi; dinleme sayfası bunu
     telefonda kendisi kontrol edip gösteriyor.
+
+### 2. hafta notları
+
+- Web uygulaması `app/` içinde; `npm run app` ile `app/dist/` klasörüne
+  (index.html + og.png) üretilir. Sunucusuz, sabit bir site.
+  Önizleme resmi için `SITE_URL=https://.../ npm run app` ile kurulmalı.
+- Bağlantı biçimi: `?g=<gülüş>` (tek gülüş), `?g=<ilk>&c=<cevap>` (harman),
+  `&h=<hız adımı>` (-4..10, her adım %5). Gülüş bağlantıda açık yazıyla durur.
+- Ürün sahibinin isteğiyle hız ayarı eklendi (−%20 … +%50). Ayar bağlantıyla
+  gider; arkadaş aynı hızda duyar. Cevap veren hızı değiştiremez.
+- Harman 6 ölçü: ilk gülüş (2), cevap (2), ikisi birlikte (2). Cevap, ilk
+  gülüşün tarzına, hızına ve tonuna uyar ama kendi seslerini korur.
+  Birlikte bölümünde ilk gülüş kalın vuruş, bas ve melodiyi; cevap tok vuruş,
+  tıkırtı, baharat ve bir oktav yukarıda melodiyi çalar.
+- "Sen de cevap ver" zinciri sürdürür: harmanı alan kişi, cevabı yeni ilk
+  gülüş olarak alıp kendi random'uyla cevaplar.
+- Video (deneme): sayfa beat'i gerçek zamanlı kaydeder (720x720 MP4). Test
+  tarayıcısında H.264 görüntü + Opus ses çıktı; WhatsApp'ın oynatıp
+  oynatmadığı gerçek telefonda görülmeli.
+- Her beat'e özel önizleme resmi henüz yok (sunucu işlevi gerektirir); şimdilik
+  tek bir genel önizleme resmi var.
 
 ---
 

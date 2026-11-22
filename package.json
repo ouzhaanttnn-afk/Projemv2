@@ -8,7 +8,8 @@
     "test": "node tools/test-engine.ts",
     "benzersizlik": "node tools/uniqueness.ts",
     "ornekler": "node tools/render-examples.ts",
-    "dinle": "node tools/build-listen.ts"
+    "dinle": "node tools/build-listen.ts",
+    "app": "node tools/build-app.ts --og"
   },
   "devDependencies": {
     "esbuild": "0.25.10"

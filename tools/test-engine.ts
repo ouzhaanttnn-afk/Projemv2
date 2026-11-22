@@ -1,5 +1,5 @@
 // Ses motorunun temel testleri. Çalıştır: npm test
-import { analyse, compose, makeBeat, pcmChecksum, TPS } from "../src/engine/index.ts";
+import { analyse, compose, makeBeat, makeDuet, pcmChecksum, TPS } from "../src/engine/index.ts";
 import { lowerTR } from "../src/engine/text.ts";
 import { SPICE, BASS, MELODY } from "../src/engine/styles.ts";
 
@@ -62,6 +62,27 @@ for (const v of a1.pcm) peak = Math.max(peak, Math.abs(v));
 check("Ses taşmıyor (tepe -1 dB civarı)", peak <= 29200 && peak > 28000, `tepe ${peak}`);
 const secs = a1.pcm.length / 44100;
 check("Beat 5-15 saniye arası", secs > 5 && secs < 15, `${secs.toFixed(1)} sn`);
+
+// hız ayarı
+const fast = compose("sjsjsj", { tempoStep: 4 })!;
+const slow = compose("sjsjsj", { tempoStep: -4 })!;
+check("Hız ayarı tempoyu değiştiriyor, beat'in geri kalanı aynı", fast.bpm > s1.bpm && slow.bpm < s1.bpm && fast.kit.join() === s1.kit.join() && fast.events.length === s1.events.length, `${slow.bpm} / ${s1.bpm} / ${fast.bpm}`);
+check("Hız ayarı sınırların dışına çıkmıyor", compose("sjsjsj", { tempoStep: 99 })!.tempoStep === 10);
+
+// harmanlama
+const d1 = makeDuet("sjsjsj", "kdkdkdŞ")!;
+const d2 = makeDuet("sjsjsj", "kdkdkdŞ")!;
+check("Aynı iki gülüş her zaman aynı harmanı veriyor", pcmChecksum(d1.pcm) === pcmChecksum(d2.pcm));
+check("Harman 6 ölçü ve ilk gülüşün hızında", d1.score.bars === 6 && d1.score.bpm === s1.bpm);
+const replyAlone = compose("kdkdkdŞ", { force: { styleId: s1.styleId, bpm: s1.bpm, root: s1.root, scaleId: s1.scaleId } })!;
+const bar = s1.stepsPerBar * TPS;
+const firstPart = d1.score.events.filter((e) => e.tick < 2 * bar).length;
+const replyPart = d1.score.events.filter((e) => e.tick >= 2 * bar && e.tick < 4 * bar).length;
+const together = d1.score.events.filter((e) => e.tick >= 4 * bar).length;
+check("Önce ilk gülüş, sonra cevap, sonra ikisi birlikte", firstPart > 0 && replyPart > 0 && together > 0, `${firstPart} / ${replyPart} / ${together}`);
+check("Cevap kendi seslerini koruyor", replyAlone.kit.join() !== s1.kit.join());
+const swapped = makeDuet("kdkdkdŞ", "sjsjsj")!;
+check("Sıra önemli: kim önce gönderdiyse onun hızı", pcmChecksum(swapped.pcm) !== pcmChecksum(d1.pcm));
 
 if (failed) {
   console.log(`\n${failed} test başarısız`);

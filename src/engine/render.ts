@@ -2,7 +2,8 @@
 // one channel, so left/right separation would be lost anyway.
 
 import { combine, hashString } from "./hash.ts";
-import { TPS, compose, scoreDuration, tickToSeconds, type Score } from "./compose.ts";
+import { TPS, compose, scoreDuration, tickToSeconds, type ComposeOptions, type Score } from "./compose.ts";
+import { duet } from "./duet.ts";
 import { SAMPLE_RATE, renderHit } from "./synth.ts";
 import { TAU, dcos, dexp, dsin, dtanh } from "./dmath.ts";
 
@@ -153,8 +154,15 @@ export interface Beat {
   pcm: Int16Array;
 }
 
-export function makeBeat(text: string, loops = 1): Beat | null {
-  const score = compose(text);
+export function makeBeat(text: string, loops = 1, opts: ComposeOptions = {}): Beat | null {
+  const score = compose(text, opts);
+  if (!score) return null;
+  return { score, pcm: toPCM16(renderScore(score, loops)) };
+}
+
+/** The first laugh, then the reply, then both together. */
+export function makeDuet(first: string, reply: string, loops = 1, opts: ComposeOptions = {}): Beat | null {
+  const score = duet(first, reply, opts);
   if (!score) return null;
   return { score, pcm: toPCM16(renderScore(score, loops)) };
 }
