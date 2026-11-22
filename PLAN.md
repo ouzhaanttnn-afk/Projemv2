@@ -129,6 +129,21 @@ Her adımı bitirince bu tabloyu güncelle.
 - Mac olmadığı için uygulama burada derlenemedi; ilk gerçek derleme
   Codemagic'te olacak. Swift tarafında yalnızca iki küçük satır değişti.
 
+### Arayüz notları
+
+- Üç yön prototipi (`web/yonler.template.html`) arasından ürün sahibi
+  "Dans pisti"ni seçti: Türkçe Q klavye ışıklı bir dans pisti, gülüşün
+  tuşları yanar, vuruşlar karoları yakar. Yalnızca koyu tema.
+- Renkler: gece laciverti zemin; nane yeşili sen, pembe arkadaşın, sarı
+  melodi ve ikinizin ortak harfleri. Yumuşak gölge yerine sert kaydırılmış
+  gölgeler. Yazı tipleri: başlıklar Unbounded, metin ve gülüşler Onest
+  (Unbounded'da j ve ı ayırt edilmiyor).
+- Renk yalnızca gülüşün kendi tuşlarında; diğer karolar vuruşta sadece
+  aydınlanır. Harmanda önce ilk gülüşün, sonra cevabın tuşları dans eder.
+- İlk açılışta üç adımlık tanıtım (yalnızca bağlantısız ilk ziyarette).
+- Kart kapakları, paylaşılan video, WhatsApp önizlemesi, simge ve açılış
+  ekranı aynı dile geçirildi.
+
 ---
 
 ## 1. Ürün sahibiyle çalışma kuralları

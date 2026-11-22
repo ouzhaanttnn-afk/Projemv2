@@ -2,7 +2,7 @@
   "appId": "com.lumoza.randombeat",
   "appName": "Randombeat",
   "webDir": "app/native-dist",
-  "backgroundColor": "#f3f5f9",
+  "backgroundColor": "#070b1a",
   "ios": {
     "contentInset": "never",
     "scheme": "Randombeat"

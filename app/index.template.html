@@ -12,29 +12,29 @@
 <meta property="og:image" content="__SITE__og.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta name="theme-color" content="#f3f5f9" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#0e1220" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#070b1a">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500;700&family=Space+Grotesk:wght@500;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700;800&family=Unbounded:wght@500;800&display=swap">
 <style>
-  /* Layout: one phone-width column; the laugh is a big keycap, the beat a strip of coloured hits. */
+  /* Direction C, "Dans pisti": the Turkish Q keyboard is a light-up dance floor.
+     Night navy ground, mint for you, pink for your friend, yellow for the melody.
+     Hard offset shadows instead of soft ones: tiles, not cards. Dark only, by choice. */
   :root {
-    --bg: #f3f5f9; --surface: #ffffff; --ink: #161b2e; --muted: #5a6377; --line: #dbe0ea;
-    --accent: #a86c06; --accent-ink: #ffffff; --ok: #1d7a46; --warn: #a3470f;
-    --r0: #3b4ba8; --r1: #cf4d33; --r2: #7c879b; --r3: #0d8587; --r4: #b9850f; --r5: #a8327f;
-    --font-display: "Space Grotesk", "Segoe UI", system-ui, sans-serif;
-    --font-body: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
-    --font-key: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
-    color-scheme: light;
-  }
-  @media (prefers-color-scheme: dark) {
-    :root {
-      --bg: #0e1220; --surface: #161b2b; --ink: #e8ecf5; --muted: #9aa3b8; --line: #2a3146;
-      --accent: #e5a93a; --accent-ink: #1b1403; --ok: #4cc27f; --warn: #f08a4b;
-      --r0: #8c9bff; --r1: #ff8466; --r2: #a9b3c6; --r3: #3cc9c9; --r4: #f2c14e; --r5: #f07bcb;
-      color-scheme: dark;
-    }
+    --bg: #070b1a;
+    --panel: #0e1630;
+    --panel-2: #121c3c;
+    --line: #22305c;
+    --ink: #eaf2ff;
+    --muted: #a9b8da;
+    --mint: #3dfcd1;
+    --pink: #ff4fd8;
+    --yellow: #ffe14d;
+    --on-mint: #04121a;
+    --on-pink: #1a0416;
+    --font-display: "Unbounded", "Arial Black", system-ui, sans-serif;
+    --font-body: "Onest", system-ui, -apple-system, "Segoe UI", sans-serif;
+    color-scheme: dark;
   }
   * { box-sizing: border-box; }
   html, body { margin: 0; }
@@ -44,93 +44,191 @@
     padding: env(safe-area-inset-top, 0px) max(16px, env(safe-area-inset-right, 0px)) env(safe-area-inset-bottom, 0px) max(16px, env(safe-area-inset-left, 0px));
     -webkit-text-size-adjust: 100%;
   }
-  main { max-width: 520px; margin: 0 auto; padding-block: 20px 48px; display: flex; flex-direction: column; gap: 22px; }
-  .brand { font: 700 1.05rem/1 var(--font-display); letter-spacing: -0.01em; display: flex; align-items: center; gap: 8px; color: var(--ink); text-decoration: none; }
-  .brand i { width: 18px; height: 18px; border-radius: 5px; background: var(--accent); display: inline-block; box-shadow: inset 0 -3px 0 rgba(0,0,0,.18); }
-  h1 { font: 700 1.75rem/1.15 var(--font-display); margin: 0; text-wrap: balance; letter-spacing: -0.015em; }
-  h2 { font: 700 1.15rem/1.2 var(--font-display); margin: 0; }
+  main { max-width: 520px; margin: 0 auto; padding-block: 16px 48px; display: flex; flex-direction: column; gap: 22px; }
+  [hidden] { display: none !important; }
+  h1 { font: 800 1.55rem/1.15 var(--font-display); margin: 0; text-wrap: balance; letter-spacing: -0.01em; }
+  h2 { font: 800 1.05rem/1.2 var(--font-display); margin: 0; }
   p { margin: 0; }
   .muted { color: var(--muted); }
   .small { font-size: 0.85rem; }
-  [hidden] { display: none !important; }
+  button:focus-visible, input:focus-visible, a:focus-visible { outline: 3px solid var(--yellow); outline-offset: 3px; }
 
-  .stack { display: flex; flex-direction: column; gap: 12px; }
-  .key-input {
-    width: 100%; font: 700 1.25rem/1.3 var(--font-key); padding: 14px 16px; border-radius: 12px;
-    border: 1px solid var(--line); border-bottom-width: 4px; background: var(--surface); color: var(--ink);
-  }
-  .key-input::placeholder { color: var(--muted); opacity: .6; }
-  .key { font: 700 1.2rem/1.3 var(--font-key); padding: 6px 10px; border-radius: 8px; background: var(--surface); border: 1px solid var(--line); border-bottom-width: 4px; overflow-wrap: anywhere; align-self: flex-start; max-width: 100%; }
+  /* top bar */
+  .top { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding-top: 6px; }
+  .brand { display: flex; align-items: center; gap: 10px; color: var(--ink); text-decoration: none; font: 800 1rem/1 var(--font-display); }
+  .brand i { width: 20px; height: 20px; border-radius: 4px; background: var(--mint); transform: skewX(-12deg); box-shadow: 3px 3px 0 var(--pink); display: inline-block; }
+  .coll-link { font: 600 0.9rem/1 var(--font-body); color: var(--ink); text-decoration: none; padding: 10px 14px; border: 1px solid var(--line); border-radius: 12px; background: var(--panel); white-space: nowrap; }
+  .coll-link b { color: var(--yellow); font-variant-numeric: tabular-nums; margin-left: 6px; }
+
+  .stack { display: flex; flex-direction: column; gap: 14px; }
+  .lead { color: var(--muted); }
+
+  /* the laugh as a key */
+  .key { font: 700 1.1rem/1.3 var(--font-body); padding: 6px 12px; border-radius: 10px; background: var(--panel); border: 1px solid var(--line); border-bottom: 3px solid var(--mint); overflow-wrap: anywhere; max-width: 100%; align-self: flex-start; }
+  .key.them { border-bottom-color: var(--pink); }
   .keys { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
-  .plus { font: 700 1.2rem/1 var(--font-display); color: var(--muted); }
+  .plus { font: 800 1rem/1 var(--font-display); color: var(--muted); }
+  .key-input {
+    width: 100%; font: 700 1.25rem/1.3 var(--font-body); padding: 15px 16px; border-radius: 14px;
+    border: 1px solid var(--line); background: var(--panel); color: var(--ink); caret-color: var(--mint);
+    box-shadow: inset 0 -3px 0 var(--line);
+  }
+  .key-input::placeholder { color: var(--muted); opacity: 0.55; }
+  label.lbl { font-size: 0.85rem; color: var(--muted); }
 
-  .beat { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 14px; display: flex; flex-direction: column; gap: 12px; }
-  .beat-top { display: flex; gap: 14px; align-items: center; min-width: 0; }
-  .play { flex: none; width: 60px; height: 60px; border-radius: 50%; border: 0; background: var(--accent); color: var(--accent-ink); display: grid; place-items: center; cursor: pointer; }
-  .play svg { width: 22px; height: 22px; fill: currentColor; }
-  .play[aria-pressed="true"] { background: var(--ink); color: var(--bg); }
-  .play:disabled { opacity: .4; cursor: default; }
-  .desc { min-width: 0; font-size: 0.9rem; color: var(--muted); }
-  .desc b { color: var(--ink); font-weight: 600; display: block; font-size: 1rem; }
-  canvas.grid { width: 100%; height: 72px; display: block; }
-  .parts { display: grid; grid-template-columns: 2fr 2fr 2fr; font-size: 0.75rem; color: var(--muted); text-align: center; }
-  .parts span { border-top: 2px solid var(--line); padding-top: 4px; }
-
+  /* beat card: the dance floor, then controls */
+  .beat { background: var(--panel); border: 1px solid var(--line); border-radius: 20px; padding: 12px 12px 14px; display: flex; flex-direction: column; gap: 12px; }
+  canvas.floor { width: 100%; aspect-ratio: 1.25; display: block; border-radius: 12px; max-width: 100%; }
+  .beat-row { display: flex; gap: 14px; align-items: center; min-width: 0; }
+  .play { flex: none; width: 64px; height: 64px; border-radius: 18px; border: 0; background: var(--mint); color: var(--on-mint); display: grid; place-items: center; cursor: pointer; box-shadow: 5px 5px 0 var(--pink); transition: transform 0.08s; }
+  .play:active { transform: translate(3px, 3px); box-shadow: 2px 2px 0 var(--pink); }
+  .play svg { width: 24px; height: 24px; fill: currentColor; }
+  .play[aria-pressed="true"] { background: var(--yellow); }
+  .desc { min-width: 0; color: var(--muted); font-size: 0.9rem; }
+  .desc b { color: var(--ink); display: block; font: 800 0.95rem/1.3 var(--font-display); }
+  .rare-badge { display: inline-block; margin-top: 4px; font-size: 0.78rem; font-weight: 600; color: var(--yellow); }
+  .parts { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; font-size: 0.75rem; color: var(--muted); text-align: center; }
+  .parts span { padding-top: 5px; border-top: 3px solid var(--line); }
+  .parts span:nth-child(1) { border-top-color: var(--pa, var(--mint)); }
+  .parts span:nth-child(2) { border-top-color: var(--pb, var(--pink)); }
+  .parts span:nth-child(3) { border-top-color: var(--yellow); }
   .tempo { display: flex; align-items: center; gap: 10px; }
   .tempo .label { flex: 1; font-size: 0.9rem; color: var(--muted); }
-  .tempo output { font: 700 1rem/1 var(--font-key); min-width: 5.5ch; text-align: center; font-variant-numeric: tabular-nums; }
-  .round { width: 40px; height: 40px; border-radius: 50%; border: 1px solid var(--line); background: var(--surface); color: var(--ink); font: 600 1.3rem/1 var(--font-body); cursor: pointer; }
-  .round:disabled { opacity: .35; }
+  .tempo output { font: 800 1rem/1 var(--font-display); min-width: 4.5ch; text-align: center; font-variant-numeric: tabular-nums; color: var(--yellow); }
+  .round { width: 42px; height: 42px; border-radius: 12px; border: 1px solid var(--line); background: var(--panel-2); color: var(--ink); font: 600 1.3rem/1 var(--font-body); cursor: pointer; }
+  .round:disabled { opacity: 0.35; }
 
-  .actions { display: flex; flex-direction: column; gap: 10px; }
-  .btn { font: 600 1.05rem/1 var(--font-body); padding: 16px 18px; border-radius: 12px; border: 0; background: var(--accent); color: var(--accent-ink); cursor: pointer; text-align: center; text-decoration: none; }
-  .btn.ghost { background: transparent; color: var(--ink); border: 1px solid var(--line); }
-  .btn:disabled { opacity: .45; cursor: default; }
-  .link { color: var(--accent); font-weight: 600; text-decoration: none; }
-  button:focus-visible, input:focus-visible, a:focus-visible { outline: 3px solid var(--r0); outline-offset: 2px; }
+  /* actions */
+  .actions { display: flex; flex-direction: column; gap: 12px; }
+  .btn { font: 800 0.95rem/1.2 var(--font-display); padding: 17px 18px; border-radius: 16px; border: 0; background: var(--pink); color: var(--on-pink); cursor: pointer; text-align: center; text-decoration: none; box-shadow: 5px 5px 0 var(--mint); }
+  .btn:active { transform: translate(3px, 3px); box-shadow: 2px 2px 0 var(--mint); }
+  .btn.ghost { background: var(--panel); color: var(--ink); border: 1px solid var(--line); box-shadow: none; font: 600 1rem/1.2 var(--font-body); }
+  .btn:disabled { opacity: 0.4; cursor: default; box-shadow: none; }
+  .saved { font-size: 0.85rem; color: var(--mint); }
 
-  .toast { position: fixed; left: 50%; bottom: calc(20px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%); background: var(--ink); color: var(--bg); padding: 10px 16px; border-radius: 10px; font-size: 0.95rem; max-width: calc(100% - 32px); }
-  .video-box { display: flex; flex-direction: column; gap: 10px; }
-  .video-box video { width: 100%; max-width: 360px; border-radius: 12px; border: 1px solid var(--line); background: #000; }
-  footer { font-size: 0.8rem; color: var(--muted); }
-  .top { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
-  .coll-link { font: 600 0.9rem/1 var(--font-body); color: var(--ink); text-decoration: none; padding: 9px 12px; border: 1px solid var(--line); border-radius: 999px; background: var(--surface); white-space: nowrap; }
-  .coll-link b { color: var(--accent); font-variant-numeric: tabular-nums; }
-  .cardgrid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
-  .card { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 8px; display: flex; flex-direction: column; gap: 6px; text-align: left; font: inherit; color: inherit; cursor: pointer; min-width: 0; }
-  .card[data-rare="1"] { border-color: var(--accent); box-shadow: inset 0 0 0 1px var(--accent); }
-  .card canvas { width: 100%; aspect-ratio: 1; border-radius: 9px; display: block; max-width: 100%; }
-  .card .ck { font: 700 0.85rem/1.25 var(--font-key); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .card .cm { font-size: 0.75rem; color: var(--muted); display: flex; flex-direction: column; align-items: flex-start; gap: 6px; }
-  .badge { font: 600 0.7rem/1 var(--font-body); padding: 3px 6px; border-radius: 999px; background: var(--bg); border: 1px solid var(--line); color: var(--muted); white-space: nowrap; }
-  .badge.cift { color: var(--r3); border-color: var(--r3); }
-  .badge.gelen { color: var(--r0); border-color: var(--r0); }
-  .rares { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
-  .rare { border: 1px dashed var(--line); border-radius: 12px; padding: 10px; font-size: 0.82rem; color: var(--muted); display: flex; flex-direction: column; gap: 4px; min-width: 0; }
-  .rare b { color: var(--ink); font-size: 0.9rem; }
-  .rare[data-found="1"] { border-style: solid; border-color: var(--accent); }
-  .rare[data-found="1"] b { color: var(--accent); }
-  .detail { display: flex; flex-direction: column; gap: 10px; }
-  .saved { font-size: 0.85rem; color: var(--ok); }
-  .shop { display: flex; flex-direction: column; gap: 8px; border-top: 1px solid var(--line); padding-top: 14px; }
+  /* intro */
+  .intro { display: flex; flex-direction: column; gap: 16px; }
+  .intro canvas.floor { aspect-ratio: 1; border-radius: 20px; border: 1px solid var(--line); }
+  .intro h1 { font-size: 1.85rem; }
+  .dots { display: flex; gap: 8px; }
+  .dots i { width: 22px; height: 8px; display: block; background: var(--line); transform: skewX(-12deg); border-radius: 2px; }
+  .dots i.on { background: var(--mint); }
+  .intro-nav { display: flex; gap: 12px; align-items: center; }
+  .intro-nav .btn { flex: 1; }
+  .skip { background: none; border: 0; color: var(--muted); font: 600 0.95rem/1 var(--font-body); padding: 12px; cursor: pointer; }
+
+  /* price test (website only) */
+  .shop { display: flex; flex-direction: column; gap: 10px; border-top: 1px solid var(--line); padding-top: 16px; }
   .offer { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
   .offer > div { display: flex; flex-direction: column; min-width: 0; }
-  .offer .btn { padding: 10px 14px; flex: none; font-variant-numeric: tabular-nums; }
-  .test-play { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-  .test-play .btn[aria-pressed="true"] { background: var(--ink); color: var(--bg); }
+  .offer b { font-weight: 600; }
+  .offer .btn { padding: 11px 14px; flex: none; font-size: 0.85rem; box-shadow: 3px 3px 0 var(--mint); }
+
+  /* collection */
+  .cardgrid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+  .card { background: var(--panel); border: 1px solid var(--line); border-radius: 16px; padding: 8px; display: flex; flex-direction: column; gap: 7px; text-align: left; font: inherit; color: inherit; cursor: pointer; min-width: 0; }
+  .card[data-rare="1"] { border-color: var(--yellow); box-shadow: 4px 4px 0 var(--yellow); }
+  .card canvas { width: 100%; aspect-ratio: 1; border-radius: 10px; display: block; max-width: 100%; }
+  .card .ck { font: 700 0.9rem/1.25 var(--font-body); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .card .cm { font-size: 0.75rem; color: var(--muted); display: flex; flex-direction: column; align-items: flex-start; gap: 6px; }
+  .badge { font: 600 0.7rem/1 var(--font-body); padding: 4px 7px; border-radius: 6px; border: 1px solid var(--line); color: var(--muted); white-space: nowrap; }
+  .badge.cift { color: var(--yellow); border-color: var(--yellow); }
+  .badge.gelen { color: var(--pink); border-color: var(--pink); }
+  .badge.ben { color: var(--mint); border-color: var(--mint); }
+  .rares { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+  .rare { border: 1px dashed var(--line); border-radius: 14px; padding: 12px; font-size: 0.82rem; color: var(--muted); display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+  .rare b { color: var(--ink); font: 800 0.9rem/1.2 var(--font-display); }
+  .rare[data-found="1"] { border-style: solid; border-color: var(--yellow); }
+  .rare[data-found="1"] b { color: var(--yellow); }
+  .detail { display: flex; flex-direction: column; gap: 12px; }
+
+  /* test 1 */
+  .test-play { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .test-play .btn.ghost[aria-pressed="true"] { border-color: var(--mint); color: var(--mint); }
+
+  /* video */
+  .video-box { display: flex; flex-direction: column; gap: 12px; }
+  .video-box video { width: 100%; max-width: 360px; border-radius: 14px; border: 1px solid var(--line); background: #000; }
+
+  .toast { position: fixed; left: 50%; bottom: calc(20px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%); background: var(--yellow); color: var(--on-mint); font-weight: 600; padding: 12px 16px; border-radius: 12px; font-size: 0.95rem; max-width: calc(100% - 32px); box-shadow: 4px 4px 0 var(--pink); z-index: 20; }
+  footer { font-size: 0.8rem; color: var(--muted); }
+  @media (prefers-reduced-motion: reduce) { .play, .btn { transition: none; } }
 </style>
 </head>
 <body>
 <main>
   <div class="top">
-    <a class="brand" href="./" id="home-link"><i></i>Randombeat</a>
-    <a class="coll-link" href="#koleksiyon" id="coll-link">Koleksiyonum <b id="coll-count">0</b></a>
+    <a class="brand" href="./" id="home-link"><i aria-hidden="true"></i>Randombeat</a>
+    <a class="coll-link" href="#koleksiyon" id="coll-link">Koleksiyonum<b id="coll-count">0</b></a>
   </div>
+
+  <!-- 0. ilk açılış: kısa tanıtım -->
+  <section class="intro" id="view-intro" hidden>
+    <canvas class="floor" id="intro-floor" aria-hidden="true"></canvas>
+    <div class="dots" aria-hidden="true"><i></i><i></i><i></i></div>
+    <h1 id="intro-title"></h1>
+    <p class="lead" id="intro-text"></p>
+    <div class="intro-nav">
+      <button class="skip" id="intro-skip" type="button">Geç</button>
+      <button class="btn" id="intro-next" type="button">İleri</button>
+    </div>
+  </section>
+
+  <!-- 1. kendi gülüşünü yap -->
+  <section class="stack" id="view-make" hidden>
+    <h1>Gülüşünü yaz, pist dans etsin</h1>
+    <label for="make-input" class="lbl">Grupta nasıl gülüyorsan öyle yaz</label>
+    <input id="make-input" class="key-input" placeholder="sjsjsjŞ" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" maxlength="120" enterkeyhint="done">
+    <div id="make-beat"></div>
+    <div class="actions">
+      <button class="btn" id="make-send" type="button" disabled>Arkadaşına gönder</button>
+      <button class="btn ghost" id="make-video" type="button" disabled>Video olarak gönder</button>
+      <button class="btn ghost" id="make-ringtone" type="button" hidden disabled>Zil sesi olarak kaydet</button>
+    </div>
+    <div class="shop" id="make-shop" hidden>
+      <div class="offer">
+        <div><b>Zil sesi yap</b><span class="small muted">Bu beat'i telefonunun zil sesi olarak kaydet</span></div>
+        <button class="btn" type="button" id="buy-zil">₺24,99</button>
+      </div>
+      <div class="offer">
+        <div><b>Düğün paketi</b><span class="small muted">Davul, zurna ve halay alkışı: beat'lerine yeni sesler</span></div>
+        <button class="btn" type="button" id="buy-paket">₺49,99</button>
+      </div>
+      <p class="small muted" id="shop-note" role="status" hidden>Bunlar henüz hazır değil; senden hiçbir ödeme alınmadı. İlgini saydık, teşekkürler. Hazır olunca burada çıkacak.</p>
+    </div>
+  </section>
+
+  <!-- 2. sana bir gülüş geldi -->
+  <section class="stack" id="view-reply" hidden>
+    <h1>Biri sana güldü</h1>
+    <p class="saved" id="reply-saved" hidden>Bu gülüş koleksiyonuna eklendi.</p>
+    <p class="lead">Önce dinle. Sonra kendi random'unla cevap ver; ikinizin beat'i birleşsin.</p>
+    <div id="reply-first" class="stack"></div>
+    <label for="reply-input" class="lbl">Senin gülüşün</label>
+    <input id="reply-input" class="key-input" placeholder="ksksksk" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" maxlength="120" enterkeyhint="done">
+    <div id="reply-duet"></div>
+    <div class="actions">
+      <button class="btn" id="reply-send" type="button" disabled>Geri gönder</button>
+      <button class="btn ghost" id="reply-video" type="button" disabled>Video olarak gönder</button>
+    </div>
+  </section>
+
+  <!-- 3. ikinizin beat'i -->
+  <section class="stack" id="view-duet" hidden>
+    <h1>İkinizin beat'i</h1>
+    <p class="saved" id="duet-saved" hidden>Bu çift kart koleksiyonuna eklendi.</p>
+    <p class="lead">Önce ilk gülüş, sonra cevap, sonra ikisi birlikte.</p>
+    <div id="duet-beat" class="stack"></div>
+    <div class="actions">
+      <button class="btn" id="duet-answer" type="button">Sen de cevap ver</button>
+      <button class="btn ghost" id="duet-send" type="button">Bu harmanı paylaş</button>
+    </div>
+  </section>
 
   <!-- 5. deneme 1: ekrana bakmadan fark duyuluyor mu? -->
   <section class="stack" id="view-test" hidden>
     <h1>Fark duyuluyor mu?</h1>
-    <p class="muted" id="test-intro">İki kısa beat dinleyeceksin: A ve B. Bazen aynılar, bazen küçük bir fark var. İkisini de dinle, sonra "Aynı" ya da "Farklı" de. 10 soru, yaklaşık 3 dakika.</p>
+    <p class="lead" id="test-intro">İki kısa beat dinleyeceksin: A ve B. Bazen aynılar, bazen küçük bir fark var. İkisini de dinle, sonra "Aynı" ya da "Farklı" de. 10 soru, yaklaşık 3 dakika.</p>
     <p class="small muted" id="test-step"></p>
     <div class="test-play">
       <button class="btn ghost" type="button" id="test-a">A'yı çal</button>
@@ -149,68 +247,16 @@
   <!-- 4. koleksiyon -->
   <section class="stack" id="view-collection" hidden>
     <h1>Koleksiyonun</h1>
-    <p class="muted" id="coll-summary"></p>
+    <p class="lead" id="coll-summary"></p>
     <div class="detail" id="coll-detail" hidden></div>
     <div class="cardgrid" id="coll-grid"></div>
     <div class="stack" id="coll-empty" hidden>
-      <p class="muted">Henüz kartın yok. Bir gülüş gönderdiğinde, sana bir bağlantı geldiğinde ya da biri sana cevap verdiğinde kartlar burada birikir.</p>
+      <p class="lead">Henüz kartın yok. Bir gülüş gönderdiğinde, sana bir bağlantı geldiğinde ya da biri sana cevap verdiğinde kartlar burada birikir.</p>
       <a class="btn" href="./">Gülüşünü yaz</a>
     </div>
     <h2>Nadir sesler</h2>
     <p class="small muted">Bazı yazışlar normalde hiç çıkmayan sesleri açar.</p>
     <div class="rares" id="coll-rares"></div>
-  </section>
-
-  <!-- 1. kendi gülüşünü yap -->
-  <section class="stack" id="view-make" hidden>
-    <h1>Gülüşünü yaz, beat olsun</h1>
-    <p class="muted">Grupta nasıl gülüyorsan öyle yaz: sjsjsj, aşkdjfşlkdj, ne gelirse.</p>
-    <label for="make-input" class="small muted">Gülüşün</label>
-    <input id="make-input" class="key-input" placeholder="sjsjsjŞ" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" maxlength="120" enterkeyhint="done">
-    <div id="make-beat"></div>
-    <div class="actions">
-      <button class="btn" id="make-send" type="button" disabled>Arkadaşına gönder</button>
-      <button class="btn ghost" id="make-video" type="button" disabled>Video olarak gönder (deneme)</button>
-      <button class="btn ghost" id="make-ringtone" type="button" hidden disabled>Zil sesi olarak kaydet</button>
-    </div>
-    <div class="shop" id="make-shop" hidden>
-      <div class="offer">
-        <div><b>Zil sesi yap</b><span class="small muted">Bu beat'i telefonunun zil sesi olarak kaydet</span></div>
-        <button class="btn ghost" type="button" id="buy-zil">₺24,99</button>
-      </div>
-      <div class="offer">
-        <div><b>Düğün paketi</b><span class="small muted">Davul, zurna ve halay alkışı: beat'lerine yeni sesler</span></div>
-        <button class="btn ghost" type="button" id="buy-paket">₺49,99</button>
-      </div>
-      <p class="small muted" id="shop-note" role="status" hidden>Bunlar henüz hazır değil; senden hiçbir ödeme alınmadı. İlgini saydık, teşekkürler. Hazır olunca burada çıkacak.</p>
-    </div>
-  </section>
-
-  <!-- 2. sana bir gülüş geldi -->
-  <section class="stack" id="view-reply" hidden>
-    <h1>Biri sana güldü</h1>
-    <p class="saved" id="reply-saved" hidden>Bu gülüş koleksiyonuna eklendi.</p>
-    <p class="muted">Önce dinle. Sonra kendi random'unla cevap ver; ikinizin beat'i birleşsin.</p>
-    <div id="reply-first"></div>
-    <label for="reply-input" class="small muted">Senin gülüşün</label>
-    <input id="reply-input" class="key-input" placeholder="ksksksk" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" maxlength="120" enterkeyhint="done">
-    <div id="reply-duet"></div>
-    <div class="actions">
-      <button class="btn" id="reply-send" type="button" disabled>Geri gönder</button>
-      <button class="btn ghost" id="reply-video" type="button" disabled>Video olarak gönder (deneme)</button>
-    </div>
-  </section>
-
-  <!-- 3. ikinizin beat'i -->
-  <section class="stack" id="view-duet" hidden>
-    <h1>İkinizin beat'i</h1>
-    <p class="saved" id="duet-saved" hidden>Bu çift kart koleksiyonuna eklendi.</p>
-    <p class="muted">Önce ilk gülüş, sonra cevap, sonra ikisi birlikte.</p>
-    <div id="duet-beat"></div>
-    <div class="actions">
-      <button class="btn" id="duet-answer" type="button">Sen de cevap ver</button>
-      <button class="btn ghost" id="duet-send" type="button">Bu harmanı paylaş</button>
-    </div>
   </section>
 
   <section class="video-box" id="video-box" hidden>
@@ -234,6 +280,7 @@ const $ = (id) => document.getElementById(id);
 const PLAY = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4.5v15l13-7.5z"/></svg>';
 const STOP = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6h12v12H6z"/></svg>';
 const player = $("player");
+const C = { bg: "#070b1a", tile: "#111a35", edge: "rgba(120,150,230,0.18)", ink: "#eaf2ff", mint: "61,252,209", pink: "255,79,216", yellow: "255,225,77", white: "234,242,255" };
 
 // ---------------------------------------------------------------- link
 const params = new URLSearchParams(location.search);
@@ -264,43 +311,169 @@ function toast(msg) {
   t.textContent = msg;
   t.hidden = false;
   clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => (t.hidden = true), 2600);
+  toastTimer = setTimeout(() => (t.hidden = true), 2800);
 }
+function esc(s) { return String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]); }
 
-// ---------------------------------------------------------------- drawing
-function token(name) { return getComputedStyle(document.documentElement).getPropertyValue(name).trim(); }
-function drawGrid(canvas, score, progress) {
-  const dpr = window.devicePixelRatio || 1;
-  const w = canvas.clientWidth, h = canvas.clientHeight;
-  if (!w) return;
-  canvas.width = Math.round(w * dpr);
-  canvas.height = Math.round(h * dpr);
-  const ctx = canvas.getContext("2d");
-  ctx.scale(dpr, dpr);
-  paintGrid(ctx, score, 0, 0, w, h, progress, {
-    line: token("--line"), ink: token("--ink"), roles: [0, 1, 2, 3, 4, 5].map((r) => token(`--r${r}`)),
+// ---------------------------------------------------------------- the dance floor
+// The Turkish Q keyboard in perspective. Your laugh's keys glow (mint for you,
+// pink for your friend). Kick lights the left-hand tiles, snare the right
+// hand, the melody its own key, spice sounds the Turkish letters.
+const KB = [["qwertyuıopğü", 0.5], ["asdfghjklşi", 0.75], ["zxcvbnmöç", 1.25]];
+const TRL = new Set(["ş", "ç", "ğ", "ü", "ö", "ı"]);
+const LOWER = { I: "ı", İ: "i", Ş: "ş", Ç: "ç", Ğ: "ğ", Ü: "ü", Ö: "ö" };
+const lowerTR = (s) => [...(s || "")].map((c) => LOWER[c] || c.toLowerCase()).join("");
+function hashRand(n) { const x = Math.sin(n * 12.9898) * 43758.5453; return x - Math.floor(x); }
+
+/**
+ * o.people: [{ text, color }] (first is "a", second "b")
+ * o.who: which person the beat belongs to right now (0, 1, or 2 for both)
+ * o.label: optional text drawn above the floor
+ */
+function drawFloor(g, w, h, o, L, t) {
+  g.fillStyle = C.bg;
+  g.fillRect(0, 0, w, h);
+  const people = o.people.map((p) => ({ set: new Set(lowerTR(p.text)), color: p.color }));
+  const top = o.label ? h * 0.24 : h * 0.1;
+  const P = [0, 0.28, 0.6, 1];
+  const ys = P.map((p) => top + (h * 0.95 - top) * p);
+  const sc = P.map((p) => 0.55 + 0.45 * p);
+  const unit = w / 11.2, cx = w / 2;
+  const X = (col, k) => cx + (col - 6.1) * unit * sc[k];
+  const activeColor = o.who === 1 ? (people[1] || people[0]).color : people[0].color;
+  const glow = g.createRadialGradient(cx, ys[1], 10, cx, ys[1], w * 0.75);
+  glow.addColorStop(0, `rgba(${activeColor},${0.04 + 0.14 * L.lv[0]})`);
+  glow.addColorStop(1, `rgba(${activeColor},0)`);
+  g.fillStyle = glow;
+  g.fillRect(0, 0, w, h);
+  const melIdx = L.mel >= 0 ? ((L.mel % 12) * 7) % 12 : -1;
+  const frame = Math.floor(t * 20);
+  const fontPx = (k) => Math.max(7, Math.round(unit * 0.32 * sc[k]));
+  KB.forEach(([keys, offx], r) => {
+    [...keys].forEach((k, col) => {
+      const c0 = col + offx, c1 = col + offx + 0.92, k0 = r, k1 = r + 1;
+      const y0 = ys[k0] + (ys[k1] - ys[k0]) * 0.07;
+      const pts = [[X(c0, k0), y0], [X(c1, k0), y0], [X(c1, k1), ys[k1]], [X(c0, k1), ys[k1]]];
+      const left = c0 < 5.3;
+      const owners = people.filter((p) => p.set.has(k));
+      const mine = owners.length > 0;
+      const isActive = o.who === 2 ? mine : !!people[o.who] && people[o.who].set.has(k);
+      // colour stays on the laugh's own keys; the rest of the floor only brightens
+      let glowC = null, a = 0, lift = 0;
+      if (mine) { glowC = owners.length > 1 ? C.yellow : owners[0].color; a = 0.22; }
+      const hand = left ? L.lv[0] : L.lv[1];
+      if (hand > 0.04) {
+        if (isActive) { if (hand > a) a = hand; }
+        else lift = Math.max(lift, hand * (mine ? 0.5 : 0.3));
+      }
+      if (!left && melIdx >= 0 && (col + Math.round(offx) - 5 + 12) % 7 === melIdx % 7 && L.lv[4] > a) { a = L.lv[4]; glowC = C.yellow; }
+      if (TRL.has(k) && L.lv[5] > a) { a = L.lv[5]; glowC = C.pink; }
+      if (hashRand(col * 13 + r * 5 + frame) < L.lv[2] * 0.05) { a = Math.max(a, 0.6); glowC = C.white; }
+      g.beginPath(); g.moveTo(...pts[0]); for (let i = 1; i < 4; i++) g.lineTo(...pts[i]); g.closePath();
+      g.fillStyle = mine ? "#142a4a" : C.tile;
+      g.fill();
+      if (lift > 0.02) { g.fillStyle = `rgba(${C.white},${lift * 0.28})`; g.fill(); }
+      if (glowC && a > 0.02) {
+        g.fillStyle = `rgba(${glowC},${Math.min(1, a)})`;
+        g.shadowColor = `rgb(${glowC})`; g.shadowBlur = 18 * a;
+        g.fill(); g.shadowBlur = 0;
+      }
+      g.strokeStyle = C.edge; g.lineWidth = 1; g.stroke();
+      const mx = (pts[0][0] + pts[2][0]) / 2, my = (pts[0][1] + pts[2][1]) / 2;
+      g.fillStyle = a > 0.4 ? "rgba(7,11,26,0.85)" : "rgba(170,190,240,0.38)";
+      g.font = `600 ${fontPx(k1)}px Onest, sans-serif`;
+      g.textAlign = "center"; g.textBaseline = "middle";
+      g.fillText(k, mx, my);
+    });
   });
+  g.textAlign = "start"; g.textBaseline = "alphabetic";
+  if (o.label) {
+    const size = Math.round(w * 0.08);
+    g.font = `800 ${size}px Onest, sans-serif`; // laughs need a face where j, ı and ş stay clear
+    let label = o.label;
+    while (g.measureText(label).width > w * 0.9 && label.length > 4) label = label.slice(0, -2);
+    if (label !== o.label) label += "…";
+    g.textAlign = "center";
+    g.fillStyle = C.ink;
+    g.shadowColor = `rgb(${activeColor})`; g.shadowBlur = 8 + 24 * L.lv[0];
+    g.fillText(label, w / 2, h * 0.14);
+    g.shadowBlur = 0; g.textAlign = "start";
+  }
 }
-function paintGrid(ctx, score, x0, y0, w, h, progress, colors) {
-  const steps = score.bars * score.stepsPerBar;
-  const rowH = h / 6, cw = w / steps;
-  ctx.fillStyle = colors.line;
-  for (let b = 1; b < score.bars; b++) ctx.fillRect(x0 + Math.round(b * score.stepsPerBar * cw), y0, 1, h);
-  for (const e of score.events) {
-    ctx.globalAlpha = 0.35 + 0.65 * e.vel;
-    ctx.fillStyle = colors.roles[e.role];
-    ctx.fillRect(x0 + (e.tick / RB.TPS) * cw + 0.5, y0 + e.role * rowH + 1.5, Math.max(1.5, cw * 0.72), rowH - 3);
+const QUIET = { lv: [0, 0, 0, 0, 0, 0], mel: -1 };
+// gentle "attract mode" so a floor is alive before anything plays
+function idleLevels(t, amp) {
+  const b = t * 2, f = b - Math.floor(b), beat = Math.floor(b);
+  const f2 = b * 2 - Math.floor(b * 2);
+  return {
+    lv: [Math.exp(-f * 6) * amp, beat % 2 ? Math.exp(-f * 8) * amp : 0, Math.exp(-f2 * 10) * 0.5 * amp, Math.exp(-f * 3) * 0.6 * amp, (0.5 + 0.5 * Math.sin(t * 1.7)) * amp, beat % 4 === 3 ? Math.exp(-f * 5) * amp : 0],
+    mel: 60 + ((beat * 5) % 12),
+  };
+}
+const DECAY = [0.16, 0.12, 0.05, 0.22, 0.2, 0.25];
+function timedEvents(score) {
+  return score.events.map((e) => ({ t: RB.tickToSeconds(score, e.tick), role: e.role, vel: e.vel, midi: e.midi }));
+}
+function levelsAt(evs, loopLen, time) {
+  const tt = time % loopLen;
+  const lv = [0, 0, 0, 0, 0, 0];
+  let mel = -1, melAge = 9;
+  for (const e of evs) {
+    let dt = tt - e.t;
+    if (dt < 0) dt += loopLen;
+    if (dt > 0.8) continue;
+    const v = e.vel * Math.exp(-dt / DECAY[e.role]);
+    if (v > lv[e.role]) lv[e.role] = v;
+    if (e.role === 4 && dt < melAge) { melAge = dt; mel = e.midi; }
   }
-  ctx.globalAlpha = 1;
-  if (progress != null) {
-    ctx.fillStyle = colors.ink;
-    ctx.fillRect(x0 + Math.round(progress * w), y0, 2, h);
+  return { lv, mel, tt };
+}
+/** Which person a moment of a duet belongs to: 0 first, 1 reply, 2 both. */
+function whoAt(score, tt) {
+  if (score.bars !== 6) return 0;
+  const twoBars = 2 * score.stepsPerBar * score.stepDur;
+  return Math.min(2, Math.floor(tt / twoBars));
+}
+function sizeCanvas(cv) {
+  const dpr = window.devicePixelRatio || 1;
+  const w = cv.clientWidth, h = cv.clientHeight;
+  if (!w) return null;
+  if (cv.width !== Math.round(w * dpr) || cv.height !== Math.round(h * dpr)) {
+    cv.width = Math.round(w * dpr);
+    cv.height = Math.round(h * dpr);
   }
+  const g = cv.getContext("2d");
+  g.setTransform(dpr, 0, 0, dpr, 0, 0);
+  return { g, w, h };
 }
 
-// ---------------------------------------------------------------- beats
-// A beat card: play button, description, rhythm strip. `make` returns {score, pcm}.
-let current = null;
+// one animation loop for every floor on screen
+const floors = new Set();
+const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+let current = null; // the card that is playing
+function animate(now) {
+  const t = now / 1000;
+  for (const f of floors) {
+    if (!f.canvas.isConnected) { floors.delete(f); continue; }
+    if (f.canvas.closest("[hidden]")) continue;
+    const s = sizeCanvas(f.canvas);
+    if (!s) continue;
+    let L, who = 0, time = t;
+    if (current && current.floor === f && player.duration) {
+      L = levelsAt(f.evs, f.loopLen, player.currentTime);
+      who = whoAt(f.score, L.tt);
+      time = player.currentTime;
+    } else if (f.idle) {
+      L = reduceMotion ? QUIET : idleLevels(t + f.phase, f.idle);
+      who = f.idleWho ? f.idleWho(t) : 0;
+    } else L = QUIET;
+    drawFloor(s.g, s.w, s.h, { people: f.people(), who, label: f.label ? f.label() : null }, L, reduceMotion ? 0 : time);
+  }
+  requestAnimationFrame(animate);
+}
+requestAnimationFrame(animate);
+
+// ---------------------------------------------------------------- beat cards
 const urls = new Map();
 function beatCard(box, key, make, opts = {}) {
   box.innerHTML = "";
@@ -313,18 +486,28 @@ function beatCard(box, key, make, opts = {}) {
   const d = RB.describe(score);
   const el = document.createElement("div");
   el.className = "beat";
+  const people = opts.people || [{ text: score.text, color: C.mint }];
+  const rare = score.rare.map((r) => RB.RARE[r].sound).join(", ");
   el.innerHTML = `
-    <div class="beat-top">
+    <canvas class="floor" aria-hidden="true"></canvas>
+    ${score.bars === 6 ? `<div class="parts" style="--pa:rgb(${people[0].color});--pb:rgb(${(people[1] || people[0]).color})"><span>${esc(opts.firstLabel || "ilk gülüş")}</span><span>${esc(opts.replyLabel || "cevap")}</span><span>ikisi birlikte</span></div>` : ""}
+    <div class="beat-row">
       <button class="play" type="button" aria-pressed="false" aria-label="Çal">${PLAY}</button>
-      <div class="desc"><b>${esc(d.style)} · ${Math.round(score.bpm)} tempo</b>${esc(d.key)}${score.bars === 6 ? "" : "<br>" + esc(d.kit.join(" · "))}</div>
+      <div class="desc"><b>${esc(d.style)}</b>${Math.round(score.bpm)} tempo${rare ? `<br><span class="rare-badge">Nadir ses: ${esc(rare)}</span>` : ""}</div>
     </div>
-    <canvas class="grid" aria-hidden="true"></canvas>
-    ${score.bars === 6 ? `<div class="parts"><span>${esc(opts.firstLabel || "ilk gülüş")}</span><span>${esc(opts.replyLabel || "cevap")}</span><span>ikisi birlikte</span></div>` : ""}
     ${opts.tempo ? `<div class="tempo"><span class="label">Hız</span><button class="round" type="button" data-d="-1" aria-label="Yavaşlat">−</button><output aria-live="polite">${Math.round(score.bpm)}</output><button class="round" type="button" data-d="1" aria-label="Hızlandır">+</button></div>` : ""}`;
   box.appendChild(el);
-  const canvas = el.querySelector("canvas");
+  const floor = {
+    canvas: el.querySelector("canvas"),
+    score,
+    evs: timedEvents(score),
+    loopLen: RB.scoreDuration(score),
+    people: () => people,
+    idle: 0.16,
+    phase: Math.random() * 10,
+  };
+  floors.add(floor);
   const btn = el.querySelector(".play");
-  requestAnimationFrame(() => drawGrid(canvas, score));
   btn.addEventListener("click", () => {
     if (current && current.btn === btn) return stop();
     if (opts.onPlay) opts.onPlay();
@@ -337,12 +520,11 @@ function beatCard(box, key, make, opts = {}) {
     }
     btn.innerHTML = STOP;
     btn.setAttribute("aria-pressed", "true");
-    current = { btn, canvas, score };
+    current = { btn, floor };
     player.src = urls.get(key);
     player.currentTime = 0;
     const p = player.play();
     if (p && p.catch) p.catch(() => { stop(); toast("Ses çalınamadı. Telefonun sesini açıp tekrar dene."); });
-    tick();
   });
   if (opts.tempo) {
     el.querySelectorAll(".round").forEach((b) => {
@@ -355,7 +537,6 @@ function beatCard(box, key, make, opts = {}) {
       });
     });
   }
-  el._redraw = () => drawGrid(canvas, score);
   return score;
 }
 function stop() {
@@ -363,22 +544,13 @@ function stop() {
   player.pause();
   current.btn.innerHTML = PLAY;
   current.btn.setAttribute("aria-pressed", "false");
-  drawGrid(current.canvas, current.score);
   current = null;
 }
-function tick() {
-  if (!current) return;
-  if (player.duration) {
-    const loop = RB.scoreDuration(current.score);
-    drawGrid(current.canvas, current.score, (player.currentTime % loop) / loop);
-  }
-  requestAnimationFrame(tick);
-}
 player.addEventListener("ended", stop);
-function esc(s) { return String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]); }
 // a single laugh plays twice; a duet (6 bars) plays once
 const single = (text, tempo) => (full) => (full ? RB.makeBeat(text, 2, { tempoStep: tempo }) : { score: RB.compose(text, { tempoStep: tempo }) });
 const duo = (a, b, tempo) => (full) => (full ? RB.makeDuet(a, b, 1, { tempoStep: tempo }) : { score: RB.duet(a, b, { tempoStep: tempo }) });
+const keyEl = (text, them) => { const k = document.createElement("span"); k.className = them ? "key them" : "key"; k.textContent = text; return k; };
 
 // ---------------------------------------------------------------- sharing
 async function shareLink(url, text) {
@@ -399,8 +571,8 @@ async function shareLink(url, text) {
   toast("Bağlantı kopyalandı. WhatsApp'a yapıştırabilirsin.");
 }
 
-// ---------------------------------------------------------------- video (experiment)
-// Records the beat with a simple animation into a video file, in real time.
+// ---------------------------------------------------------------- video
+// Records the beat with the dancing floor into a video file, in real time.
 function pickVideoType() {
   if (!window.MediaRecorder) return null;
   // H.264 + AAC in MP4 is what WhatsApp plays everywhere; try it first
@@ -416,7 +588,7 @@ function pickVideoType() {
   return types.find((t) => MediaRecorder.isTypeSupported(t)) || null;
 }
 let videoFile = null;
-async function makeVideo(make, title, link) {
+async function makeVideo(make, people, link) {
   const box = $("video-box");
   const status = $("video-status");
   const preview = $("video-preview");
@@ -430,6 +602,8 @@ async function makeVideo(make, title, link) {
   stop();
   const beat = make(true);
   const score = beat.score;
+  const evs = timedEvents(score);
+  const loopLen = RB.scoreDuration(score);
   const seconds = beat.pcm.length / RB.SAMPLE_RATE;
   const AC = window.AudioContext || window.webkitAudioContext;
   const ac = new AC({ sampleRate: RB.SAMPLE_RATE });
@@ -442,36 +616,44 @@ async function makeVideo(make, title, link) {
   const dest = ac.createMediaStreamDestination();
   src.connect(dest);
 
+  const S = 720;
   const cv = document.createElement("canvas");
-  cv.width = 720; cv.height = 720;
+  cv.width = S; cv.height = S;
   const ctx = cv.getContext("2d");
   const stream = new MediaStream([...cv.captureStream(30).getVideoTracks(), ...dest.stream.getAudioTracks()]);
-  const rec = new MediaRecorder(stream, { mimeType: type, videoBitsPerSecond: 1500000, audioBitsPerSecond: 128000 });
+  const rec = new MediaRecorder(stream, { mimeType: type, videoBitsPerSecond: 1800000, audioBitsPerSecond: 128000 });
   const chunks = [];
   rec.ondataavailable = (e) => e.data.size && chunks.push(e.data);
   const done = new Promise((res) => (rec.onstop = res));
-  const colors = { line: "#2a3146", ink: "#e8ecf5", roles: ["#8c9bff", "#ff8466", "#a9b3c6", "#3cc9c9", "#f2c14e", "#f07bcb"] };
   const short = link.replace(/^https?:\/\//, "");
+  const title = people.map((p) => p.text).join(" + ");
   const t0 = ac.currentTime + 0.15;
   function frame() {
     if (rec.state !== "recording") return; // a late frame must not overwrite "Hazır"
-    const t = ac.currentTime - t0;
-    const loop = RB.scoreDuration(score);
-    ctx.fillStyle = "#0e1220"; ctx.fillRect(0, 0, 720, 720);
-    ctx.fillStyle = "#e5a93a"; ctx.fillRect(48, 52, 26, 26);
-    ctx.fillStyle = "#e8ecf5"; ctx.font = "700 32px 'Space Grotesk', sans-serif"; ctx.fillText("Randombeat", 88, 77);
-    ctx.font = "700 44px 'JetBrains Mono', monospace";
-    wrapText(ctx, title, 48, 180, 624, 54, 3);
-    ctx.font = "500 24px 'Inter', sans-serif"; ctx.fillStyle = "#9aa3b8";
-    const d = RB.describe(score);
-    ctx.fillText(`${d.style} · ${Math.round(score.bpm)} tempo`, 48, 380);
-    paintGrid(ctx, score, 48, 420, 624, 150, t > 0 ? (t % loop) / loop : null, colors);
-    ctx.fillStyle = "#e5a93a"; ctx.font = "600 26px 'Inter', sans-serif";
-    ctx.fillText("Sen de random'unla cevap ver:", 48, 630);
-    ctx.fillStyle = "#e8ecf5"; ctx.font = "500 22px 'JetBrains Mono', monospace";
-    ctx.fillText(short.length > 48 ? short.slice(0, 47) + "…" : short, 48, 668);
-    status.textContent = t < 0 ? "Video hazırlanıyor…" : `Video hazırlanıyor… ${Math.max(0, Math.ceil(seconds - t))} sn`;
-    if (rec.state === "recording") requestAnimationFrame(frame);
+    const t = Math.max(0, ac.currentTime - t0);
+    const L = levelsAt(evs, loopLen, t);
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    ctx.fillStyle = C.bg;
+    ctx.fillRect(0, 0, S, S);
+    // the floor takes the middle of the frame
+    ctx.save();
+    ctx.translate(0, 80);
+    drawFloor(ctx, S, 520, { people, who: whoAt(score, L.tt), label: title }, L, t);
+    ctx.restore();
+    // brand mark: a skewed mint tile with its pink shadow
+    ctx.save();
+    ctx.translate(48, 34);
+    ctx.transform(1, 0, -0.21, 1, 0, 0);
+    ctx.fillStyle = "#ff4fd8"; ctx.fillRect(5, 5, 28, 28);
+    ctx.fillStyle = "#3dfcd1"; ctx.fillRect(0, 0, 28, 28);
+    ctx.restore();
+    ctx.fillStyle = C.ink; ctx.font = "800 26px Unbounded, sans-serif"; ctx.fillText("Randombeat", 94, 60);
+    ctx.fillStyle = "#ff4fd8"; ctx.font = "800 24px Unbounded, sans-serif";
+    ctx.fillText("Sen de random'unla cevap ver", 48, 648);
+    ctx.fillStyle = C.ink; ctx.font = "600 22px Onest, sans-serif";
+    ctx.fillText(short.length > 52 ? short.slice(0, 51) + "…" : short, 48, 688);
+    status.textContent = `Video hazırlanıyor… ${Math.max(0, Math.ceil(seconds - t))} sn`;
+    requestAnimationFrame(frame);
   }
   rec.start(250);
   src.start(t0);
@@ -503,18 +685,6 @@ async function makeVideo(make, title, link) {
   save.href = url;
   save.download = videoFile.name;
   save.hidden = false;
-}
-function wrapText(ctx, text, x, y, maxW, lineH, maxLines) {
-  const chars = [...text];
-  let line = "", lines = 0;
-  for (const c of chars) {
-    if (ctx.measureText(line + c).width > maxW) {
-      ctx.fillText(line, x, y + lines * lineH);
-      line = c;
-      if (++lines >= maxLines) return;
-    } else line += c;
-  }
-  ctx.fillText(line, x, y + lines * lineH);
 }
 $("video-share").addEventListener("click", async () => {
   if (!videoFile) return;
@@ -572,84 +742,34 @@ function addCard(card) {
 }
 function updateCount() { $("coll-count").textContent = String(loadCards().length); }
 const scoreOfCard = (c) => (c.b ? RB.duet(c.a, c.b, { tempoStep: c.h || 0 }) : RB.compose(c.a, { tempoStep: c.h || 0 }));
+const peopleOfCard = (c) => (c.b ? [{ text: c.a, color: C.mint }, { text: c.b, color: C.pink }] : [{ text: c.a, color: c.src === "gelen" ? C.pink : C.mint }]);
 
-// Cover art: the laugh's trail across the Turkish Q keyboard.
-const KB_ROWS = [["1234567890*-", 0], ["qwertyuıopğü", 0.5], ["asdfghjklşi,", 0.75], ["zxcvbnmöç.", 1.25]];
+// Cover: a still of the card's dance floor with its style name and a rare frame.
 function drawCover(canvas, card, score) {
-  const dpr = window.devicePixelRatio || 1;
-  const size = canvas.clientWidth || 160;
-  canvas.width = Math.round(size * dpr);
-  canvas.height = Math.round(size * dpr);
-  const ctx = canvas.getContext("2d");
-  ctx.scale(dpr, dpr);
-  const styleIdx = RB.STYLES.findIndex((s) => s.id === score.styleId);
-  const hue = (styleIdx * 29 + score.root * 11 + 200) % 360;
-  ctx.fillStyle = `hsl(${hue} 38% 13%)`;
-  ctx.fillRect(0, 0, size, size);
-  const pad = size * 0.08, kw = (size - 2 * pad) / 13.25, kh = kw * 1.05;
-  const top = size * 0.3;
-  const at = (x, row) => [pad + x * kw + kw / 2, top + row * (kh * 1.25) + kh / 2];
-  ctx.fillStyle = `hsl(${hue} 22% 22%)`;
-  for (const [keys, off] of KB_ROWS)
-    [...keys].forEach((_, col) => {
-      const [cx, cy] = at(col + off, KB_ROWS.findIndex((r) => r[0] === keys));
-      ctx.beginPath();
-      ctx.roundRect ? ctx.roundRect(cx - kw * 0.42, cy - kh * 0.42, kw * 0.84, kh * 0.84, kw * 0.18) : ctx.rect(cx - kw * 0.42, cy - kh * 0.42, kw * 0.84, kh * 0.84);
-      ctx.fill();
-    });
-  const trails = [card.a, card.b].filter(Boolean);
-  trails.forEach((text, ti) => {
-    const a = RB.analyse(text);
-    if (!a) return;
-    const letters = a.segments.flatMap((s) => s.letters).filter((l) => l.pos.onKeyboard);
-    const pts = letters.map((l) => at(l.pos.x, l.pos.row));
-    const lineHue = (hue + (ti ? 150 : 40)) % 360;
-    ctx.strokeStyle = `hsl(${lineHue} 85% 66%)`;
-    ctx.globalAlpha = 0.85;
-    ctx.lineWidth = Math.max(1.5, size * 0.014);
-    ctx.lineJoin = "round";
-    ctx.lineCap = "round";
-    ctx.beginPath();
-    pts.forEach(([x, y], i) => (i ? ctx.lineTo(x + ti * 2, y + ti * 2) : ctx.moveTo(x + ti * 2, y + ti * 2)));
-    ctx.stroke();
-    ctx.globalAlpha = 1;
-    letters.forEach((l, i) => {
-      const [x, y] = pts[i];
-      ctx.fillStyle = l.turkish ? "#f07bcb" : l.left ? "#3cc9c9" : "#f2c14e";
-      ctx.beginPath();
-      ctx.arc(x + ti * 2, y + ti * 2, size * (0.016 + 0.006 * Math.min(l.run, 4)) * (l.upper ? 1.5 : 1), 0, Math.PI * 2);
-      ctx.fill();
-    });
-  });
-  // a small beat strip along the bottom
-  const steps = score.bars * score.stepsPerBar;
-  const sx = (size - 2 * pad) / steps;
-  const roles = ["#8c9bff", "#ff8466", "#a9b3c6", "#3cc9c9", "#f2c14e", "#f07bcb"];
-  for (const e of score.events) {
-    if (e.role > 1 && e.role !== 5) continue;
-    ctx.globalAlpha = 0.4 + 0.6 * e.vel;
-    ctx.fillStyle = roles[e.role];
-    ctx.fillRect(pad + (e.tick / RB.TPS) * sx, size * 0.86 + (e.role === 0 ? 0 : e.role === 1 ? size * 0.035 : size * 0.07), Math.max(1, sx * 0.8), size * 0.025);
-  }
-  ctx.globalAlpha = 1;
-  ctx.fillStyle = `hsl(${hue} 30% 78%)`;
-  ctx.font = `600 ${Math.round(size * 0.075)}px "Space Grotesk", sans-serif`;
-  ctx.fillText(score.styleName, pad, size * 0.17);
-  if (score.rare && score.rare.length) {
-    ctx.strokeStyle = "#e5a93a";
-    ctx.lineWidth = size * 0.025;
-    ctx.strokeRect(size * 0.0125, size * 0.0125, size * 0.975, size * 0.975);
+  const s = sizeCanvas(canvas);
+  if (!s) return;
+  const { g, w, h } = s;
+  drawFloor(g, w, h, { people: peopleOfCard(card), who: 2 }, QUIET, 0);
+  g.fillStyle = "rgba(7,11,26,0.75)";
+  g.fillRect(0, 0, w, h * 0.17);
+  g.fillStyle = C.ink;
+  g.font = `800 ${Math.round(w * 0.075)}px Unbounded, sans-serif`;
+  g.fillText(score.styleName, w * 0.07, h * 0.115);
+  if (score.rare.length) {
+    g.strokeStyle = `rgb(${C.yellow})`;
+    g.lineWidth = w * 0.03;
+    g.strokeRect(w * 0.015, h * 0.015, w * 0.97, h * 0.97);
   }
 }
 
-const SRC_LABEL = { ben: ["Gönderdin", ""], gelen: ["Sana geldi", "gelen"], cift: ["Çift kart", "cift"] };
-const BASE_VIEWS = ["view-make", "view-reply", "view-duet", "video-box", "view-collection", "view-test"];
+const SRC_LABEL = { ben: ["Gönderdin", "ben"], gelen: ["Sana geldi", "gelen"], cift: ["Çift kart", "cift"] };
+const VIEWS = ["view-intro", "view-make", "view-reply", "view-duet", "video-box", "view-collection", "view-test"];
+function hideAll() { for (const id of VIEWS) $(id).hidden = true; }
 function showCollection() {
-  for (const id of BASE_VIEWS) $(id).hidden = true;
-  track("koleksiyon");
+  hideAll();
   stop();
-  const view = $("view-collection");
-  view.hidden = false;
+  track("koleksiyon");
+  $("view-collection").hidden = false;
   $("coll-detail").hidden = true;
   const cards = loadCards();
   const grid = $("coll-grid");
@@ -667,7 +787,7 @@ function showCollection() {
     el.className = "card";
     el.dataset.rare = score.rare.length ? "1" : "0";
     const [label, cls] = SRC_LABEL[c.src] || SRC_LABEL.ben;
-    el.innerHTML = `<canvas aria-hidden="true"></canvas><span class="ck"></span><span class="cm"><span>${esc(score.styleName)} · ${Math.round(score.bpm)}</span><span class="badge ${cls}">${label}</span></span>`;
+    el.innerHTML = `<canvas aria-hidden="true"></canvas><span class="ck"></span><span class="cm"><span>${esc(score.styleName)}, ${Math.round(score.bpm)} tempo</span><span class="badge ${cls}">${label}</span></span>`;
     el.querySelector(".ck").textContent = c.b ? `${c.a} + ${c.b}` : c.a;
     el.setAttribute("aria-label", `${c.b ? c.a + " ve " + c.b : c.a}, ${score.styleName}, ${label}`);
     grid.appendChild(el);
@@ -675,9 +795,8 @@ function showCollection() {
     requestAnimationFrame(() => drawCover(cv, c, score));
     el.addEventListener("click", () => openCard(c));
   });
-  const rareCount = found.size;
   $("coll-summary").textContent = cards.length
-    ? `${cards.length} kart · ${duets} çift kart · ${rareCount}/4 nadir ses`
+    ? `${cards.length} kart, ${duets} çift kart, ${found.size}/4 nadir ses`
     : "Kartların bu telefonda saklanır.";
   const rares = $("coll-rares");
   rares.innerHTML = "";
@@ -695,13 +814,18 @@ function openCard(c) {
   box.innerHTML = "";
   const keys = document.createElement("div");
   keys.className = "keys";
-  keys.innerHTML = c.b ? `<span class="key"></span><span class="plus">+</span><span class="key"></span>` : `<span class="key"></span>`;
-  keys.children[0].textContent = c.a;
-  if (c.b) keys.children[2].textContent = c.b;
+  keys.appendChild(keyEl(c.a, !c.b && c.src === "gelen"));
+  if (c.b) {
+    const plus = document.createElement("span");
+    plus.className = "plus";
+    plus.textContent = "+";
+    keys.appendChild(plus);
+    keys.appendChild(keyEl(c.b, true));
+  }
   box.appendChild(keys);
   const holder = document.createElement("div");
   box.appendChild(holder);
-  beatCard(holder, (c.b ? "d:" + c.a + "|" + c.b : "f:" + c.a) + ":" + (c.h || 0), c.b ? duo(c.a, c.b, c.h || 0) : single(c.a, c.h || 0));
+  beatCard(holder, (c.b ? "d:" + c.a + "|" + c.b : "f:" + c.a) + ":" + (c.h || 0), c.b ? duo(c.a, c.b, c.h || 0) : single(c.a, c.h || 0), { people: peopleOfCard(c) });
   const send = document.createElement("button");
   send.className = "btn";
   send.type = "button";
@@ -711,113 +835,54 @@ function openCard(c) {
   box.scrollIntoView({ behavior: "smooth", block: "start" });
 }
 
-// ---------------------------------------------------------------- views
-function debounce(fn, ms) { let t; return (...a) => { clearTimeout(t); t = setTimeout(() => fn(...a), ms); }; }
-
-function showMake() {
-  $("view-make").hidden = false;
-  const input = $("make-input");
-  const render = () => {
-    const text = input.value;
-    const has = text.trim().length > 0;
-    $("make-send").disabled = !has;
-    $("make-video").disabled = !has;
-    $("make-shop").hidden = !has || NATIVE; // price test only on the website
-    $("make-ringtone").disabled = !has;
-    if (!has) { $("make-beat").innerHTML = ""; return; }
-    beatCard($("make-beat"), "m:" + text + ":" + state.tempo, single(text, state.tempo), { tempo: render, onPlay: () => track("yap") });
-    if (!NATIVE) {
-      track("zil_gor", true);
-      track("paket_gor", true);
-    }
-  };
-  const buy = (e) => { track(e); $("shop-note").hidden = false; };
-  $("buy-zil").addEventListener("click", () => buy("zil_tik"));
-  // ringtone: iPhone ringtones must be M4A and under 30 s; iOS 26 can use them directly
-  if (NATIVE) RBNative.canMakeRingtone().then((ok) => ($("make-ringtone").hidden = !ok));
-  $("make-ringtone").addEventListener("click", async () => {
-    const text = input.value;
-    const score = RB.compose(text, { tempoStep: state.tempo });
-    if (!score) return;
-    const loops = Math.max(1, Math.floor((28 - 1.2) / RB.scoreDuration(score)));
-    const beat = RB.makeBeat(text, loops, { tempoStep: state.tempo });
-    $("make-ringtone").disabled = true;
-    try {
-      const m4a = await RBNative.encodeM4a(beat.pcm, RB.SAMPLE_RATE);
-      toast("Paylaş ekranında zil sesi olarak kullan seçeneğine dokun.");
-      await RBNative.shareFile("randombeat-zil.m4a", m4a, "Randombeat zil sesi");
-    } catch (e) {
-      toast("Zil sesi hazırlanamadı.");
-    }
-    $("make-ringtone").disabled = false;
-  });
-  $("buy-paket").addEventListener("click", () => buy("paket_tik"));
-  input.addEventListener("input", debounce(() => { stop(); render(); }, 250));
-  input.addEventListener("keydown", (e) => { if (e.key === "Enter") input.blur(); });
-  // sending is what puts a card in your collection
-  $("make-send").addEventListener("click", () => {
-    track("gonder");
-    addCard({ a: input.value, h: state.tempo, src: "ben" });
-    shareLink(linkFor(input.value, "", state.tempo), "Bunu dinle, sen de random'unla cevap ver:");
-  });
-  $("make-video").addEventListener("click", () => {
-    track("video");
-    addCard({ a: input.value, h: state.tempo, src: "ben" });
-    makeVideo(single(input.value, state.tempo), input.value, linkFor(input.value, "", state.tempo));
-  });
-  if (state.first) input.value = state.first;
-  render();
+// ---------------------------------------------------------------- intro (first visit only)
+const SLIDES = [
+  { title: "Gülüşünü yaz", text: "Grupta nasıl gülüyorsan öyle: sjsjsj, aşkdjfşl, ne gelirse.", demo: "sjsjsjŞ", typing: true },
+  { title: "Pist dans etsin", text: "Her gülüş kendi beat'ini çalar. Aynı gülüş hep aynı, farklı gülüşler birbirine benzemez.", demo: "sjsjsjŞ" },
+  { title: "Arkadaşın cevap versin", text: "Bağlantıyı gönder. O kendi random'unu yazsın, ikinizin beat'i birleşsin.", demo: "sjsjsjŞ", friend: "kdkdkdk" },
+];
+let slide = 0, slideStart = 0;
+function typed(s) {
+  const t = (performance.now() - slideStart) / 1000;
+  return s.demo.slice(0, Math.min(s.demo.length, Math.floor(t * 5) % (s.demo.length + 8)));
 }
-
-function showReply() {
-  $("view-reply").hidden = false;
-  $("reply-saved").hidden = !addCard({ a: state.first, h: state.tempo, src: "gelen" });
-  // the friend hears the sender's tempo; no tempo control here
-  track("acildi");
-  beatCard($("reply-first"), "f:" + state.first + ":" + state.tempo, single(state.first, state.tempo), { onPlay: () => track("dinledi") });
-  const keyEl = document.createElement("span");
-  keyEl.className = "key";
-  keyEl.textContent = state.first;
-  $("reply-first").prepend(keyEl);
-  const input = $("reply-input");
-  const render = () => {
-    const text = input.value;
-    const has = text.trim().length > 0;
-    $("reply-send").disabled = !has;
-    $("reply-video").disabled = !has;
-    if (!has) { $("reply-duet").innerHTML = ""; return; }
-    beatCard($("reply-duet"), "d:" + state.first + "|" + text + ":" + state.tempo, duo(state.first, text, state.tempo), { firstLabel: "o", replyLabel: "sen" });
-  };
-  input.addEventListener("input", debounce(() => { stop(); render(); }, 250));
-  input.addEventListener("keydown", (e) => { if (e.key === "Enter") input.blur(); });
-  $("reply-send").addEventListener("click", () => {
-    track("cevap");
-    addCard({ a: state.first, b: input.value, h: state.tempo, src: "cift" });
-    shareLink(linkFor(state.first, input.value, state.tempo), "Cevabım geldi, ikimizin beat'i:");
-  });
-  $("reply-video").addEventListener("click", () => {
-    track("cevap");
-    track("video");
-    addCard({ a: state.first, b: input.value, h: state.tempo, src: "cift" });
-    makeVideo(duo(state.first, input.value, state.tempo), state.first + " + " + input.value, linkFor(state.first, input.value, state.tempo));
-  });
+const introFloor = {
+  canvas: $("intro-floor"),
+  idle: 0.9,
+  phase: 0,
+  people: () => {
+    const s = SLIDES[slide];
+    const text = s.typing ? typed(s) : s.demo;
+    return s.friend ? [{ text, color: C.mint }, { text: s.friend, color: C.pink }] : [{ text, color: C.mint }];
+  },
+  idleWho: (t) => (SLIDES[slide].friend ? Math.floor(t / 2) % 3 : 0),
+  label: () => {
+    const s = SLIDES[slide];
+    if (s.typing) return typed(s) || " ";
+    return s.friend ? `${s.demo} + ${s.friend}` : s.demo;
+  },
+};
+function showSlide() {
+  const s = SLIDES[slide];
+  slideStart = performance.now();
+  $("intro-title").textContent = s.title;
+  $("intro-text").textContent = s.text;
+  document.querySelectorAll(".dots i").forEach((d, i) => d.classList.toggle("on", i === slide));
+  $("intro-next").textContent = slide === SLIDES.length - 1 ? "Başla" : "İleri";
+  introFloor.idle = slide === 0 ? 0.35 : 0.9;
 }
-
-function showDuet() {
-  $("view-duet").hidden = false;
-  $("duet-saved").hidden = !addCard({ a: state.first, b: state.reply, h: state.tempo, src: "cift" });
-  track("harman_acildi");
-  const box = $("duet-beat");
-  const keys = document.createElement("div");
-  keys.className = "keys";
-  keys.innerHTML = `<span class="key"></span><span class="plus">+</span><span class="key"></span>`;
-  keys.children[0].textContent = state.first;
-  keys.children[2].textContent = state.reply;
-  beatCard(box, "d:" + state.first + "|" + state.reply + ":" + state.tempo, duo(state.first, state.reply, state.tempo));
-  box.prepend(keys);
-  // answering continues the chain: the reply becomes the laugh you answer
-  $("duet-answer").addEventListener("click", () => { location.href = linkFor(state.reply, "", 0); });
-  $("duet-send").addEventListener("click", () => shareLink(location.href, "İkimizin beat'i:"));
+function finishIntro() {
+  try { localStorage.setItem("rb.tanitim", "1"); } catch (e) {}
+  floors.delete(introFloor);
+  $("view-intro").hidden = true;
+  showMake();
+  $("make-input").focus();
+}
+$("intro-next").addEventListener("click", () => { if (slide < SLIDES.length - 1) { slide++; showSlide(); } else finishIntro(); });
+$("intro-skip").addEventListener("click", finishIntro);
+function needsIntro() {
+  if (state.first || location.hash) return false;
+  try { return !localStorage.getItem("rb.tanitim"); } catch (e) { return false; }
 }
 
 // ---------------------------------------------------------------- deneme 1
@@ -843,7 +908,6 @@ function startTest() {
   nextTrial();
 }
 function nextTrial() {
-  const t = test.trials[test.i];
   test.heard = { a: false, b: false };
   $("test-step").textContent = `Soru ${test.i + 1} / ${test.trials.length}`;
   $("test-same").disabled = $("test-diff").disabled = true;
@@ -884,10 +948,131 @@ $("test-same").addEventListener("click", () => answerTest(true));
 $("test-diff").addEventListener("click", () => answerTest(false));
 $("test-again").addEventListener("click", startTest);
 function showTest() {
-  for (const id of BASE_VIEWS) $(id).hidden = true;
+  hideAll();
   stop();
   $("view-test").hidden = false;
   if (!test || test.i >= test.trials.length) startTest();
+}
+
+// ---------------------------------------------------------------- views
+function debounce(fn, ms) { let t; return (...a) => { clearTimeout(t); t = setTimeout(() => fn(...a), ms); }; }
+
+let makeReady = false;
+function showMake() {
+  $("view-make").hidden = false;
+  if (makeReady) return;
+  makeReady = true;
+  const input = $("make-input");
+  const render = () => {
+    const text = input.value;
+    const has = text.trim().length > 0;
+    $("make-send").disabled = !has;
+    $("make-video").disabled = !has;
+    $("make-ringtone").disabled = !has;
+    $("make-shop").hidden = !has || NATIVE; // price test only on the website
+    if (!has) { $("make-beat").innerHTML = ""; return; }
+    beatCard($("make-beat"), "m:" + text + ":" + state.tempo, single(text, state.tempo), { tempo: render, onPlay: () => track("yap") });
+    if (!NATIVE) {
+      track("zil_gor", true);
+      track("paket_gor", true);
+    }
+  };
+  const buy = (e) => { track(e); $("shop-note").hidden = false; };
+  $("buy-zil").addEventListener("click", () => buy("zil_tik"));
+  $("buy-paket").addEventListener("click", () => buy("paket_tik"));
+  // ringtone: iPhone ringtones must be M4A and under 30 s; iOS 26 can use them directly
+  if (NATIVE) RBNative.canMakeRingtone().then((ok) => ($("make-ringtone").hidden = !ok));
+  $("make-ringtone").addEventListener("click", async () => {
+    const text = input.value;
+    const score = RB.compose(text, { tempoStep: state.tempo });
+    if (!score) return;
+    const loops = Math.max(1, Math.floor((28 - 1.2) / RB.scoreDuration(score)));
+    const beat = RB.makeBeat(text, loops, { tempoStep: state.tempo });
+    $("make-ringtone").disabled = true;
+    try {
+      const m4a = await RBNative.encodeM4a(beat.pcm, RB.SAMPLE_RATE);
+      toast("Paylaş ekranında zil sesi olarak kullan seçeneğine dokun.");
+      await RBNative.shareFile("randombeat-zil.m4a", m4a, "Randombeat zil sesi");
+    } catch (e) {
+      toast("Zil sesi hazırlanamadı.");
+    }
+    $("make-ringtone").disabled = false;
+  });
+  input.addEventListener("input", debounce(() => { stop(); render(); }, 250));
+  input.addEventListener("keydown", (e) => { if (e.key === "Enter") input.blur(); });
+  // sending is what puts a card in your collection
+  $("make-send").addEventListener("click", () => {
+    track("gonder");
+    addCard({ a: input.value, h: state.tempo, src: "ben" });
+    shareLink(linkFor(input.value, "", state.tempo), "Bunu dinle, sen de random'unla cevap ver:");
+  });
+  $("make-video").addEventListener("click", () => {
+    track("video");
+    addCard({ a: input.value, h: state.tempo, src: "ben" });
+    makeVideo(single(input.value, state.tempo), [{ text: input.value, color: C.mint }], linkFor(input.value, "", state.tempo));
+  });
+  if (state.first) input.value = state.first;
+  render();
+}
+
+function showReply() {
+  $("view-reply").hidden = false;
+  $("reply-saved").hidden = !addCard({ a: state.first, h: state.tempo, src: "gelen" });
+  track("acildi");
+  // the friend's laugh is pink, yours mint; the friend hears the sender's tempo
+  beatCard($("reply-first"), "f:" + state.first + ":" + state.tempo, single(state.first, state.tempo), {
+    people: [{ text: state.first, color: C.pink }],
+    onPlay: () => track("dinledi"),
+  });
+  $("reply-first").prepend(keyEl(state.first, true));
+  const input = $("reply-input");
+  const render = () => {
+    const text = input.value;
+    const has = text.trim().length > 0;
+    $("reply-send").disabled = !has;
+    $("reply-video").disabled = !has;
+    if (!has) { $("reply-duet").innerHTML = ""; return; }
+    beatCard($("reply-duet"), "d:" + state.first + "|" + text + ":" + state.tempo, duo(state.first, text, state.tempo), {
+      people: [{ text: state.first, color: C.pink }, { text, color: C.mint }],
+      firstLabel: "o",
+      replyLabel: "sen",
+    });
+  };
+  input.addEventListener("input", debounce(() => { stop(); render(); }, 250));
+  input.addEventListener("keydown", (e) => { if (e.key === "Enter") input.blur(); });
+  $("reply-send").addEventListener("click", () => {
+    track("cevap");
+    addCard({ a: state.first, b: input.value, h: state.tempo, src: "cift" });
+    shareLink(linkFor(state.first, input.value, state.tempo), "Cevabım geldi, ikimizin beat'i:");
+  });
+  $("reply-video").addEventListener("click", () => {
+    track("cevap");
+    track("video");
+    addCard({ a: state.first, b: input.value, h: state.tempo, src: "cift" });
+    makeVideo(duo(state.first, input.value, state.tempo), [{ text: state.first, color: C.pink }, { text: input.value, color: C.mint }], linkFor(state.first, input.value, state.tempo));
+  });
+}
+
+function showDuet() {
+  $("view-duet").hidden = false;
+  $("duet-saved").hidden = !addCard({ a: state.first, b: state.reply, h: state.tempo, src: "cift" });
+  track("harman_acildi");
+  const box = $("duet-beat");
+  const keys = document.createElement("div");
+  keys.className = "keys";
+  keys.appendChild(keyEl(state.first, false));
+  const plus = document.createElement("span");
+  plus.className = "plus";
+  plus.textContent = "+";
+  keys.appendChild(plus);
+  keys.appendChild(keyEl(state.reply, true));
+  beatCard(box, "d:" + state.first + "|" + state.reply + ":" + state.tempo, duo(state.first, state.reply, state.tempo), {
+    people: [{ text: state.first, color: C.mint }, { text: state.reply, color: C.pink }],
+  });
+  box.prepend(keys);
+  // answering continues the chain: the reply becomes the laugh you answer
+  $("duet-answer").addEventListener("click", () => { location.href = linkFor(state.reply, "", 0); });
+  $("duet-send").addEventListener("click", () => shareLink(location.href, "İkimizin beat'i:"));
 }
 
 if (NATIVE) $("footer").textContent = "Sesler telefonunda üretilir. Yazdığın gülüş yalnızca gönderdiğin bağlantının içinde durur. Koleksiyonun bu telefonda kalır. Uygulama hiçbir veri toplamaz.";
@@ -898,25 +1083,25 @@ function route() {
   updateCount();
   if (location.hash === "#koleksiyon") return showCollection();
   if (location.hash === "#deneme1") return showTest();
-  $("view-collection").hidden = true;
-  $("view-test").hidden = true;
+  hideAll();
   if (started) {
     // back from the collection: show the view this link belongs to again
-    $(state.first && state.reply ? "view-duet" : state.first ? "view-reply" : "view-make").hidden = false;
+    if (state.first && state.reply) $("view-duet").hidden = false;
+    else if (state.first) $("view-reply").hidden = false;
+    else showMake();
     return;
   }
   started = true;
   if (state.first && state.reply) showDuet();
   else if (state.first) showReply();
-  else showMake();
+  else if (needsIntro()) {
+    $("view-intro").hidden = false;
+    floors.add(introFloor);
+    showSlide();
+  } else showMake();
 }
 window.addEventListener("hashchange", route);
 route();
-
-const redrawAll = () => document.querySelectorAll(".beat").forEach((b) => b._redraw && b._redraw());
-window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", redrawAll);
-let rt;
-window.addEventListener("resize", () => { clearTimeout(rt); rt = setTimeout(redrawAll, 120); });
 </script>
 </body>
 </html>

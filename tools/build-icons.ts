@@ -6,22 +6,22 @@ import { copyFileSync } from "node:fs";
 const root = new URL("..", import.meta.url);
 const require = createRequire(import.meta.url);
 const { chromium } = require("playwright");
-const FONTS = `<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@800&display=swap" rel="stylesheet">`;
-const bars = ["#8c9bff", "#3cc9c9", "#f2c14e", "#ff8466", "#8c9bff", "#3cc9c9", "#f07bcb"];
+const FONTS = `<link href="https://fonts.googleapis.com/css2?family=Onest:wght@800&display=swap" rel="stylesheet">`;
 
-// icon: an amber keycap with "sj" on the night-blue ground, a beat strip below
+// icon: a mint keycap leaning like a dance-floor tile, with its pink shadow, on night navy
 const icon = `<!doctype html><html><head><meta charset="utf-8">${FONTS}<style>
-body{margin:0;width:1024px;height:1024px;background:#0e1220;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:70px}
-.k{width:560px;height:520px;border-radius:120px;background:#e5a93a;box-shadow:inset 0 -46px 0 #b37a12;display:flex;align-items:center;justify-content:center;
-font:800 300px/1 'JetBrains Mono',monospace;color:#1b1403;letter-spacing:-18px;padding-bottom:40px;box-sizing:border-box}
-.g{display:flex;gap:26px}.g span{width:62px;height:62px;border-radius:16px}
-</style></head><body><div class="k">sj</div><div class="g">${bars.map((c) => `<span style="background:${c}"></span>`).join("")}</div></body></html>`;
+body{margin:0;width:1024px;height:1024px;background:#070b1a;display:flex;align-items:center;justify-content:center}
+.k{width:600px;height:540px;border-radius:96px;background:#3dfcd1;transform:skewX(-10deg) translate(-24px,-24px);box-shadow:52px 52px 0 #ff4fd8;
+display:flex;align-items:center;justify-content:center;font:800 300px/1 Onest,sans-serif;color:#04121a;letter-spacing:-10px;padding-bottom:40px}
+.k span{transform:skewX(10deg)}
+</style></head><body><div class="k"><span>sj</span></div></body></html>`;
 
 const splash = `<!doctype html><html><head><meta charset="utf-8">${FONTS}<style>
-body{margin:0;width:2732px;height:2732px;background:#f3f5f9;display:flex;align-items:center;justify-content:center}
-.k{width:420px;height:390px;border-radius:92px;background:#a86c06;box-shadow:inset 0 -34px 0 #7c5004;display:flex;align-items:center;justify-content:center;
-font:800 224px/1 'JetBrains Mono',monospace;color:#fff;letter-spacing:-14px;padding-bottom:30px;box-sizing:border-box}
-</style></head><body><div class="k">sj</div></body></html>`;
+body{margin:0;width:2732px;height:2732px;background:#070b1a;display:flex;align-items:center;justify-content:center}
+.k{width:380px;height:340px;border-radius:62px;background:#3dfcd1;transform:skewX(-10deg);box-shadow:34px 34px 0 #ff4fd8;
+display:flex;align-items:center;justify-content:center;font:800 190px/1 Onest,sans-serif;color:#04121a;letter-spacing:-6px;padding-bottom:26px}
+.k span{transform:skewX(10deg)}
+</style></head><body><div class="k"><span>sj</span></div></body></html>`;
 
 const b = await chromium.launch();
 async function shoot(html: string, size: number, out: string) {
