@@ -13,8 +13,8 @@ Son güncelleme: 22 Kasım 2026 (1. hafta yapıldı)
 |---|---|
 | Fikir, araştırma, plan | Tamamlandı |
 | 1. hafta — Ses | Tamamlandı; ürün sahibi beğendi |
-| 2. hafta — Web sayfası ve WhatsApp denemesi | Sayfa hazır; yayına alma ve telefonda deneme bekleniyor |
-| 3. hafta — Kartlar ve koleksiyon | Başlanmadı |
+| 2. hafta — Web sayfası ve WhatsApp denemesi | Tamamlandı; telefonda ve WhatsApp'ta çalıştı |
+| 3. hafta — Kartlar ve koleksiyon | Tamamlandı |
 | 4. hafta — 10-15 kişilik deneme | Başlanmadı |
 | 5-6. hafta — Uygulamaya çevirme ve satış | Başlanmadı |
 | 7-8. hafta — Test sürümü ve App Store | Başlanmadı |
@@ -73,6 +73,21 @@ Her adımı bitirince bu tabloyu güncelle.
   içindeki `SITE_URL` güncellenip `npm run app` çalıştırılmalı.
 - Her beat'e özel önizleme resmi henüz yok (sunucu işlevi gerektirir); şimdilik
   tek bir genel önizleme resmi var.
+
+### 3. hafta notları
+
+- Kart: her gönderilen, gelen ya da harmanlanan beat bir kart olur. Kapak,
+  gülüşün Türkçe Q klavye üzerindeki izi; altında beat'in vuruşları. Renk
+  tarza ve tona göre değişir. Nadir kartın altın çerçevesi var.
+- Koleksiyon yalnızca telefonda (tarayıcının yerel kaydı, en çok 500 kart).
+  Karta girme yolları: göndermek ("Gönderdin"), gelen bağlantıyı açmak
+  ("Sana geldi"), cevap verip geri göndermek ya da harmanı açmak ("Çift kart").
+  Yalnızca yazıp dinlemek kart vermez: paylaşmak ödüllendirilir.
+- Nadir yazışlar ve açtıkları sesler (gerçekçi gülüşlerde görülme sıklığı):
+  çok uzun, 40+ karakter → Kanun (%3); klavyede yan yana 5 harf → Kudüm
+  (%1,2); yalnızca ş ç ğ ü ö ı → Bendir (%0,2); tersinden aynı okunan →
+  Ters zil (neredeyse hiç; koleksiyondaki ipucuyla aranır).
+- Nadir sesler eklendikten sonra benzersizlik testi yine üç şartı geçti.
 
 ---
 

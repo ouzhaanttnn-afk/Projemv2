@@ -93,11 +93,48 @@
   .video-box { display: flex; flex-direction: column; gap: 10px; }
   .video-box video { width: 100%; max-width: 360px; border-radius: 12px; border: 1px solid var(--line); background: #000; }
   footer { font-size: 0.8rem; color: var(--muted); }
+  .top { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+  .coll-link { font: 600 0.9rem/1 var(--font-body); color: var(--ink); text-decoration: none; padding: 9px 12px; border: 1px solid var(--line); border-radius: 999px; background: var(--surface); white-space: nowrap; }
+  .coll-link b { color: var(--accent); font-variant-numeric: tabular-nums; }
+  .cardgrid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+  .card { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 8px; display: flex; flex-direction: column; gap: 6px; text-align: left; font: inherit; color: inherit; cursor: pointer; min-width: 0; }
+  .card[data-rare="1"] { border-color: var(--accent); box-shadow: inset 0 0 0 1px var(--accent); }
+  .card canvas { width: 100%; aspect-ratio: 1; border-radius: 9px; display: block; max-width: 100%; }
+  .card .ck { font: 700 0.85rem/1.25 var(--font-key); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .card .cm { font-size: 0.75rem; color: var(--muted); display: flex; flex-direction: column; align-items: flex-start; gap: 6px; }
+  .badge { font: 600 0.7rem/1 var(--font-body); padding: 3px 6px; border-radius: 999px; background: var(--bg); border: 1px solid var(--line); color: var(--muted); white-space: nowrap; }
+  .badge.cift { color: var(--r3); border-color: var(--r3); }
+  .badge.gelen { color: var(--r0); border-color: var(--r0); }
+  .rares { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+  .rare { border: 1px dashed var(--line); border-radius: 12px; padding: 10px; font-size: 0.82rem; color: var(--muted); display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+  .rare b { color: var(--ink); font-size: 0.9rem; }
+  .rare[data-found="1"] { border-style: solid; border-color: var(--accent); }
+  .rare[data-found="1"] b { color: var(--accent); }
+  .detail { display: flex; flex-direction: column; gap: 10px; }
+  .saved { font-size: 0.85rem; color: var(--ok); }
 </style>
 </head>
 <body>
 <main>
-  <a class="brand" href="./" id="home-link"><i></i>Randombeat</a>
+  <div class="top">
+    <a class="brand" href="./" id="home-link"><i></i>Randombeat</a>
+    <a class="coll-link" href="#koleksiyon" id="coll-link">Koleksiyonum <b id="coll-count">0</b></a>
+  </div>
+
+  <!-- 4. koleksiyon -->
+  <section class="stack" id="view-collection" hidden>
+    <h1>Koleksiyonun</h1>
+    <p class="muted" id="coll-summary"></p>
+    <div class="detail" id="coll-detail" hidden></div>
+    <div class="cardgrid" id="coll-grid"></div>
+    <div class="stack" id="coll-empty" hidden>
+      <p class="muted">Henüz kartın yok. Bir gülüş gönderdiğinde, sana bir bağlantı geldiğinde ya da biri sana cevap verdiğinde kartlar burada birikir.</p>
+      <a class="btn" href="./">Gülüşünü yaz</a>
+    </div>
+    <h2>Nadir sesler</h2>
+    <p class="small muted">Bazı yazışlar normalde hiç çıkmayan sesleri açar.</p>
+    <div class="rares" id="coll-rares"></div>
+  </section>
 
   <!-- 1. kendi gülüşünü yap -->
   <section class="stack" id="view-make" hidden>
@@ -115,6 +152,7 @@
   <!-- 2. sana bir gülüş geldi -->
   <section class="stack" id="view-reply" hidden>
     <h1>Biri sana güldü</h1>
+    <p class="saved" id="reply-saved" hidden>Bu gülüş koleksiyonuna eklendi.</p>
     <p class="muted">Önce dinle. Sonra kendi random'unla cevap ver; ikinizin beat'i birleşsin.</p>
     <div id="reply-first"></div>
     <label for="reply-input" class="small muted">Senin gülüşün</label>
@@ -129,6 +167,7 @@
   <!-- 3. ikinizin beat'i -->
   <section class="stack" id="view-duet" hidden>
     <h1>İkinizin beat'i</h1>
+    <p class="saved" id="duet-saved" hidden>Bu çift kart koleksiyonuna eklendi.</p>
     <p class="muted">Önce ilk gülüş, sonra cevap, sonra ikisi birlikte.</p>
     <div id="duet-beat"></div>
     <div class="actions">
@@ -432,6 +471,168 @@ $("video-share").addEventListener("click", async () => {
   try { await navigator.share({ files: [videoFile] }); } catch (e) {}
 });
 
+// ---------------------------------------------------------------- collection
+// Kept only in this phone's browser. Cards: {a, b?, h, src: "ben"|"gelen"|"cift", t}
+const STORE = "rb.koleksiyon.v1";
+function loadCards() {
+  try { const v = JSON.parse(localStorage.getItem(STORE) || "[]"); return Array.isArray(v) ? v : []; } catch (e) { return []; }
+}
+function saveCards(cards) {
+  try { localStorage.setItem(STORE, JSON.stringify(cards)); return true; } catch (e) { return false; }
+}
+const cardId = (c) => JSON.stringify([c.a, c.b || "", c.h || 0]);
+function addCard(card) {
+  if (!card.a || !card.a.trim()) return false;
+  const cards = loadCards();
+  const id = cardId(card);
+  const existing = cards.find((c) => cardId(c) === id);
+  if (existing) {
+    // a received card you then answered becomes yours too; keep the strongest label
+    if (card.src === "cift") existing.src = "cift";
+  } else cards.unshift({ ...card, t: Date.now() });
+  const ok = saveCards(cards.slice(0, 500));
+  updateCount();
+  return ok;
+}
+function updateCount() { $("coll-count").textContent = String(loadCards().length); }
+const scoreOfCard = (c) => (c.b ? RB.duet(c.a, c.b, { tempoStep: c.h || 0 }) : RB.compose(c.a, { tempoStep: c.h || 0 }));
+
+// Cover art: the laugh's trail across the Turkish Q keyboard.
+const KB_ROWS = [["1234567890*-", 0], ["qwertyuıopğü", 0.5], ["asdfghjklşi,", 0.75], ["zxcvbnmöç.", 1.25]];
+function drawCover(canvas, card, score) {
+  const dpr = window.devicePixelRatio || 1;
+  const size = canvas.clientWidth || 160;
+  canvas.width = Math.round(size * dpr);
+  canvas.height = Math.round(size * dpr);
+  const ctx = canvas.getContext("2d");
+  ctx.scale(dpr, dpr);
+  const styleIdx = RB.STYLES.findIndex((s) => s.id === score.styleId);
+  const hue = (styleIdx * 29 + score.root * 11 + 200) % 360;
+  ctx.fillStyle = `hsl(${hue} 38% 13%)`;
+  ctx.fillRect(0, 0, size, size);
+  const pad = size * 0.08, kw = (size - 2 * pad) / 13.25, kh = kw * 1.05;
+  const top = size * 0.3;
+  const at = (x, row) => [pad + x * kw + kw / 2, top + row * (kh * 1.25) + kh / 2];
+  ctx.fillStyle = `hsl(${hue} 22% 22%)`;
+  for (const [keys, off] of KB_ROWS)
+    [...keys].forEach((_, col) => {
+      const [cx, cy] = at(col + off, KB_ROWS.findIndex((r) => r[0] === keys));
+      ctx.beginPath();
+      ctx.roundRect ? ctx.roundRect(cx - kw * 0.42, cy - kh * 0.42, kw * 0.84, kh * 0.84, kw * 0.18) : ctx.rect(cx - kw * 0.42, cy - kh * 0.42, kw * 0.84, kh * 0.84);
+      ctx.fill();
+    });
+  const trails = [card.a, card.b].filter(Boolean);
+  trails.forEach((text, ti) => {
+    const a = RB.analyse(text);
+    if (!a) return;
+    const letters = a.segments.flatMap((s) => s.letters).filter((l) => l.pos.onKeyboard);
+    const pts = letters.map((l) => at(l.pos.x, l.pos.row));
+    const lineHue = (hue + (ti ? 150 : 40)) % 360;
+    ctx.strokeStyle = `hsl(${lineHue} 85% 66%)`;
+    ctx.globalAlpha = 0.85;
+    ctx.lineWidth = Math.max(1.5, size * 0.014);
+    ctx.lineJoin = "round";
+    ctx.lineCap = "round";
+    ctx.beginPath();
+    pts.forEach(([x, y], i) => (i ? ctx.lineTo(x + ti * 2, y + ti * 2) : ctx.moveTo(x + ti * 2, y + ti * 2)));
+    ctx.stroke();
+    ctx.globalAlpha = 1;
+    letters.forEach((l, i) => {
+      const [x, y] = pts[i];
+      ctx.fillStyle = l.turkish ? "#f07bcb" : l.left ? "#3cc9c9" : "#f2c14e";
+      ctx.beginPath();
+      ctx.arc(x + ti * 2, y + ti * 2, size * (0.016 + 0.006 * Math.min(l.run, 4)) * (l.upper ? 1.5 : 1), 0, Math.PI * 2);
+      ctx.fill();
+    });
+  });
+  // a small beat strip along the bottom
+  const steps = score.bars * score.stepsPerBar;
+  const sx = (size - 2 * pad) / steps;
+  const roles = ["#8c9bff", "#ff8466", "#a9b3c6", "#3cc9c9", "#f2c14e", "#f07bcb"];
+  for (const e of score.events) {
+    if (e.role > 1 && e.role !== 5) continue;
+    ctx.globalAlpha = 0.4 + 0.6 * e.vel;
+    ctx.fillStyle = roles[e.role];
+    ctx.fillRect(pad + (e.tick / RB.TPS) * sx, size * 0.86 + (e.role === 0 ? 0 : e.role === 1 ? size * 0.035 : size * 0.07), Math.max(1, sx * 0.8), size * 0.025);
+  }
+  ctx.globalAlpha = 1;
+  ctx.fillStyle = `hsl(${hue} 30% 78%)`;
+  ctx.font = `600 ${Math.round(size * 0.075)}px "Space Grotesk", sans-serif`;
+  ctx.fillText(score.styleName, pad, size * 0.17);
+  if (score.rare && score.rare.length) {
+    ctx.strokeStyle = "#e5a93a";
+    ctx.lineWidth = size * 0.025;
+    ctx.strokeRect(size * 0.0125, size * 0.0125, size * 0.975, size * 0.975);
+  }
+}
+
+const SRC_LABEL = { ben: ["Gönderdin", ""], gelen: ["Sana geldi", "gelen"], cift: ["Çift kart", "cift"] };
+function showCollection() {
+  for (const id of ["view-make", "view-reply", "view-duet", "video-box"]) $(id).hidden = true;
+  stop();
+  const view = $("view-collection");
+  view.hidden = false;
+  $("coll-detail").hidden = true;
+  const cards = loadCards();
+  const grid = $("coll-grid");
+  grid.innerHTML = "";
+  $("coll-empty").hidden = cards.length > 0;
+  const found = new Set();
+  let duets = 0;
+  cards.forEach((c) => {
+    const score = scoreOfCard(c);
+    if (!score) return;
+    score.rare.forEach((r) => found.add(r));
+    if (c.b) duets++;
+    const el = document.createElement("button");
+    el.type = "button";
+    el.className = "card";
+    el.dataset.rare = score.rare.length ? "1" : "0";
+    const [label, cls] = SRC_LABEL[c.src] || SRC_LABEL.ben;
+    el.innerHTML = `<canvas aria-hidden="true"></canvas><span class="ck"></span><span class="cm"><span>${esc(score.styleName)} · ${Math.round(score.bpm)}</span><span class="badge ${cls}">${label}</span></span>`;
+    el.querySelector(".ck").textContent = c.b ? `${c.a} + ${c.b}` : c.a;
+    el.setAttribute("aria-label", `${c.b ? c.a + " ve " + c.b : c.a}, ${score.styleName}, ${label}`);
+    grid.appendChild(el);
+    const cv = el.querySelector("canvas");
+    requestAnimationFrame(() => drawCover(cv, c, score));
+    el.addEventListener("click", () => openCard(c));
+  });
+  const rareCount = found.size;
+  $("coll-summary").textContent = cards.length
+    ? `${cards.length} kart · ${duets} çift kart · ${rareCount}/4 nadir ses`
+    : "Kartların bu telefonda saklanır.";
+  const rares = $("coll-rares");
+  rares.innerHTML = "";
+  for (const [id, r] of Object.entries(RB.RARE)) {
+    const d = document.createElement("div");
+    d.className = "rare";
+    d.dataset.found = found.has(id) ? "1" : "0";
+    d.innerHTML = `<b>${found.has(id) ? esc(r.sound) : "???"}</b><span>${esc(r.name)}</span><span>${esc(r.hint)}</span>`;
+    rares.appendChild(d);
+  }
+}
+function openCard(c) {
+  const box = $("coll-detail");
+  box.hidden = false;
+  box.innerHTML = "";
+  const keys = document.createElement("div");
+  keys.className = "keys";
+  keys.innerHTML = c.b ? `<span class="key"></span><span class="plus">+</span><span class="key"></span>` : `<span class="key"></span>`;
+  keys.children[0].textContent = c.a;
+  if (c.b) keys.children[2].textContent = c.b;
+  box.appendChild(keys);
+  const holder = document.createElement("div");
+  box.appendChild(holder);
+  beatCard(holder, (c.b ? "d:" + c.a + "|" + c.b : "f:" + c.a) + ":" + (c.h || 0), c.b ? duo(c.a, c.b, c.h || 0) : single(c.a, c.h || 0));
+  const send = document.createElement("button");
+  send.className = "btn";
+  send.type = "button";
+  send.textContent = c.b ? "Bu çift kartı paylaş" : "Tekrar gönder";
+  send.addEventListener("click", () => shareLink(linkFor(c.a, c.b || "", c.h || 0), c.b ? "İkimizin beat'i:" : "Bunu dinle, sen de random'unla cevap ver:"));
+  box.appendChild(send);
+  box.scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
 // ---------------------------------------------------------------- views
 function debounce(fn, ms) { let t; return (...a) => { clearTimeout(t); t = setTimeout(() => fn(...a), ms); }; }
 
@@ -448,14 +649,22 @@ function showMake() {
   };
   input.addEventListener("input", debounce(() => { stop(); render(); }, 250));
   input.addEventListener("keydown", (e) => { if (e.key === "Enter") input.blur(); });
-  $("make-send").addEventListener("click", () => shareLink(linkFor(input.value, "", state.tempo), "Bunu dinle, sen de random'unla cevap ver:"));
-  $("make-video").addEventListener("click", () => makeVideo(single(input.value, state.tempo), input.value, linkFor(input.value, "", state.tempo)));
+  // sending is what puts a card in your collection
+  $("make-send").addEventListener("click", () => {
+    addCard({ a: input.value, h: state.tempo, src: "ben" });
+    shareLink(linkFor(input.value, "", state.tempo), "Bunu dinle, sen de random'unla cevap ver:");
+  });
+  $("make-video").addEventListener("click", () => {
+    addCard({ a: input.value, h: state.tempo, src: "ben" });
+    makeVideo(single(input.value, state.tempo), input.value, linkFor(input.value, "", state.tempo));
+  });
   if (state.first) input.value = state.first;
   render();
 }
 
 function showReply() {
   $("view-reply").hidden = false;
+  $("reply-saved").hidden = !addCard({ a: state.first, h: state.tempo, src: "gelen" });
   // the friend hears the sender's tempo; no tempo control here
   beatCard($("reply-first"), "f:" + state.first + ":" + state.tempo, single(state.first, state.tempo));
   const keyEl = document.createElement("span");
@@ -473,12 +682,19 @@ function showReply() {
   };
   input.addEventListener("input", debounce(() => { stop(); render(); }, 250));
   input.addEventListener("keydown", (e) => { if (e.key === "Enter") input.blur(); });
-  $("reply-send").addEventListener("click", () => shareLink(linkFor(state.first, input.value, state.tempo), "Cevabım geldi, ikimizin beat'i:"));
-  $("reply-video").addEventListener("click", () => makeVideo(duo(state.first, input.value, state.tempo), state.first + " + " + input.value, linkFor(state.first, input.value, state.tempo)));
+  $("reply-send").addEventListener("click", () => {
+    addCard({ a: state.first, b: input.value, h: state.tempo, src: "cift" });
+    shareLink(linkFor(state.first, input.value, state.tempo), "Cevabım geldi, ikimizin beat'i:");
+  });
+  $("reply-video").addEventListener("click", () => {
+    addCard({ a: state.first, b: input.value, h: state.tempo, src: "cift" });
+    makeVideo(duo(state.first, input.value, state.tempo), state.first + " + " + input.value, linkFor(state.first, input.value, state.tempo));
+  });
 }
 
 function showDuet() {
   $("view-duet").hidden = false;
+  $("duet-saved").hidden = !addCard({ a: state.first, b: state.reply, h: state.tempo, src: "cift" });
   const box = $("duet-beat");
   const keys = document.createElement("div");
   keys.className = "keys";
@@ -492,9 +708,24 @@ function showDuet() {
   $("duet-send").addEventListener("click", () => shareLink(location.href, "İkimizin beat'i:"));
 }
 
-if (state.first && state.reply) showDuet();
-else if (state.first) showReply();
-else showMake();
+// Views are built once; the collection is an overlay reached with #koleksiyon.
+let started = false;
+function route() {
+  updateCount();
+  if (location.hash === "#koleksiyon") return showCollection();
+  $("view-collection").hidden = true;
+  if (started) {
+    // back from the collection: show the view this link belongs to again
+    $(state.first && state.reply ? "view-duet" : state.first ? "view-reply" : "view-make").hidden = false;
+    return;
+  }
+  started = true;
+  if (state.first && state.reply) showDuet();
+  else if (state.first) showReply();
+  else showMake();
+}
+window.addEventListener("hashchange", route);
+route();
 
 const redrawAll = () => document.querySelectorAll(".beat").forEach((b) => b._redraw && b._redraw());
 window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", redrawAll);

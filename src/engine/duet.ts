@@ -39,6 +39,7 @@ export function duet(first: string, reply: string, opts: ComposeOptions = {}): S
     text: `${a.text} + ${b.text}`,
     identityKey: `${a.identityKey} + ${b.identityKey}`,
     bars: 6,
+    rare: [...new Set([...a.rare, ...b.rare])],
     events,
     segments: [
       { raw: a.text, startBar: 0, bars: 2 },

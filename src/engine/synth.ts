@@ -13,12 +13,12 @@ export const SAMPLE_RATE = 44100;
 const SR = SAMPLE_RATE;
 
 export const VARIANT_NAMES: string[][] = [
-  ["808", "Yumruk", "Tok", "Bozuk", "Yumuşak", "Davul"],
+  ["808", "Yumruk", "Tok", "Bozuk", "Yumuşak", "Davul", "Kudüm"],
   ["El çırpma", "Trampet", "Kenar", "Şıklatma", "Darbuka tek", "Eski trampet"],
   ["Kapalı zil", "Shaker", "Tık", "Metal", "Tahta", "Kaşık"],
   ["Sub bas", "Çekme bas", "Hırıltı", "Kalın şerit", "Kare bas", "Saz bas"],
-  ["Çekme tel", "Çan", "Atari", "Marimba", "Saz", "Ney ıslığı"],
-  ["Zil", "Darbuka", "Halay alkışı", "Kaşık şakırtı", "Tef", "Zurna"],
+  ["Çekme tel", "Çan", "Atari", "Marimba", "Saz", "Ney ıslığı", "Kanun"],
+  ["Zil", "Darbuka", "Halay alkışı", "Kaşık şakırtı", "Tef", "Zurna", "Bendir", "Ters zil"],
 ];
 
 // ---------------------------------------------------------------- filters
@@ -160,6 +160,14 @@ const KICKS: [number, number, number, number, number, number][] = [
 ];
 
 function kick(out: Out, start: number, v: number, vel: number, rng: Rng) {
+  if (v === 6) {
+    // kudüm: a taut low drum, then the small high drum answering softly
+    sineHit(out, start, vel, 135, 82, 0.03, 0.07, 2.4);
+    sineHit(out, start, vel * 0.3, 270, 200, 0.02, 0.04, 1.6);
+    noiseBurst(out, start, rng, vel * 0.35, 0.006, [new Biquad("bp", 700, 1.2)]);
+    sineHit(out, start, vel * 0.38, 240, 205, 0.01, 0.035, 1.8, 0.085);
+    return;
+  }
   const [f0, f1, pt, at, drive, click] = KICKS[v];
   sineHit(out, start, vel, f0, f1, pt, at, drive);
   // second harmonic band so the hit is heard on small speakers
@@ -356,6 +364,14 @@ function bass(out: Out, start: number, v: number, midi: number, dur: number, vel
 function melody(out: Out, start: number, v: number, midi: number, dur: number, vel: number, rng: Rng) {
   const f = midiToHz(midi);
   switch (v) {
+    case 6: {
+      // kanun: bright plucked string, struck twice with the mızrap
+      const twin = new Rng(rng.u32());
+      pluckString(out, start, f, vel * 0.8, 1.0, 0.998, 9000, rng);
+      pluckString(out, start + samples(0.028), f * 1.0017, vel * 0.5, 0.9, 0.998, 9000, twin);
+      noiseBurst(out, start, rng, vel * 0.2, 0.002, [new Biquad("hp", 4000, 0.7)]);
+      return;
+    }
     case 0:
       pluckString(out, start, f, vel, 0.7, 0.996, 5000, rng);
       return;
@@ -429,6 +445,40 @@ const ZIL_PARTIALS: [number, number, number][] = [
 
 function spice(out: Out, start: number, v: number, midi: number, vel: number, rng: Rng) {
   switch (v) {
+    case 6: {
+      // bendir: deep frame drum with its buzzing snare string
+      sineHit(out, start, vel * 0.8, 105, 72, 0.02, 0.06, 1.8);
+      const len = samples(0.35);
+      const dk = decayFactor(0.07, SR);
+      const bp = new Biquad("bp", 1400, 0.8);
+      let env = vel * 0.55;
+      let ph = 0;
+      for (let i = 0; i < len; i++) {
+        ph += 85 / SR;
+        const buzz = bp.run(rng.noise()) * (0.6 + 0.4 * sinCycle(ph));
+        write(out, start, i, buzz * env * fadeOut(i, len));
+        env *= dk;
+      }
+      return;
+    }
+    case 7: {
+      // ters zil: a cymbal played backwards, swelling into the beat
+      const len = samples(0.42);
+      const hp = new Biquad("hp", 5200, 0.7);
+      const ph = [0, 0, 0, 0];
+      const ratios = [1, 1.47, 2.09, 2.56];
+      for (let i = 0; i < len; i++) {
+        const k = i / len;
+        const env = vel * 0.7 * k * k * k;
+        let x = hp.run(rng.noise()) * 0.6;
+        for (let j = 0; j < 4; j++) {
+          ph[j] += (1700 * ratios[j]) / SR;
+          x += 0.12 * sinCycle(ph[j]);
+        }
+        write(out, start - len, i, x * env);
+      }
+      return;
+    }
     case 0: // zil (finger cymbal)
       for (const [r, a, t] of ZIL_PARTIALS) sineHit(out, start, vel * a * 0.22, 1850 * r, 1850 * r, 1, t);
       noiseBurst(out, start, rng, vel * 0.3, 0.003, [new Biquad("hp", 6000, 0.7)]);

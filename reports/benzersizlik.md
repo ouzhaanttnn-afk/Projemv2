@@ -1,6 +1,6 @@
 # Benzersizlik testi
 
-Tarih: 2026-11-22 · Süre: 33 saniye
+Tarih: 2026-11-22 · Süre: 32 saniye
 
 Benzerlik puanı 0 ile 1 arasında: 0 birebir aynı beat, 1 hiçbir ortak yanı yok.
 Puan; hız, ölçü, tarz, ses takımı, ton, gam, davul vuruşlarının yerleri ve
@@ -15,12 +15,12 @@ Gülüşler gerçek değil, gerçeğe benzetilerek üretildi (tools/corpus.ts). 
 | Şart | Sonuç | Değer |
 |---|---|---|
 | Hiçbir iki farklı yazı birebir aynı beat'i vermesin | GEÇTİ | 9991 yazıda 0 çakışma |
-| Bağımsız çiftlerin binde birinden azı eşiğin altında | GEÇTİ | 31.990.119 çiftte 27 (0,001‰) |
+| Bağımsız çiftlerin binde birinden azı eşiğin altında | GEÇTİ | 31.990.119 çiftte 26 (0,001‰) |
 | Tarzlar dengeli (hiçbiri payının 2 katını geçmesin, 0,4 katının altına düşmesin) | GEÇTİ | en çok 10,3%, en az 6,2% (eşit pay 8,3%) |
 
 Aynı gülüşün farklı uzunlukları (örneğin `sjsjsj` ve `sjsjsjsj`) bağımsız
 sayılmadı: bilerek birbirine benziyorlar. Bu türden 5881 çift var;
-5586 tanesi eşiğin altında.
+5585 tanesi eşiğin altında.
 
 ## Birbirine en çok benzeyen bağımsız çiftler
 
@@ -94,4 +94,4 @@ Hız (dakikadaki dörtlük, 10'a yuvarlanmış):
 70: 2,1% · 80: 7,3% · 90: 11,9% · 100: 20,0% · 110: 23,8% · 120: 14,0% · 130: 5,4% · 140: 3,9% · 150: 3,1% · 160: 0,9% · 170: 5,3% · 180: 1,9% · 190: 0,4%
 
 Benzerlik puanlarının dağılımı (bağımsız çiftler, kaba):
-0,00–0,05: 0,0% · 0,05–0,10: 0,0% · 0,10–0,15: 0,0% · 0,15–0,20: 0,0% · 0,20–0,25: 0,0% · 0,25–0,30: 0,0% · 0,30–0,35: 0,1% · 0,35–0,40: 0,4% · 0,40–0,45: 1,4% · 0,45–0,50: 2,3% · 0,50–0,55: 2,0% · 0,55–0,60: 1,9% · 0,60–0,65: 2,2% · 0,65–0,70: 23,3% · 0,70–0,75: 22,3% · 0,75–0,80: 23,1% · 0,80–0,85: 21,1% · 0,85–0,90: 0,0% · 0,90–0,95: 0,0% · 0,95–1,00: 0,0%
+0,00–0,05: 0,0% · 0,05–0,10: 0,0% · 0,10–0,15: 0,0% · 0,15–0,20: 0,0% · 0,20–0,25: 0,0% · 0,25–0,30: 0,0% · 0,30–0,35: 0,1% · 0,35–0,40: 0,4% · 0,40–0,45: 1,4% · 0,45–0,50: 2,3% · 0,50–0,55: 2,0% · 0,55–0,60: 1,9% · 0,60–0,65: 2,2% · 0,65–0,70: 23,2% · 0,70–0,75: 22,3% · 0,75–0,80: 22,9% · 0,80–0,85: 21,2% · 0,85–0,90: 0,0% · 0,90–0,95: 0,0% · 0,95–1,00: 0,0%

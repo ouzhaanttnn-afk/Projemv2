@@ -102,6 +102,47 @@ export interface Analysis {
   flow: number;
   repetitive: boolean;
   letterCount: number;
+  /** rare typings that unlock rare sounds (RARE in this file) */
+  rare: RareId[];
+}
+
+export type RareId = "turkce" | "ayna" | "uzun" | "sira";
+
+/** Rare typings and the sound each one unlocks. */
+export const RARE: Record<RareId, { name: string; hint: string; sound: string }> = {
+  turkce: { name: "Halis Türkçe", hint: "Yalnızca ş ç ğ ü ö ı harfleriyle gül", sound: "Bendir" },
+  ayna: { name: "Ayna", hint: "Tersinden de aynı okunan bir gülüş yaz", sound: "Ters zil" },
+  uzun: { name: "Bitmeyen kahkaha", hint: "En az 40 karakterlik bir gülüş yaz", sound: "Kanun" },
+  sira: { name: "Klavye merdiveni", hint: "Klavyede yan yana 5 harfi sırayla yaz", sound: "Kudüm" },
+};
+
+function findRare(text: string): RareId[] {
+  const chars = [...text].filter((c) => !/\s/u.test(c));
+  const lowers = chars.map(lowerTR);
+  const letters = lowers.filter((c) => /\p{L}/u.test(c));
+  const out: RareId[] = [];
+  if (letters.length >= 4 && letters.length === lowers.length && letters.every((c) => TURKISH_LETTERS.has(c))) out.push("turkce");
+  const joined = lowers.join("");
+  if (lowers.length >= 5 && new Set(lowers).size >= 3 && joined === [...lowers].reverse().join("")) out.push("ayna");
+  if (chars.length >= 40) out.push("uzun");
+  // five keys in a row on one keyboard row, either direction ("asdfg", "lkjhg")
+  let run = 1;
+  for (let i = 1; i < lowers.length && run < 5; i++) {
+    const a = KEYMAP.get(lowers[i - 1]);
+    const b = KEYMAP.get(lowers[i]);
+    const prevStep = i >= 2 ? stepOf(lowers[i - 2], lowers[i - 1]) : 0;
+    const step = a && b && a.row === b.row && a.row > 0 ? b.x - a.x : 0;
+    if (step === 1 || step === -1) run = step === prevStep || run === 1 ? run + 1 : 2;
+    else run = 1;
+  }
+  if (run >= 5) out.push("sira");
+  return out;
+}
+
+function stepOf(x: string, y: string): number {
+  const a = KEYMAP.get(x);
+  const b = KEYMAP.get(y);
+  return a && b && a.row === b.row && a.row > 0 ? b.x - a.x : 0;
 }
 
 function makeLetter(ch: string): Letter {
@@ -254,5 +295,6 @@ export function analyse(input: string): Analysis | null {
     flow: weight ? flowSum / weight : 0,
     repetitive: segments.every((s) => s.periodic && s.unit.length <= 4),
     letterCount: letters,
+    rare: findRare(text),
   };
 }

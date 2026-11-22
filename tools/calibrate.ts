@@ -4,12 +4,13 @@
 //
 // Run: node tools/calibrate.ts
 import { writeFileSync } from "node:fs";
-import { SAMPLE_RATE } from "../src/engine/synth.ts";
+import { SAMPLE_RATE, VARIANT_NAMES } from "../src/engine/synth.ts";
 import { renderHit } from "../src/engine/synth.ts";
 
 // Per-hit loudness targets in dB, relative. Chosen so a typical mix has the
 // kick and melody in front, snare and bass close behind, hats underneath.
 const TARGET_DB = [0, -1.5, -11, -3, -2, -3];
+const LEAD = Math.round(SAMPLE_RATE * 0.5);
 const WINDOW = [0.25, 0.25, 0.12, 0.3, 0.3, 0.3]; // seconds measured per role
 
 function phoneHighPass(x: Float64Array): Float64Array {
@@ -36,9 +37,10 @@ function loudness(role: number, variant: number): number {
   // average over a few seeds so noise-based sounds measure fairly
   for (let seed = 1; seed <= 4; seed++) {
     buf.fill(0);
-    renderHit(buf, 0, { role, variant, vel: 1, midi, dur: 0.25, alt: 0, seed }, 1);
+    // start half a second in, so sounds that swell into the hit are measured too
+    renderHit(buf, LEAD, { role, variant, vel: 1, midi, dur: 0.25, alt: 0, seed }, 1);
     const y = phoneHighPass(buf);
-    const n = Math.round(WINDOW[role] * SAMPLE_RATE);
+    const n = LEAD + Math.round(WINDOW[role] * SAMPLE_RATE);
     for (let i = 0; i < n; i++) e += y[i] * y[i];
   }
   return 10 * Math.log10(e / 4);
@@ -48,7 +50,7 @@ const ref = loudness(0, 1);
 const rows: string[] = [];
 for (let role = 0; role < 6; role++) {
   const gains: string[] = [];
-  for (let v = 0; v < 6; v++) {
+  for (let v = 0; v < VARIANT_NAMES[role].length; v++) {
     const db = loudness(role, v) - ref;
     const g = Math.pow(10, (TARGET_DB[role] - db) / 20);
     gains.push(String(Math.round(Math.min(g, 8) * 10000) / 10000));

@@ -7,7 +7,7 @@
 //  - the full text only adds details (accents, ghost notes, the final fill).
 
 import { Rng, combine, hashString } from "./hash.ts";
-import { analyse, keyDistance, type Analysis, type Letter, type Segment } from "./text.ts";
+import { analyse, keyDistance, type Analysis, type Letter, type RareId, type Segment } from "./text.ts";
 import {
   BASS,
   HAT,
@@ -64,6 +64,7 @@ export interface Score {
   root: number; // pitch class 0..11
   scaleId: ScaleId;
   kit: number[]; // variant per role
+  rare: RareId[];
   events: NoteEvent[];
   segments: { raw: string; startBar: number; bars: number }[];
 }
@@ -177,6 +178,13 @@ export function compose(input: string, opts: ComposeOptions = {}): Score | null 
       w[5] *= 0.2;
     }
     kit.push(g.weighted(w));
+  }
+  // rare typings bring rare sounds (variants 6 and 7 exist only this way)
+  for (const r of a.rare) {
+    if (r === "turkce") kit[SPICE] = 6;
+    if (r === "ayna") kit[SPICE] = 7;
+    if (r === "uzun") kit[MELODY] = 6;
+    if (r === "sira") kit[KICK] = 6;
   }
   const kickIdx = g.int(style.kicks.length);
   const snareIdx = g.int(style.snares.length);
@@ -339,6 +347,9 @@ export function compose(input: string, opts: ComposeOptions = {}): Score | null 
     add(boundary, HAT, 0.9, { alt: 1 });
   }
 
+  // ---- "ayna" (a mirrored laugh): the reversed cymbal swells into every bar
+  if (a.rare.includes("ayna")) for (let b = 1; b < BARS; b++) add(b * bar, SPICE, 0.85, { midi: zurnaMidi, variant: 7 });
+
   // ---- final fill, a detail-level choice
   const endStep = BARS * bar;
   const fill = d.int(5);
@@ -375,6 +386,7 @@ export function compose(input: string, opts: ComposeOptions = {}): Score | null 
     root,
     scaleId,
     kit,
+    rare: a.rare,
     events,
     segments: segInfo,
   };
