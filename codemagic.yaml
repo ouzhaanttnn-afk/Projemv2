@@ -1,18 +1,20 @@
 # Codemagic builds the iPhone app on a cloud Mac and sends it to TestFlight.
-# Signing is automatic: the App Store Connect API key and a certificate key are
-# secret variables in the "app_store" group of this Codemagic app (added by API,
-# never stored in the repository). The build fetches or creates the signing
-# files from Apple itself.
+# Uses the team's existing App Store Connect integration ("Codemagic") and the
+# team's distribution certificate (tradeup_distribution). The App Store
+# provisioning profile for com.lumoza.randombeat must exist in Codemagic's
+# Code signing identities (fetched from Apple Developer).
 workflows:
   ios-testflight:
     name: Randombeat iOS → TestFlight
     instance_type: mac_mini_m2
     max_build_duration: 45
+    integrations:
+      app_store_connect: Codemagic
     environment:
-      groups:
-        - app_store
+      ios_signing:
+        distribution_type: app_store
+        bundle_identifier: com.lumoza.randombeat
       vars:
-        BUNDLE_ID: com.lumoza.randombeat
         XCODE_PROJECT: ios/App/App.xcodeproj
         XCODE_SCHEME: App
       node: 22
@@ -22,16 +24,8 @@ workflows:
         script: npm ci
       - name: Uygulama sayfasını oluştur
         script: npm run app:native
-      - name: İmza dosyalarını hazırla
-        script: |
-          set -o pipefail
-          mkdir -p /tmp/xcodebuild_logs
-          keychain initialize 2>&1 | tee /tmp/xcodebuild_logs/signing.log
-          app-store-connect fetch-signing-files "$BUNDLE_ID" --type IOS_APP_STORE --create 2>&1 | tee -a /tmp/xcodebuild_logs/signing.log
-          keychain add-certificates 2>&1 | tee -a /tmp/xcodebuild_logs/signing.log
-          ls -la "$HOME/Library/MobileDevice/Provisioning Profiles" 2>&1 | tee -a /tmp/xcodebuild_logs/signing.log
-          xcode-project use-profiles --project "$XCODE_PROJECT" 2>&1 | tee -a /tmp/xcodebuild_logs/signing.log
-          grep -n "PROVISIONING_PROFILE\|CODE_SIGN\|DEVELOPMENT_TEAM" ios/App/App.xcodeproj/project.pbxproj | tee -a /tmp/xcodebuild_logs/signing.log
+      - name: İmza ayarları
+        script: xcode-project use-profiles --project "$XCODE_PROJECT"
       - name: Derleme numarası
         script: |
           cd ios/App
@@ -43,7 +37,5 @@ workflows:
       - /tmp/xcodebuild_logs/*.log
     publishing:
       app_store_connect:
-        api_key: $APP_STORE_CONNECT_PRIVATE_KEY
-        key_id: $APP_STORE_CONNECT_KEY_IDENTIFIER
-        issuer_id: $APP_STORE_CONNECT_ISSUER_ID
+        auth: integration
         submit_to_testflight: true
