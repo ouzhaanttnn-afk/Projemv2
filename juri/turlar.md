@@ -50,3 +50,20 @@ cevapla: bir fikre 7 ve üstü ("kendi paramı ve üç ayımı yatırırdım") v
    fikri en çok nerede arardın? (tek cümle)
 4. YANILTICI İŞARET: İnsanların "değer" sandığı ama senin rolünün gözünden hiçbir şey kanıtlamayan
    bir işaret. (tek cümle)
+
+## Tur 5 — Tek proje değerlendirmesi
+
+Bu turda tek bir proje var ve iki ayrı soruya cevap veriyorsun. İkisini birbirine karıştırma:
+(a) geliştiricinin kendi sorununu çözen, parasız ve yaklaşık dört haftalık bir deneme olarak ne kadar
+mantıklı; (b) başkalarına satılan bir ürün olarak ne kadar umut verici. "Değişmeyen kurallar"daki
+kanıt disiplini geçerli; ama (a) sorusunda risk yalnızca geliştiricinin birkaç haftası olduğu için
+"varsayılan karar yapmaya değmez" kuralını (a) için uygulama, yalnızca (b) için uygula.
+
+Çıktı (en fazla 190 kelime):
+1. PUANLAR: `Kendisi için deneme: _/10` ve `Ürün olarak: _/10`, her birinin yanında tek cümle neden.
+2. EN GÜÇLÜ 2 YAN (kendi rolünün gözünden, birer cümle).
+3. EN ZAYIF 2 YAN (kendi rolünün gözünden, birer cümle).
+4. İlk sürümde mutlaka olması gereken TEK şey.
+5. İlk sürümde kesinlikle olmaması gereken TEK şey.
+6. Geliştirici kendi üzerinde denerken "şunu görürsen bırak ya da değiştir" dedirtecek tek somut işaret.
+7. Kendi rolünün gözünden cevaplanmamış en önemli soru.
