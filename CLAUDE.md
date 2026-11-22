@@ -9,7 +9,15 @@
   ne olduğunu anlat.
 - Ücretli reklam önerme; ücretsiz büyüme yolları öner.
 
-## Ürün (geçici ad: "Föy")
+## Durum: Föy rafa kaldırıldı
+
+Kullanıcı Föy projesini bıraktı ("içim ısınmadı"); gerekçe: talep kanıtı zayıf, kitle dar, gelir
+küçük. Çalışan ilk sürüm depoda duruyor ama üzerine yeni iş yapılmayacak. Sıradaki iş: kullanıcının
+kendi bulgularından bağımsız, yeni ürün fikri araştırması. Araştırma için kullanıcının verdiği
+Claude API anahtarı kullanılabilir; harcama sınırı toplam 20 dolar. Anahtar yalnızca güvenli form
+üzerinden alınır, depoya ve sohbete asla yazılmaz.
+
+## Rafa kaldırılan ürün (geçici ad: "Föy")
 
 Elinde fiziksel ürün olan ve bunu mimara, iç mimara, mağazaya ya da müşteriye göstermesi gereken
 kişiler için telefon uygulaması: tasarımcılar, seramik atölyeleri, mobilya ve aydınlatma
