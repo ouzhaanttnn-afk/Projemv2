@@ -17,6 +17,21 @@ kendi bulgularından bağımsız, yeni ürün fikri araştırması. Araştırma 
 Claude API anahtarı kullanılabilir; harcama sınırı toplam 20 dolar. Anahtar yalnızca güvenli form
 üzerinden alınır, depoya ve sohbete asla yazılmaz.
 
+## Fikir elemesi sonucu
+
+Yaklaşık 100 fikir üç ayrı elemeden geçti. Son eleme (`juri/` klasörü): 50 fikir, 24 rollük jüri,
+finalistlerin iddiaları internette doğrulandı.
+
+- Kazanan: **Karakterli Akort Aleti** (gitar, ukulele, bağlama; tek seferlik ödeme). 24 oydan 12'si,
+  ortalama 3,6/10. İkinci: Rol Yapma Oyunu Zarı (8 oy, 3,2/10).
+- Jürinin ortak hükmü: hiçbir fikir "yapılmaya değer" çıkmadı; kazanan "en az kötüsü". Doğrulamada
+  akort aletinin üç farkı da (bağlamada rakip az, ücretsiz iyi akort yok, karakterli akort yok)
+  çürüdü.
+- Eksik olan şey daha fazla jüri değil, gerçek kullanıcı kanıtı. Yapımdan önce önerilen ucuz
+  kontroller: mağazadaki karakterli ve bağlama akort uygulamalarının puan sayılarına ve yorumlarına
+  bakmak; karakterin kısa videolarını paylaşıp ilgiyi ölçmek.
+- Kullanıcı henüz hangi fikirle devam edeceğine karar vermedi.
+
 ## Rafa kaldırılan ürün (geçici ad: "Föy")
 
 Elinde fiziksel ürün olan ve bunu mimara, iç mimara, mağazaya ya da müşteriye göstermesi gereken
