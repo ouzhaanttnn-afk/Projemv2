@@ -48,6 +48,30 @@ Jüriden "yapılmaya değer fikir" ölçütü alındı (`juri/olcut.md`), sonra 
   uygulamasını indirip asıl işi kilitsiz ve reklamsız yaptırıp yaptırmadıklarına bakmak. Üçü
   yaptırıyorsa fikir düşer.
 
+## Güncel fikir: "Soran Stüdyo" (geçici ad) — kullanıcının kendi fikri
+
+Kullanıcı eski fikirlerin bırakılmasını istedi ve kendi sorununu anlattı (ayrıntı:
+`juri/proje-soru.md`). Özet: gündüz kuyumcuda tezgâhta çalışıyor, seramik tasarımcısı olmak istiyor;
+kendi konusunu kendisi koymak zorunda ve başlayamıyor; yapay zekâ "şunu yap" deyince iş ondan
+çıkıyor. İstediği: tezgâhtaki boş dakikalarda telefonla ilerleme; ek ücret yok; önce kendisi için,
+sonra herkese.
+
+Fikir: asla öneri vermeyen, yalnızca soran ve cevapları saklayan telefon uygulaması; biriken
+cevapları geri gösterip "hangisinin peşine düşeceksin?" diye sorar; sonunda atölyeye götürülecek
+yapım kartı. Uygulama içinde yapay zekâ, sunucu, hesap yok.
+
+15 jüri üyesinin değerlendirmesi: kendisi için parasız deneme olarak ortalama 6,3/10; ürün olarak
+2,1/10 (hiç pazar kanıtı yok). Ortak görüşler:
+- Mutlaka olmalı: kendi cevaplarını geri gösterip konu seçtiren an.
+- Olmamalı: seramik dışı soru havuzları, ödeme ekranı, konuşan maskot, hesap, sesle cevap (ilk sürümde).
+- Asıl iş kod değil, iyi soruları yazmak.
+- Önce bir hafta telefonun not uygulamasında 30 soruyla denenmeli; aynı işi görüyorsa uygulama gereksiz.
+- Risk: uygulamayı yapmak, seramiğe başlamayı ertelemenin yeni yolu olabilir.
+- Bırakma işareti: 3–4 haftada tek bir yapım kartı bile atölyeye gitmediyse.
+- Açık soru: kullanıcının Mac'i var mı (iPhone'a yüklemek için gerekir)?
+
+Kullanıcı kısa cevap istiyor.
+
 ## Rafa kaldırılan ürün (geçici ad: "Föy")
 
 Elinde fiziksel ürün olan ve bunu mimara, iç mimara, mağazaya ya da müşteriye göstermesi gereken
