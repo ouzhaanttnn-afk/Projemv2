@@ -1,17 +1,18 @@
 # Codemagic builds the iPhone app on a cloud Mac and sends it to TestFlight.
-# Setup steps for the product owner: docs/app-store-rehberi.md
+# Signing is automatic: the App Store Connect API key and a certificate key are
+# secret variables in the "app_store" group of this Codemagic app (added by API,
+# never stored in the repository). The build fetches or creates the signing
+# files from Apple itself.
 workflows:
   ios-testflight:
     name: Randombeat iOS → TestFlight
     instance_type: mac_mini_m2
     max_build_duration: 45
-    integrations:
-      app_store_connect: Randombeat ASC
     environment:
-      ios_signing:
-        distribution_type: app_store
-        bundle_identifier: com.lumoza.randombeat
+      groups:
+        - app_store
       vars:
+        BUNDLE_ID: com.lumoza.randombeat
         XCODE_PROJECT: ios/App/App.xcodeproj
         XCODE_SCHEME: App
       node: 22
@@ -21,8 +22,12 @@ workflows:
         script: npm ci
       - name: Uygulama sayfasını oluştur
         script: npm run app:native
-      - name: İmzalama ayarları
-        script: xcode-project use-profiles
+      - name: İmza dosyalarını hazırla
+        script: |
+          keychain initialize
+          app-store-connect fetch-signing-files "$BUNDLE_ID" --type IOS_APP_STORE --create
+          keychain add-certificates
+          xcode-project use-profiles
       - name: Derleme numarası
         script: |
           cd ios/App
@@ -34,5 +39,7 @@ workflows:
       - /tmp/xcodebuild_logs/*.log
     publishing:
       app_store_connect:
-        auth: integration
+        api_key: $APP_STORE_CONNECT_PRIVATE_KEY
+        key_id: $APP_STORE_CONNECT_KEY_IDENTIFIER
+        issuer_id: $APP_STORE_CONNECT_ISSUER_ID
         submit_to_testflight: true
