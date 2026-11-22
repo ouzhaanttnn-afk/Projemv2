@@ -1,0 +1,422 @@
+# cizer ve tasarimci araclari (iPad)
+reference board
+moodboard
+art reference organizer
+color palette
+color palette generator
+color palette from photo
+color harmony
+color theory
+perspective grid
+perspective grid drawing
+drawing grid
+pose reference
+pose reference 3d
+figure drawing poses
+hand pose reference
+gesture drawing
+gesture drawing timer
+sketch timer
+figure drawing timer
+croquis timer
+pixel art
+pixel art editor
+pixel art maker
+sprite editor
+calligraphy
+calligraphy practice
+hand lettering
+brush lettering
+handwriting practice
+cursive practice
+pattern maker
+seamless pattern
+pattern design
+mandala maker
+symmetry drawing
+kaleidoscope drawing
+font maker
+handwriting font
+art journal
+sketchbook
+brush maker
+value study
+notan
+light and shadow reference
+anatomy reference
+face proportions
+drawing practice
+daily drawing prompts
+art prompts
+drawing challenge
+light box tracing
+camera lucida
+grid drawing method
+watercolor
+watercolor painting
+paint mixing
+paint color mixer
+storyboard
+storyboard maker
+comic maker
+manga drawing
+animation flipbook
+stop motion
+frame by frame animation
+character design
+concept art
+color blindness simulator
+# gunluk pratik - muzik
+metronome
+drum practice pad metronome
+metronome for drummers
+speed trainer metronome
+tuner
+guitar tuner
+ukulele tuner
+violin tuner
+banjo tuner
+mandolin tuner
+pitch pipe
+drone tones
+tanpura
+practice journal music
+music practice log
+practice timer
+guitar practice
+guitar chords
+guitar scales
+fretboard trainer
+fretboard
+chord progression
+piano practice
+sight reading
+sight reading piano
+note reading
+ear training
+interval training
+perfect pitch
+rhythm trainer
+rhythm practice
+drum practice
+drum machine
+looper
+loop pedal
+backing tracks
+jam tracks
+slow down music
+music speed changer
+sheet music
+page turner
+harmonica
+ocarina
+tin whistle
+kalimba
+handpan
+singing practice
+vocal range
+vocal warm up
+music theory
+circle of fifths
+# gunluk pratik - spor ve beden
+workout timer
+interval timer
+hiit timer
+tabata timer
+boxing timer
+round timer
+emom timer
+stopwatch
+rep counter
+push up counter
+plank timer
+jump rope
+jump rope counter
+calisthenics
+stretching
+stretching routine
+splits training
+yoga timer
+breathing
+breathing exercise
+box breathing
+breathwork
+cold plunge timer
+sauna timer
+walking
+walking tracker
+step counter
+hiking
+climbing training
+hangboard
+hangboard timer
+grip strength
+posture
+meditation timer
+meditation bell
+habit tracker
+habit tracker widget
+streak tracker
+daily routine
+mood tracker
+gratitude journal
+dream journal
+# gunluk pratik - dil ve zihin
+language practice
+vocabulary builder
+flashcards
+spaced repetition
+kanji practice
+hiragana
+japanese writing
+chinese characters
+korean alphabet
+arabic alphabet
+sign language
+typing
+typing practice
+typing speed
+touch typing
+morse code
+morse code trainer
+mental math
+brain training
+chess puzzles
+sudoku
+crossword
+nonogram
+# grup ve parti
+party games
+group games
+charades
+heads up game
+pictionary
+drawing guessing game
+trivia night
+quiz maker
+buzzer
+game show buzzer
+spin the wheel
+random picker
+decision wheel
+random team picker
+truth or dare
+would you rather
+werewolf game
+mafia game
+murder mystery
+spyfall
+secret santa
+bingo caller
+bingo card
+board game timer
+chess clock
+game timer
+score keeper
+scoreboard
+score counter
+yahtzee score
+rummy score
+cribbage
+darts scorer
+darts
+bowling score
+golf scorecard
+disc golf
+cornhole score
+pickleball score
+tennis score
+table tennis score
+dice roller
+dnd dice
+dice
+dungeon master tools
+initiative tracker
+character sheet dnd
+life counter
+mtg life counter
+coin flip
+karaoke
+photo booth
+# hobi nisleri
+aquarium
+aquarium log
+fish tank
+aquascape
+pond
+garden planner
+vegetable garden
+plant care
+plant watering reminder
+houseplant
+bonsai
+succulent
+seed starting
+mushroom foraging
+bird identification
+bird watching
+bird song
+birding checklist
+fishing
+fishing log
+fly fishing
+fishing knots
+camping
+camping checklist
+backpacking
+climbing
+bouldering
+archery
+archery score
+target shooting score
+chess
+chess openings
+backgammon
+mahjong
+jigsaw puzzle
+sewing
+sewing patterns
+knitting
+knitting counter
+row counter
+crochet
+crochet patterns
+cross stitch
+embroidery
+quilting
+woodworking
+woodworking plans
+cut list
+pottery
+ceramics
+glaze
+3d printing
+3d printer
+miniature painting
+model kits
+diorama
+lego
+vinyl records
+record collection
+film photography
+light meter
+darkroom timer
+coffee
+pour over
+espresso
+coffee brewing timer
+tea
+tea timer
+loose leaf tea
+matcha
+bread
+sourdough
+sourdough starter
+baking
+baking calculator
+pickling
+fermentation
+kombucha
+cocktail
+whiskey
+beekeeping
+chickens
+astronomy
+star map
+stargazing
+moon phase
+sailing
+knots
+origami
+fountain pen
+journaling stickers
+scrapbooking
+soap making
+candle making
+leathercraft
+bead patterns
+tarot journal
+cosplay
+# dar yardimci araclar
+counter
+tally counter
+click counter
+clock
+desk clock
+flip clock
+world clock
+alarm clock
+sleep sounds
+white noise
+pomodoro
+pomodoro timer
+focus timer
+visual timer
+countdown
+countdown widget
+event countdown
+kitchen timer
+egg timer
+hourglass
+sand timer
+multiple timers
+ruler
+tape measure
+measure
+level
+bubble level
+spirit level
+protractor
+angle finder
+compass
+altimeter
+decibel meter
+sound meter
+light meter lux
+unit converter
+cooking converter
+recipe scaler
+time zone converter
+day counter
+days since
+age calculator
+teleprompter
+noise generator
+# koleksiyon ve raf
+collection tracker
+collection organizer
+book tracker
+reading tracker
+book collection
+comic collection
+movie collection
+board game collection
+vinyl collection
+plant collection
+shoe collection
+sneaker collection
+card collection
+trading card scanner
+funko
+video game collection
+recipe box
+recipe organizer
+wine cellar
+travel journal
+places visited
+map of visited countries
+national parks
+# ana ekran parcalari
+widgets
+home screen widgets
+lock screen widgets
+widget photo
+pet widget
+virtual pet
+tamagotchi
+aesthetic widgets
+clock widget
+calendar widget
+countdown widget aesthetic
+quote widget
+icon pack

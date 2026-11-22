@@ -43,3 +43,7 @@ yarn-error.*
 # test / doğrulama çıktıları
 /e2e/.out/
 coverage/
+
+# Tarama önbelleği ve günlükleri
+juri/tarama/onbellek/
+juri/tarama/*.log
