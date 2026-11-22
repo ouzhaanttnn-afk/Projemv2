@@ -127,6 +127,10 @@ Her adımı bitirince bu tabloyu güncelle.
   `randombeat_appstore`. Derleme bu oturumdan Codemagic API'siyle
   başlatılabiliyor (anahtar ortamın gizli ayarlarında). İlk başarılı
   derleme 22 Kasım 2026.
+- TestFlight: iç test grubu "Randombeat Ekip" (her yeni sürümü kendiliğinden
+  alır). Üyeler: ürün sahibinin iki Apple hesabı, Utku Doruk, Ecenur
+  (ürün sahibinin açık onayıyla eklendi). App Store Connect uygulama
+  kimliği 6838036705.
 - Hesapta 4 dağıtım sertifikası var, Apple yenisine izin vermiyor; yeni
   sertifika oluşturmaya çalışma, mevcut olanı kullan. Kurulum adımları
   `docs/app-store-rehberi.md`, mağaza metinleri `docs/app-store-metin.md`.
