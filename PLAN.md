@@ -66,6 +66,11 @@ Her adımı bitirince bu tabloyu güncelle.
 - Yayın: Cloudflare Workers projesi `randombeat`, depoya bağlı. Yayın dalı
   `claude/friendly-brown-lyp3ex`; bu dala her gönderimde site kendiliğinden
   güncellenir. Ayar dosyası `wrangler.jsonc` (`app/dist` klasörünü yayınlar).
+- Sonraya bırakılan: adres şu an `randombeat.oguzhaanttnn.workers.dev`.
+  Ürün sahibi adresteki kişisel adı değiştirmek istiyor (örneğin
+  `randombeat.lumoza.workers.dev`, Cloudflare hesabındaki Subdomain ayarı,
+  ücretsiz) ya da ileride kendi alan adını alacak. Değişince `package.json`
+  içindeki `SITE_URL` güncellenip `npm run app` çalıştırılmalı.
 - Her beat'e özel önizleme resmi henüz yok (sunucu işlevi gerektirir); şimdilik
   tek bir genel önizleme resmi var.
 
