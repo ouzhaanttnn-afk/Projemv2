@@ -24,10 +24,14 @@ workflows:
         script: npm run app:native
       - name: İmza dosyalarını hazırla
         script: |
-          keychain initialize
-          app-store-connect fetch-signing-files "$BUNDLE_ID" --type IOS_APP_STORE --create
-          keychain add-certificates
-          xcode-project use-profiles
+          set -o pipefail
+          mkdir -p /tmp/xcodebuild_logs
+          keychain initialize 2>&1 | tee /tmp/xcodebuild_logs/signing.log
+          app-store-connect fetch-signing-files "$BUNDLE_ID" --type IOS_APP_STORE --create 2>&1 | tee -a /tmp/xcodebuild_logs/signing.log
+          keychain add-certificates 2>&1 | tee -a /tmp/xcodebuild_logs/signing.log
+          ls -la "$HOME/Library/MobileDevice/Provisioning Profiles" 2>&1 | tee -a /tmp/xcodebuild_logs/signing.log
+          xcode-project use-profiles --project "$XCODE_PROJECT" 2>&1 | tee -a /tmp/xcodebuild_logs/signing.log
+          grep -n "PROVISIONING_PROFILE\|CODE_SIGN\|DEVELOPMENT_TEAM" ios/App/App.xcodeproj/project.pbxproj | tee -a /tmp/xcodebuild_logs/signing.log
       - name: Derleme numarası
         script: |
           cd ios/App
