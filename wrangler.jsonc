@@ -1,0 +1,9 @@
+// Cloudflare: Randombeat is a static site served from app/dist.
+// A Worker script can be added later for per-beat preview images.
+{
+  "name": "randombeat",
+  "compatibility_date": "2025-09-01",
+  "assets": {
+    "directory": "./app/dist"
+  }
+}
