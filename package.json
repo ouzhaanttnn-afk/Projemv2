@@ -9,7 +9,7 @@
     "benzersizlik": "node tools/uniqueness.ts",
     "ornekler": "node tools/render-examples.ts",
     "dinle": "node tools/build-listen.ts",
-    "app": "SITE_URL=https://randombeat.oguzhaanttnn.workers.dev/ node tools/build-app.ts",
+    "app": "SITE_URL=https://randombeat.oguzhaanttnn.workers.dev/ CONTACT_EMAIL=studionostos.dev@gmail.com node tools/build-app.ts",
     "app:native": "SITE_URL=https://randombeat.oguzhaanttnn.workers.dev/ node tools/build-app.ts --native && npx cap sync ios"
   },
   "devDependencies": {

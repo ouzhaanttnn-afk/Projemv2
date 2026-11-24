@@ -47,6 +47,8 @@ if (!native) {
     contact ? `Sorular için: ${contact}` : "Sorular için bu sayfanın bağlı olduğu uygulamanın App Store sayfasındaki destek bağlantısını kullan.",
   );
   writeFileSync(new URL("app/dist/gizlilik.html", root), policy);
+  const support = readFileSync(new URL("app/destek.html", root), "utf8").replaceAll("__CONTACT__", contact || "App Store sayfasındaki destek bağlantısı");
+  writeFileSync(new URL("app/dist/destek.html", root), support);
 }
 console.log(`${outDir}/index.html (${(html.length / 1024).toFixed(0)} KB)${site ? "" : "  UYARI: SITE_URL yok"}`);
 
