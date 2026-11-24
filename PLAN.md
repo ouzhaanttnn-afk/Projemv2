@@ -17,7 +17,7 @@ Son güncelleme: 22 Kasım 2026 (1. hafta yapıldı)
 | 3. hafta — Kartlar ve koleksiyon | Tamamlandı |
 | 4. hafta — 10-15 kişilik deneme | Hazır; kapıda, ürün sahibinin denemesi bekleniyor |
 | 5-6. hafta — Uygulamaya çevirme ve satış | İlk derleme TestFlight'a yüklendi; telefonda deneme bekleniyor. Satış, fiyat denemesine kadar bekliyor |
-| 7-8. hafta — Test sürümü ve App Store | Mağaza sayfası API ile dolduruldu (TR ana dil + EN, görüntüler, fiyat ücretsiz, 175 ülke, yaş formu, derleme 5 bağlı). İnceleme iletişim bilgisi ve destek sayfası (`/destek.html`, studionostos.dev@gmail.com) girildi. Eksik: gizlilik anketi (yalnızca arayüzden), gönderim onayı |
+| 7-8. hafta — Test sürümü ve App Store | 1.0 (derleme 5) 24 Kasım 2026'da Apple incelemesine gönderildi (onaydan sonra kendiliğinden yayınlanır). Çin mainland, ek uyum formları ve ICP kaydı gerektirdiği için satış listesinden çıkarıldı |
 
 Her adımı bitirince bu tabloyu güncelle.
 
