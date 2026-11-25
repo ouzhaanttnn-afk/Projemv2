@@ -17,7 +17,7 @@ Son güncelleme: 22 Kasım 2026 (1. hafta yapıldı)
 | 3. hafta — Kartlar ve koleksiyon | Tamamlandı |
 | 4. hafta — 10-15 kişilik deneme | Hazır; kapıda, ürün sahibinin denemesi bekleniyor |
 | 5-6. hafta — Uygulamaya çevirme ve satış | İlk derleme TestFlight'a yüklendi; telefonda deneme bekleniyor. Satış, fiyat denemesine kadar bekliyor |
-| 7-8. hafta — Test sürümü ve App Store | 1.0 (derleme 5) 24 Kasım 2026'da Apple incelemesine gönderildi (onaydan sonra kendiliğinden yayınlanır). Çin mainland, ek uyum formları ve ICP kaydı gerektirdiği için satış listesinden çıkarıldı |
+| 7-8. hafta — Test sürümü ve App Store | 1.0 (derleme 5) incelemede. 25 Kasım: Apple 2.1 ile bilgi ve gerçek cihazda ekran kaydı istedi; yazılı cevaplar inceleme notuna eklendi, ürün sahibinin kararıyla kayıtsız yeniden gönderildi (Apple yine isterse kaydı ürün sahibi çekecek). İlk sürüm ücretsiz; Düğün Paketi, sitedeki fiyat denemesine göre 1.1'de |
 
 Her adımı bitirince bu tabloyu güncelle.
 
